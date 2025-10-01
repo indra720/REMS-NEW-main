@@ -113,7 +113,7 @@ const Testimonials = () => {
           <h2 className="text-3xl font-bold text-center mb-12 ">Customer Success Stories</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
+              <Card key={index} className="p-6 hover:shadow-lg transition-shadow flex flex-col">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex gap-1">
@@ -122,11 +122,11 @@ const Testimonials = () => {
                     <Quote className="h-6 w-6 text-purple-300" />
                   </div>
                 </CardHeader>
-                <CardContent className="flex-1 flex flex-col">
+                <CardContent className="flex-1 flex flex-col p-0">
                   <p className="text-muted-foreground mb-6 leading-relaxed flex-1">
                     "{testimonial.comment}"
                   </p>
-                  <div className="border-t pt-4">
+                  <div className="border-t pt-4 mt-auto">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
                         {testimonial.name.charAt(0)}

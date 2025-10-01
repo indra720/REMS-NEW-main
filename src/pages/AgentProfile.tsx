@@ -9,6 +9,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../lib/constants";
 
 const AgentProfile = () => {
   const { agentId } = useParams();
@@ -93,7 +94,7 @@ const AgentProfile = () => {
   const propertiesdata = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("http://127.0.0.1:8000/api/properties/", {
+      const response = await fetch(`${BASE_URL}properties/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -101,18 +102,18 @@ const AgentProfile = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setpropertydata(data);
-        toast({
-          title: "fetched data",
-          description: "data fetched successfully",
-        });
+        // toast({
+        //   title: "fetched data",
+        //   description: "data fetched successfully",
+        // });
       } else {
-        console.log("data not fetched");
+        // console.log("data not fetched");
       }
     } catch (error) {
       console.log(error);
-      toast({ title: "fetched data", description: " fetched data is wrong" });
+      // toast({ title: "fetched data", description: " fetched data is wrong" });
     }
   };
   useEffect(() => {

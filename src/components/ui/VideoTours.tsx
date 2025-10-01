@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Play, X, Clock, MapPin, DollarSign, IndianRupee } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../lib/constants";
 import { useToast } from "../../hooks/use-toast";
 
 import videoCabin from "@/Video/cabin.mp4";

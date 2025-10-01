@@ -26,7 +26,7 @@ import TermsConditions from "./pages/TermsConditions";
 import RequestInfo from "./pages/RequestInfo";
 import Feedback from "./pages/Feedback";
 import ReportProblem from "./pages/ReportProblem";
-import Testimonials from "./pages/Testimonials";
+
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import SummonsNotices from "./pages/SummonsNotices";
 import Grievances from "./pages/Grievances";
@@ -55,6 +55,7 @@ import PropertySearch from "./pages/PropertySearch";
 import OTPModal from "./pages/OTPModal";
 import EmailVerify from "./pages/EmailVerify";
 import CheckEmail from "./pages/CheckEmail";
+import { default as Testimonials } from "./pages/Testimonials";
 
 
 
@@ -128,7 +129,11 @@ const App = () => {
             } />
 
             <Route path="index" element={<Index/>} />
-            <Route path="/property/:slug" element={<PropertyDetail />} />
+            <Route path="/property/:slug" element={
+              <ProtectedRoute isLoggedIn={isLoggeIn}>
+                <PropertyDetail />
+              </ProtectedRoute>
+            } />
 
             <Route path="/add-property" element={
               <ProtectedRoute isLoggedIn={isLoggeIn}>
@@ -178,6 +183,7 @@ const App = () => {
               </ProtectedRoute>
             } />
             <Route path="/testimonials" element={<Testimonials />} />
+
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/summons-notices" element={
               <ProtectedRoute isLoggedIn={isLoggeIn}>

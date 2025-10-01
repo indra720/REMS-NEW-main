@@ -1,5 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { IndianRupee } from "lucide-react";
+import axios from "../../lib/axios";
+import { BASE_URL } from "../../lib/constants";
+import darjeeling7Img from '../../assets/images/darjeeling7.jpg';
+import gulmarg8Img from '../../assets/images/gulmarg8.jpg';
+import honeymoonImg from '../../assets/images/honeymoon.png';
+import mussoorieImg from '../../assets/images/mussoorie.jpg';
+import auli9Img from '../../assets/images/auli9.jpg';
+import ranikhet3Img from '../../assets/images/ranikhet3.jpg';
+import munnar2Img from '../../assets/images/munnar2.jpg';
+import ladhakImg from '../../assets/images/ladhak.jpg';
+import goaImg from '../../assets/images/goa.jpg';
+import udaipurImg from '../../assets/images/udaipur.jpg';
+import delhiImg from '../../assets/images/delhi.jpg';
+import citybreakImg from '../../assets/images/citybreak.png';
+import adventrueImg from '../../assets/images/adventrue.jpg';
+import all_exclusiveImg from '../../assets/images/all_exclusive.jpg';
+import beachImg from '../../assets/images/beach.jpg';
+import countryImg from '../../assets/images/country.jpg';
+import familyImg from '../../assets/images/family.jpg';
+import foodImg from '../../assets/images/food.jpg';
+import luxury_roomImg from '../../assets/images/luxury_room.jpg';
+import shoppingImg from '../../assets/images/shopping.jpg';
+import skiImg from '../../assets/images/ski.jpg';
+import spaImg from '../../assets/images/spa.jpg';
+import villaImg from '../../assets/images/villa.jpg';
+import placeholderImg from '../../assets/images/placeholder.svg';
+// This is a dummy comment to trigger re-compilation
 
 const Browse_exp = () => {
   const [activeTab, setActiveTab] = useState<"International" | "Domestic">(
@@ -12,7 +39,7 @@ const Browse_exp = () => {
     const fetchdata = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/properties/top-ai-properties/"
+          BASE_URL + "properties/top-ai-properties/"
         );
         const data = await response.json();
         setDomesticProperties(data);
@@ -24,12 +51,13 @@ const Browse_exp = () => {
     fetchdata();
   }, []);
 
-  const internationalProperties = [
+
+  const browseCategories = [
     {
       id: 101,
       title: "Darjeeling",
       slug: "darjeeling",
-      images: [{ image: "/Darjeeling7.jpg" }],
+      images: [{ image: darjeeling7Img }],
       location: "Darjeeling, India",
       price: "120000",
       description: "A beautiful place in the mountains.",
@@ -42,7 +70,7 @@ const Browse_exp = () => {
       id: 102,
       title: "Gulmarg",
       slug: "gulmarg",
-      images: [{ image: "/Gulmarg8.jpg" }],
+      images: [{ image: gulmarg8Img }],
       location: "Gulmarg, India",
       price: "150000",
       description: "A paradise for skiing.",
@@ -55,7 +83,7 @@ const Browse_exp = () => {
       id: 103,
       title: "Honeymoon",
       slug: "honeymoon",
-      images: [{ image: "/honeymoon.png" }],
+      images: [{ image: honeymoonImg }],
       location: "Manali, India",
       price: "78500",
       description: "A romantic getaway.",
@@ -68,7 +96,7 @@ const Browse_exp = () => {
       id: 104,
       title: "Mussoorie",
       slug: "mussoorie",
-      images: [{ image: "/Mussoorie.jpg" }],
+      images: [{ image: mussoorieImg }],
       location: "Mussoorie, India",
       price: "95000",
       description: "The queen of hills.",

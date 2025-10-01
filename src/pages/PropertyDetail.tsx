@@ -554,55 +554,7 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
 
 
 
-  // const handleImagesSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   console.log("Submitting images data:", imagesForm);
 
-  //   const formData = new FormData();
-  //   formData.append("caption", imagesForm.caption);
-  //   formData.append("is_primary", imagesForm.is_primary.toString());
-  //   formData.append("property_slug", imagesForm.property.toString());
-  //   if (imagesForm.image) {
-  //     formData.append("image", imagesForm.image);
-  //   }
-
-  //   try {
-  //     const token = localStorage.getItem("access_token");
-  //     const response = await fetch(
-  //       "http://127.0.0.1:8000/api/property-images/",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body: formData,
-  //       }
-  //     );
-
-  //     if (response.ok) {
-  //       const result = await response.json();
-  //       console.log("Image added successfully:", result);
-  //       toast.success("Image added successfully!");
-
-  //       // Images are now derived from the 'property' state, which is updated by fetchPropertyDetails.
-  //       // No explicit refresh needed here.
-
-  //       setIsImagesDialogOpen(false);
-  //       setImagesForm({
-  //         caption: "",
-  //         is_primary: false,
-  //         image: null,
-  //         property: propertyId,
-  //       });
-  //     } else {
-  //       console.log("Failed response:", response.status, response.statusText);
-  //       toast.error("Failed to add image");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     toast.error("Error adding image");
-  //   }
-  // };
 
   // Amenities
 

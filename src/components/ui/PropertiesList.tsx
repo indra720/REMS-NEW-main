@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Info, Building, MapPin, IndianRupee, CheckCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
-import imageshow from "/delhi.jpg";
+import { BASE_URL } from "../../lib/constants";
+import imageshow from "../../assets/images/delhi.jpg";
 
 interface Property {
   id: number;
@@ -24,7 +25,7 @@ const PropertiesList = () => {
   const fetchProperties = async () => {
     const token = localStorage.getItem("access_token");
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/properties/", {
+                const response = await fetch(`${BASE_URL}properties/all`);
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

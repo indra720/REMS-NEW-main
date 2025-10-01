@@ -46,6 +46,7 @@ import {
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import UnifiedPopup from "@/components/UnifiedPopup";
+import { BASE_URL, LOCAL_BASE_URL } from "@/lib/constants";
 
 const AdminDashboard = () => {
 
@@ -99,7 +100,7 @@ const AdminDashboard = () => {
   const fetchProblemReports = async () => {
     const token = localStorage.getItem("access_token");
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/report-problems/", {
+      const response = await fetch(`${BASE_URL}report-problems/`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -119,7 +120,7 @@ const AdminDashboard = () => {
   const fetchRequestInfo = async () => {
     const token = localStorage.getItem("access_token");
     try {
-      const response = await fetch("http://localhost:8000/api/request-info/", {
+      const response = await fetch(`${LOCAL_BASE_URL}request-info/`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -170,7 +171,7 @@ const AdminDashboard = () => {
       };
 
       const response = await fetch(
-        `http://127.0.0.1:8000/api/report-problems/${selectedReport.slug}/`,
+        `${BASE_URL}/report-problems/${selectedReport.slug}/`,
         {
           method: "PUT",
           headers: {
@@ -198,7 +199,7 @@ const AdminDashboard = () => {
     const token = localStorage.getItem("access_token");
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/report-problems/${slug}/`,
+        `${BASE_URL}/report-problems/${slug}/`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -247,7 +248,7 @@ const AdminDashboard = () => {
       };
 
       const response = await fetch(
-        `http://localhost:8000/api/request-info/${identifier}/`,
+        `${LOCAL_BASE_URL}/request-info/${identifier}/`,
         {
           method: "PUT",
           headers: {
@@ -274,7 +275,7 @@ const AdminDashboard = () => {
     const token = localStorage.getItem("access_token");
     try {
       const response = await fetch(
-        `http://localhost:8000/api/request-info/${slug}/`,
+        `${LOCAL_BASE_URL}/request-info/${slug}/`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -320,7 +321,7 @@ const AdminDashboard = () => {
     const fetchProperties = async () => {
       const token = localStorage.getItem("access_token");
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/properties/", {
+        const response = await fetch(`${BASE_URL}/properties/`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { showSuccessToast, showErrorToast } from "@/utils/toast";
 import { MapPin, Phone, Mail, Clock, MessageSquare, Headphones } from "lucide-react";
 import Header from "@/components/Header";
+import { LOCAL_BASE_URL } from "../lib/constants";
 import Footer from "@/components/Footer";
 
 const ContactUs = () => {
@@ -41,7 +42,7 @@ const ContactUs = () => {
       console.log('Sending contact data:', contactData);
 
       const token = localStorage.getItem("access_token");
-      const response = await fetch('http://localhost:8000/api/leads/', {
+      const response = await fetch(`${LOCAL_BASE_URL}leads/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

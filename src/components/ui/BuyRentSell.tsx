@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../lib/constants";
 
 const BuyRentSell = () => {
   const [activeTab, setActiveTab] = useState("buy");
@@ -30,7 +31,7 @@ const BuyRentSell = () => {
     const fetchProperties = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/properties/ai-properties/"
+          `${BASE_URL}properties/ai-properties/`
         );
         const data = await response.json();
         setProperties(data);

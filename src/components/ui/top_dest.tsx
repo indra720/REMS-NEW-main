@@ -1,17 +1,29 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { BASE_URL } from '../../lib/constants';
+
+import delhiImg from '../../assets/images/delhi.jpg';
+import mussoorieImg from '../../assets/images/mussoorie.jpg';
+import udaipurImg from '../../assets/images/udaipur.jpg';
+import ranikhet3Img from '../../assets/images/ranikhet3.jpg';
+import munnar2Img from '../../assets/images/munnar2.jpg';
+import auli9Img from '../../assets/images/auli9.jpg';
+import gulmarg8Img from '../../assets/images/gulmarg8.jpg';
+import darjeeling7Img from '../../assets/images/darjeeling7.jpg';
+import goaImg from '../../assets/images/goa.jpg';
+import ladhakImg from '../../assets/images/ladhak.jpg';
 
 export const destinations = [
-  { name: 'Delhi', img: '/delhi.jpg', accommodations: '2,004 Houses' },
-  { name: 'Kolkata', img: '/Mussoorie.jpg', accommodations: '2,224 Villas' },
-  { name: 'Jaipur', img: '/Udaipur.jpg', accommodations: '2,007 Plots' },
-  { name: 'Bangalore', img: '/Ranikhet3.jpg', accommodations: '2,000 Apartments' },
-  { name: 'Chennai', img: '/Munnar2.jpg', accommodations: '1,200 Flats' },
-  { name: 'Ahmedabad', img: '/ladhak...jpg', accommodations: '500 Plots' },
-  { name: 'Pune', img: '/goa...jpg', accommodations: '1,550 Houses' },
-  { name: 'Kota', img: '/Auli9.jpg', accommodations: '1,800 Flats' },
-  { name: 'Mumbai', img: '/Gulmarg8.jpg', accommodations: '2,500 Plots' },
-  { name: 'Hyderabad', img: '/Darjeeling7.jpg', accommodations: '2,300 Villas' },
+  { name: 'Delhi', img: delhiImg, accommodations: '2,004 Houses' },
+  { name: 'Kolkata', img: mussoorieImg, accommodations: '2,224 Villas' },
+  { name: 'Jaipur', img: udaipurImg, accommodations: '2,007 Plots' },
+  { name: 'Bangalore', img: ranikhet3Img, accommodations: '2,000 Apartments' },
+  { name: 'Chennai', img: munnar2Img, accommodations: '1,200 Flats' },
+  { name: 'Ahmedabad', img: ladhakImg, accommodations: '500 Plots' },
+  { name: 'Pune', img: goaImg, accommodations: '1,550 Houses' },
+  { name: 'Kota', img: auli9Img, accommodations: '1,800 Flats' },
+  { name: 'Mumbai', img: gulmarg8Img, accommodations: '2,500 Plots' },
+  { name: 'Hyderabad', img: darjeeling7Img, accommodations: '2,300 Villas' },
 ];
 
 interface TopDestProps {
@@ -31,7 +43,7 @@ export const TopDest: React.FC<TopDestProps> = ({ onCitySelect }) => {
   useEffect(() => {
     const fetchLocationStats = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/properties/stats/location/');
+        const response = await fetch(`${BASE_URL}properties/stats/location/`);
         const data = await response.json();
         setLocationStats(data);
       } catch (error) {

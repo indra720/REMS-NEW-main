@@ -67,6 +67,8 @@ import { fetchProperties as fetchPropertiesAPI, fetchAIProperties } from "@/lib/
 import { BASE_URL } from "@/lib/constants";
 import videoApartment from "@/Video/apartment.mp4";
 
+import sharmaPriyaImg from '../assets/images/sharma_priya.jpg';
+
 // Define interfaces for type safety
 interface FormData {
   firstName: string;
@@ -418,8 +420,7 @@ const Index = () => {
       experience: "6+ Years",
       rating: 4.8,
       deals: "350+ Deals",
-      image:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b287?w=200",
+      image: sharmaPriyaImg,
       phone: "+91 87654 32109",
       email: "priya@realestate.com",
     },
@@ -692,7 +693,7 @@ const Index = () => {
                     </Button>
                     <Button
                       size="sm"
-                      className="bg-gradient-hero bg-purple-400 hover:bg-purple-600 text-white border-0"
+                      className="bg-gradient-hero bg-purple-400 hover:bg-purple-600 text-white border-0" onClick={() => navigate("/contact")}
                     >
                       Contact
                     </Button>
@@ -788,7 +789,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {agents.map((agent) => (
               <Card
                 key={agent.id}

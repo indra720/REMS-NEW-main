@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 // import { toast } from "react-toastify";
 import { Info, FileText, Phone, Mail, Clock, CheckCircle } from "lucide-react";
+import { LOCAL_BASE_URL } from "../lib/constants";
 
 const RequestInfo = () => {
   const [formData, setFormData] = useState({
@@ -49,7 +50,7 @@ const RequestInfo = () => {
 
       // console.log('Sending inquiry data:', submitData);
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:8000/api/request-info/', {
+      const response = await fetch(`${LOCAL_BASE_URL}request-info/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

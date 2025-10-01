@@ -39,6 +39,7 @@ import PropertiesList from "@/components/ui/PropertiesList";
 import EnhancedFeedbackPopup from "@/components/EnhancedFeedbackPopup";
 import DataPopup from "@/components/DataPopup";
 import UnifiedPopup from "@/components/UnifiedPopup";
+import { BASE_URL } from "@/lib/constants";
 
 const AgentDashboard = () => {
   const [leads, setLeads] = useState([]);
@@ -56,7 +57,7 @@ const AgentDashboard = () => {
       const token = localStorage.getItem("access_token");
       // console.log("Fetching leads with token:", token ? "Token exists" : "No token");
 
-      const response = await fetch("http://127.0.0.1:8000/api/leads/", {
+      const response = await fetch(`${BASE_URL}/leads/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -139,7 +140,7 @@ const AgentDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        "http://127.0.0.1:8000/api/support-tickets/",
+        `${BASE_URL}/support-tickets/`,
         {
           method: "GET",
           headers: {
@@ -189,7 +190,7 @@ const AgentDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `http://127.0.0.1:8000/api/support-tickets/${selectedCustomer.id}/`, // 👈 numeric id use kar
+        `${BASE_URL}/support-tickets/${selectedCustomer.id}/`, // 👈 numeric id use kar
         {
           method: "PATCH", // PATCH better than PUT
           headers: {
@@ -222,7 +223,7 @@ const AgentDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `http://127.0.0.1:8000/api/support-tickets/${id}/`, // 👈 numeric id
+        `${BASE_URL}/support-tickets/${id}/`, // 👈 numeric id
         {
           method: "DELETE",
           headers: {
@@ -253,7 +254,7 @@ const AgentDashboard = () => {
   const fetchFeedbackData = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("http://127.0.0.1:8000/api/feedback/", {
+      const response = await fetch("${BASE_URL}/feedback/", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -304,7 +305,7 @@ const AgentDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `http://127.0.0.1:8000/api/feedback/${SelectedFeedback.slug}/`,
+        `${BASE_URL}/feedback/${SelectedFeedback.slug}/`,
         {
           method: "PUT",
           headers: {
@@ -340,7 +341,7 @@ const AgentDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `http://127.0.0.1:8000/api/feedback/${slug}/`,
+        `${BASE_URL}/feedback/${slug}/`,
         {
           method: "DELETE",
           headers: {

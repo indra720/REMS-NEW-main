@@ -129,7 +129,7 @@ export function PropertyCard({
   };
 
   return (
-    <Card className="first-card  group overflow-hidden bg-gradient-card shadow-soft hover:shadow-medium transition-all duration-300 border-border/50 h-full sm:m-0 mr-4">
+    <Card className="first-card  group overflow-hidden bg-gradient-card shadow-soft hover:shadow-medium transition-all duration-300 border-border/50 h-full sm:m-0">
       <div className={`flex ${layout === 'grid' || isProfileView ? 'flex-col' : 'flex-col md:flex-row'} h-full`}>
         {/* Image Section with Carousel */}
         <div

@@ -508,7 +508,7 @@ export const Index2 = () => {
                 <div className="flex-1 relative" ref={searchContainerRef}>
                   <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                   <Input
-                    placeholder="Search by location, keyword..."
+                    placeholder="Search properties"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onFocus={() => setIsSuggestionsOpen(true)}

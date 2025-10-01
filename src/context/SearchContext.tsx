@@ -2,6 +2,7 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { publicApi } from '../lib/api';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { BASE_URL } from '@/lib/constants';
 
 interface Property {
   id: number;
@@ -113,7 +114,7 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
 
       console.log("SearchContext: Query parameters sent to API:", queryParams); // ADDED LOG
 
-      const response = await publicApi.get('http://127.0.0.1:8000/api/properties/search/', {
+      const response = await publicApi.get(`${BASE_URL}/properties/search/`, {
         params: queryParams,
         withCredentials: false, // Set withCredentials to false to resolve CORS issue
       });

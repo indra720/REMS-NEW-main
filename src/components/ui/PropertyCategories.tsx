@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { faHouse, faBuilding, faMapMarkerAlt, faStore, faIndustry, faTree, faMountain, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../lib/constants";
 import { useEffect, useState } from 'react';
 
 interface PropertyCategoriesProps {
@@ -20,7 +21,9 @@ const PropertyCategories: React.FC<PropertyCategoriesProps> = ({ onCategorySelec
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/properties/stats/property-type/');
+        const response = await fetch(
+          `${BASE_URL}properties/categories/`
+        );
         const data = await response.json();
         setPropertyStats(data);
       } catch (error) {
