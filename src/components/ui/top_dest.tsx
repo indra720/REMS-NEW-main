@@ -2,16 +2,16 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 export const destinations = [
-  { name: 'Delhi', img: 'public/delhi.jpg', accommodations: '2,004 Houses' },
-  { name: 'Kolkata', img: 'public/mussoorie.jpg', accommodations: '2,224 Villas' },
-  { name: 'Jaipur', img: 'public/udaipur.jpg', accommodations: '2,007 Plots' },
-  { name: 'Bangalore', img: 'public/Ranikhet3.jpg', accommodations: '2,000 Apartments' },
-  { name: 'Chennai', img: 'public/Munnar2.jpg', accommodations: '1,200 Flats' },
-  { name: 'Ahmedabad', img: 'public/ladhak...jpg', accommodations: '500 Plots' },
-  { name: 'Pune', img: 'public/goa...jpg', accommodations: '1,550 Houses' },
-  { name: 'Kota', img: 'public/Auli9.jpg', accommodations: '1,800 Flats' },
-  { name: 'Mumbai', img: 'public/Gulmarg8.jpg', accommodations: '2,500 Plots' },
-  { name: 'Hyderabad', img: 'public/Darjeeling7.jpg', accommodations: '2,300 Villas' },
+  { name: 'Delhi', img: '/delhi.jpg', accommodations: '2,004 Houses' },
+  { name: 'Kolkata', img: '/Mussoorie.jpg', accommodations: '2,224 Villas' },
+  { name: 'Jaipur', img: '/Udaipur.jpg', accommodations: '2,007 Plots' },
+  { name: 'Bangalore', img: '/Ranikhet3.jpg', accommodations: '2,000 Apartments' },
+  { name: 'Chennai', img: '/Munnar2.jpg', accommodations: '1,200 Flats' },
+  { name: 'Ahmedabad', img: '/ladhak...jpg', accommodations: '500 Plots' },
+  { name: 'Pune', img: '/goa...jpg', accommodations: '1,550 Houses' },
+  { name: 'Kota', img: '/Auli9.jpg', accommodations: '1,800 Flats' },
+  { name: 'Mumbai', img: '/Gulmarg8.jpg', accommodations: '2,500 Plots' },
+  { name: 'Hyderabad', img: '/Darjeeling7.jpg', accommodations: '2,300 Villas' },
 ];
 
 interface TopDestProps {

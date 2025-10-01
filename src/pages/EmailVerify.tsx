@@ -11,6 +11,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import api from "@/lib/api"; // Import the authenticated axios instance
+import { jwtDecode } from "jwt-decode"; // For decoding JWT token
 
 const EmailVerify = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -18,6 +20,48 @@ const EmailVerify = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+
+  const handleProceedToDashboard = async () => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      // If no token, something went wrong or user needs to log in manually
+      navigate('/login');
+      return;
+    }
+
+    try {
+      // Set the Authorization header for the authenticated API instance
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      // Fetch user details to get the role
+      const response = await api.get('/auth/users/me/'); // Assuming this endpoint exists and returns user details
+      const user = response.data;
+      const userRole = user.role; // Assuming user object has a 'role' field
+
+      // Store the full user object in localStorage
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Navigate based on role
+      switch (userRole) {
+        case 'admin':
+          navigate('/admin');
+          break;
+        case 'agent':
+          navigate('/agent');
+          break;
+        case 'owner':
+          navigate('/owner');
+          break;
+        default:
+          navigate('/dashboard'); // Default dashboard for regular users
+          break;
+      }
+    } catch (error) {
+      console.error("Failed to fetch user details or role after verification:", error);
+      // Fallback to login if role cannot be determined or API call fails
+      navigate('/login');
+    }
+  };
 
   useEffect(() => {
     const verifyEmail = async () => {
@@ -28,9 +72,15 @@ const EmailVerify = () => {
       }
 
       try {
-        await axios.post(`${BASE_URL}verify-email/`, { token: slug });
+        const response = await axios.post(`${BASE_URL}verify-email/`, { token: slug });
         setLoading(false);
         setShowSuccessDialog(true); // Show dialog on success
+
+        // Assuming the verify-email endpoint returns an access_token upon successful verification
+        if (response.data && response.data.access_token) {
+          localStorage.setItem('access_token', response.data.access_token);
+        }
+
       } catch (err: any) {
         setError(err.response?.data?.detail || "Invalid or expired verification link.");
         setLoading(false);
@@ -86,9 +136,9 @@ const EmailVerify = () => {
             <p className="text-muted-foreground mt-2">
               Welcome to Real Estate, for choosing your dream properties: house, villa, apartment.
             </p>
-            <Link to="/login">
-              <Button className="mt-6 w-full">Proceed to Login</Button>
-            </Link>
+            <Button className="mt-6 w-full" onClick={handleProceedToDashboard}>
+              Proceed to Dashboard
+            </Button>
           </DialogContent>
         </Dialog>
       </div>

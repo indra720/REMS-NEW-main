@@ -65,9 +65,9 @@ const Register = ({ setisLoggeIn, setisregister }) => {
       // setOtpModal(true); // Commented out for OTP bypass
 
       showSuccessToast(
-        "Registration successful! Please log in."
+        "Registration successful! Please check your email to verify your account."
       );
-      navigate("/login"); // Direct navigation after successful registration
+      navigate("/check-email"); // Navigate to a page instructing user to check email
 
     } catch (error: any) {
       console.error("Registration error:", error);

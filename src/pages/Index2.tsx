@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "react-toastify";
 
 import {
   Search,
@@ -54,6 +55,15 @@ const propertyTypesForSelect = [
   { id: "plot", label: "Plot" },
   { id: "commercial", label: "Commercial" },
 ];
+
+// Hardcoded mapping based on the provided property-types API data
+const propertyTypeLabelToApiIdMap: { [key: string]: number | undefined } = {
+  "Villa": 1,
+  "Apartment": 2, // Assuming 'Apartment' maps to id 2 from the property-types API data
+  "PentHouse": 3,
+  // Note: 'Apartment' also has id 5 in property-types API. Using 2 for now.
+  // 'Plot' and 'Commercial' are in propertyTypesForSelect but not in property-types API data.
+};
 
 export const Index2 = () => {
   const navigate = useNavigate();
@@ -227,13 +237,8 @@ export const Index2 = () => {
 
     if (selectedCategory) {
       const lowercasedCategory = selectedCategory.toLowerCase();
-      const singularCategory = lowercasedCategory.endsWith("s")
-        ? lowercasedCategory.slice(0, -1)
-        : lowercasedCategory;
       filtered = filtered.filter(
-        (p) =>
-          (p.title || "").toLowerCase().includes(singularCategory) ||
-          (p.description || "").toLowerCase().includes(singularCategory)
+        (p) => (p.category || "").toLowerCase() === lowercasedCategory
       );
     }
 
@@ -247,13 +252,26 @@ export const Index2 = () => {
       );
     }
     if (propertyType && propertyType !== "all") {
-      const lowercasedType = propertyType.toLowerCase();
+      const lowercasedType = propertyType.toLowerCase(); // "apartment"
+      const apiPropertyTypeId = propertyTypeLabelToApiIdMap[propertyType]; // 2 for "Apartment"
+
       filtered = filtered.filter((p) => {
         const title = (p.title || "").toLowerCase();
         const description = (p.description || "").toLowerCase();
-        return (
-          title.includes(lowercasedType) || description.includes(lowercasedType)
+        const category = (p.category || "").toLowerCase();
+
+        // Check if the numeric property_type matches the mapped ID
+        const matchesNumericId = (apiPropertyTypeId !== undefined && p.property_type === apiPropertyTypeId);
+
+        // Check if the type label is present in title, description, or category
+        const matchesStringContent = (
+          title.includes(lowercasedType) ||
+          description.includes(lowercasedType) ||
+          category.includes(lowercasedType)
         );
+
+        // A property matches if either the numeric ID matches OR the string content matches
+        return matchesNumericId || matchesStringContent;
       });
     }
 

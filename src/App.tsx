@@ -54,6 +54,7 @@ import Dashboard from "./pages/Dashboard";
 import PropertySearch from "./pages/PropertySearch";
 import OTPModal from "./pages/OTPModal";
 import EmailVerify from "./pages/EmailVerify";
+import CheckEmail from "./pages/CheckEmail";
 
 
 
@@ -112,6 +113,7 @@ const App = () => {
               path="/register"
               element={<Register setisLoggeIn={setisLoggedIn} setisregister={setisregister} />}
             />
+            <Route path="/check-email" element={<CheckEmail />} />
             
             <Route path="/dashboard" element={
               <ProtectedRoute isLoggedIn={isLoggeIn}>
