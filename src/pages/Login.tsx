@@ -42,10 +42,16 @@ const Login = ({ setisLoggeIn, setisregister }) => {
   const handleLogin = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
+    // console.log("🚀 Starting login process...");
+    // console.log("📧 Email:", loginData.email);
+    // console.log("🔒 Password length:", loginData.password?.length);
+    // console.log("🌐 Login URL:", `${BASE_URL}login/`);
+
     // Clear old user data to prevent using stale roles
     localStorage.removeItem("user");
 
     if (!loginData.email || !loginData.password) {
+      // console.log("❌ Missing email or password");
       // showErrorToast("Please fill in all required fields.");
       return;
     }
@@ -54,6 +60,7 @@ const Login = ({ setisLoggeIn, setisregister }) => {
     delete axios.defaults.headers.common['Authorization'];
 
     try {
+      // console.log("📡 Sending login request...");
       const response = await axios.post(
         `${BASE_URL}login/`,
         {
@@ -65,6 +72,9 @@ const Login = ({ setisLoggeIn, setisregister }) => {
           withCredentials: false,
         }
       );
+
+      // console.log("✅ Login response status:", response.status);
+      // console.log("📄 Login response data:", response.data);
 
       ////console.log("API Response:", response.data);
 
@@ -118,8 +128,13 @@ const Login = ({ setisLoggeIn, setisregister }) => {
       }, 1000);
 
     } catch (error: any) {
-      ////console.error("Login error:", error);
+      // console.error("❌ Login error:", error);
+      // console.error("📄 Error response:", error.response?.data);
+      // console.error("🔢 Error status:", error.response?.status);
+      // console.error("📝 Error message:", error.response?.statusText);
+      
       const errorMessage = error.response?.data?.error || "Invalid credentials";
+      // console.log("🚨 Final error message:", errorMessage);
       
       if (errorMessage === "Please verify your phone number via OTP.") {
         const phone = localStorage.getItem("phoneForVerification");

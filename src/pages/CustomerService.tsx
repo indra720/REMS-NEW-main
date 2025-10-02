@@ -54,11 +54,11 @@ const CustomerService = () => {
       !formData.subject ||
       !formData.message
     ) {
-      toast({
-        title: "Required Fields Missing",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
+      // toast({
+      //   title: "Required Fields Missing",
+      //   description: "Please fill in all required fields.",
+      //   variant: "destructive",
+      // });
       return;
     }
 
@@ -74,9 +74,9 @@ const CustomerService = () => {
         try {
           const userObj = JSON.parse(userString);
           currentUser = userObj.id || userObj.pk || null;
-          console.log("User ID extracted:", currentUser);
+          //console.log("User ID extracted:", currentUser);
         } catch (parseError) {
-          console.error("Error parsing user object:", parseError);
+          //console.error("Error parsing user object:", parseError);
           currentUser = null;
         }
       }
@@ -102,7 +102,7 @@ const CustomerService = () => {
         user: currentUser, // null=True, blank=True in SupportTicket model
       };
 
-      console.log("Sending support ticket data:", requestData);
+      //console.log("Sending support ticket data:", requestData);
 
       const response = await fetch(
         `${BASE_URL}support-tickets/`,
@@ -118,7 +118,7 @@ const CustomerService = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("API Error Response:", errorData);
+        //console.error("API Error Response:", errorData);
 
         let errorMessage = "Failed to submit support ticket. Please try again.";
 
@@ -142,26 +142,26 @@ const CustomerService = () => {
           errorMessage = "Permission denied. Please check your account status.";
         }
 
-        toast({
-          title: "Error",
-          description: errorMessage,
-          variant: "destructive",
-        });
+        // toast({
+        //   title: "Error",
+        //   description: errorMessage,
+        //   variant: "destructive",
+        // });
         return;
       }
 
       const result = await response.json();
-      console.log("Support ticket created successfully:", result);
+      //console.log("Support ticket created successfully:", result);
 
-      toast({
-        title: "Support Ticket Submitted Successfully",
-        description: currentUser
-          ? `Ticket ID: ${result.id.slice(
-              0,
-              8
-            )}... Our team will contact you within 24 hours.`
-          : "Support ticket submitted as guest. Our team will contact you via email within 24 hours.",
-      });
+      // toast({
+      //   title: "Support Ticket Submitted Successfully",
+      //   description: currentUser
+      //     ? `Ticket ID: ${result.id.slice(
+      //         0,
+      //         8
+      //       )}... Our team will contact you within 24 hours.`
+      //     : "Support ticket submitted as guest. Our team will contact you via email within 24 hours.",
+      // });
 
       // Reset form
       setFormData({
@@ -174,12 +174,12 @@ const CustomerService = () => {
         priority: "medium",
       });
     } catch (error) {
-      console.error("Network error:", error);
-      toast({
-        title: "Network Error",
-        description: "Please check your internet connection and try again.",
-        variant: "destructive",
-      });
+      //console.error("Network error:", error);
+      // toast({
+      //   title: "Network Error",
+      //   description: "Please check your internet connection and try again.",
+      //   variant: "destructive",
+      // });
     } finally {
       setLoading(false);
     }

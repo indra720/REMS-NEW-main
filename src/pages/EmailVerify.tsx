@@ -57,7 +57,7 @@ const EmailVerify = () => {
           break;
       }
     } catch (error) {
-      console.error("Failed to fetch user details or role after verification:", error);
+     // console.error("Failed to fetch user details or role after verification:", error);
       // Fallback to login if role cannot be determined or API call fails
       navigate('/login');
     }

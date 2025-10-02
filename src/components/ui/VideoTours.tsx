@@ -49,7 +49,39 @@ const VideoPlayerModal = ({ videoUrl, onClose }) => {
 
 const VideoTours = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Fetch properties from API
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        // For now, use static data since backend requires authentication
+        console.log("📄 Using static data (backend requires auth)");
+        setProperties(staticVideoData);
+        setLoading(false);
+        return;
+        
+        // Uncomment below when backend is made public
+        // const response = await fetch(`${BASE_URL}properties/`);
+        // if (response.ok) {
+        //   const data = await response.json();
+        //   console.log("✅ Properties fetched:", data);
+        //   setProperties(data.slice(0, 4));
+        // } else {
+        //   setProperties(staticVideoData);
+        // }
+      } catch (error) {
+        console.error("❌ Error fetching properties:", error);
+        setProperties(staticVideoData);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, []);
 
   const staticVideoData = [
     {
@@ -114,16 +146,19 @@ const VideoTours = () => {
     },
   ];
 
-  // Get featured property (first property from static data)
-  const featuredProperty = staticVideoData.length > 0 ? staticVideoData[0] : null;
+  // Get featured property (first property from fetched data or static fallback)
+  const featuredProperty = properties.length > 0 ? properties[0] : null;
 
-  const handleDetailsNavigation = (slug, videoUrl) => {
+  const handleDetailsNavigation = (slug, videoUrl, propertyData) => {
     const token = localStorage.getItem("access_token");
     if (!token) {
       navigate("/login");
     } else {
       navigate(`/property/${slug}`, {
-        state: { videoUrl },
+        state: { 
+          videoUrl,
+          propertyData // Pass static property data
+        },
       });
     }
   };
@@ -161,7 +196,11 @@ const VideoTours = () => {
         </div>
 
         {/* Featured Video - Now using fetched data */}
-        {featuredProperty && (
+        {loading ? (
+          <div className="mb-16 text-center">
+            <div className="animate-pulse">Loading properties...</div>
+          </div>
+        ) : featuredProperty && (
           <div className="mb-16">
             <Card className="overflow-hidden bg-gradient-to-br from-background to-secondary/20 border border-border/50 shadow-elegant">
               <div className="grid lg:grid-cols-2 gap-8 p-2 sm:p-8">
@@ -175,7 +214,7 @@ const VideoTours = () => {
                       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500"
                     }
                     alt={featuredProperty.title}
-                    className="w-full h-48 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-57 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-black/30 rounded-2xl flex items-center justify-center group-hover:bg-black/20 transition-colors duration-300">
                     <Button
@@ -226,7 +265,7 @@ const VideoTours = () => {
                       Watch Tour
                     </Button>
                     <Button
-                      onClick={() => handleDetailsNavigation(featuredProperty.slug, videos[0])}
+                      onClick={() => handleDetailsNavigation(featuredProperty.slug, videos[0], featuredProperty)}
                       variant="outline"
                       size="lg"
                       className="border-border/50 w-full hover:bg-purple-600 hover:text-white"
@@ -241,8 +280,9 @@ const VideoTours = () => {
         )}
 
         {/* Video Grid - Using remaining properties (excluding the featured one) */}
+        {!loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {staticVideoData.slice(0, 3).map((video, index) => (
+          {properties.slice(1, 4).map((video, index) => (
             <Card
               key={video.id}
               className="group hover:shadow-elegant transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-gradient-to-br from-background to-secondary/20 border border-border/50 cursor-pointer animate-fade-in"
@@ -252,6 +292,7 @@ const VideoTours = () => {
                 <img
                   src={
                     video.images?.[0]?.image ||
+                    video.image ||
                     "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500"
                   }
                   alt={video.title}
@@ -293,30 +334,30 @@ const VideoTours = () => {
                 <div className="flex items-center justify-between text-muted-foreground mb-4">
                   <span className="text-sm truncate flex items-center">
                     <MapPin className="w-4 h-4 mr-2 text-purple-500 flex-shrink-0" />
-                    {video.location}
+                    {video.location || video.address}
                   </span>
                   <span>
-                    {video.listed_on
-                      ? new Date(video.listed_on).toLocaleDateString()
+                    {video.listed_on || video.created_at
+                      ? new Date(video.listed_on || video.created_at).toLocaleDateString()
                       : "N/A"}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-4 mb-4 text-center text-sm">
                   <div>
                     <div className="font-bold text-foreground group-hover:text-purple-600">
-                      {video.bedrooms}
+                      {video.bedrooms || video.bedroom_count || "N/A"}
                     </div>
                     <div className="text-muted-foreground">Beds</div>
                   </div>
                   <div>
                     <div className="font-bold text-foreground group-hover:text-purple-600">
-                      {video.bathrooms}
+                      {video.bathrooms || video.bathroom_count || "N/A"}
                     </div>
                     <div className="text-muted-foreground">Baths</div>
                   </div>
                   <div>
                     <div className="font-bold text-foreground group-hover:text-purple-600">
-                      {video.area_sqft}
+                      {video.area_sqft || video.area || "N/A"}
                     </div>
                     <div className="text-muted-foreground">Area</div>
                   </div>
@@ -347,7 +388,7 @@ const VideoTours = () => {
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDetailsNavigation(video.slug, videos[(index + 1) % videos.length]);
+                      handleDetailsNavigation(video.slug, videos[(index + 1) % videos.length], video);
                     }}
                   >
                     View Details
@@ -364,6 +405,7 @@ const VideoTours = () => {
             </Card>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

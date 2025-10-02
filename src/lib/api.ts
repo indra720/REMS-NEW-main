@@ -82,7 +82,7 @@ export const fetchProperties = async (): Promise<Property[]> => {
     // The backend seems to return results in a 'results' object
     return (response.data as any).results || response.data;
   } catch (error) {
-    console.error('Error fetching properties:', error);
+    //console.error('Error fetching properties:', error);
     return [];
   }
 };
@@ -92,7 +92,7 @@ export const fetchAIProperties = async (): Promise<Property[]> => {
     const response = await publicApi.get<Property[]>('/properties/ai-properties/');
     return response.data;
   } catch (error) {
-    console.error('Error fetching AI properties:', error);
+    //console.error('Error fetching AI properties:', error);
     return [];
   }
 };

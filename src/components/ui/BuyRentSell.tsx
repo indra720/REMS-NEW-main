@@ -47,6 +47,10 @@ const BuyRentSell = () => {
   const buyProperties = properties.filter(
     (property: any) => property.category === "Sale"
   );
+
+  if (buyProperties.length === 2) {
+    buyProperties.push(buyProperties[0]);
+  }
   const rentProperties = properties.filter(
     (property: any) => property.category === "Rent"
   );
@@ -77,7 +81,7 @@ const BuyRentSell = () => {
 
   const renderPropertyGrid = (properties: any[]) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {properties.slice(0, 3).map((property, index) => (
+      {properties.slice(0,3).map((property, index) => (
         <Card
           key={property.id}
           className="group hover:shadow-elegant transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-gradient-to-br from-background to-secondary/20 border border-border/50 animate-fade-in"
@@ -148,8 +152,8 @@ const BuyRentSell = () => {
               {property.title}
             </h3>
 
-            <div className="flex items-center justify-between text-muted-foreground mb-4">
-              <span className="text-sm flex justify-center items-center">
+            <div className="flex items-center justify-between text-muted-foreground mb-4 gap-2">
+              <span className="text-sm flex justify-center items-center ">
                 <MapPin className="w-4 h-4 mr-2  text-purple-500" />
                 {property.location}
               </span>
@@ -216,7 +220,7 @@ const BuyRentSell = () => {
               </Button>
               <Button
                 size="sm"
-                className="bg-gradient-hero bg-purple-400 hover:bg-purple-600 text-white border-0"
+                className="bg-gradient-hero bg-purple-400 hover:bg-purple-600 text-white border-0" onClick={()=>navigate("/contact")}
               >
                 Contact
               </Button>

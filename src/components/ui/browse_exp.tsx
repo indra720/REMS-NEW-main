@@ -28,99 +28,47 @@ import villaImg from '../../assets/images/villa.jpg';
 import placeholderImg from '../../assets/images/placeholder.svg';
 // This is a dummy comment to trigger re-compilation
 
+import { internationalProperties as staticInternationalProperties } from "../../lib/static-data";
+
 const Browse_exp = () => {
   const [activeTab, setActiveTab] = useState<"International" | "Domestic">(
     "Domestic"
   );
 
   const [domesticProperties, setDomesticProperties] = useState([]);
+  const [internationalProperties, setInternationalProperties] = useState([]);
 
   useEffect(() => {
-    const fetchdata = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(
+        const domesticResponse = await fetch(
           BASE_URL + "properties/top-ai-properties/"
         );
-        const data = await response.json();
-        setDomesticProperties(data);
+        const domesticData = await domesticResponse.json();
+        setDomesticProperties(Array.isArray(domesticData) ? domesticData : []);
+        setInternationalProperties(staticInternationalProperties);
       } catch (error) {
         console.error("Error fetching property data:", error);
       }
     };
 
-    fetchdata();
+    fetchData();
   }, []);
-
-
-  const browseCategories = [
-    {
-      id: 101,
-      title: "Darjeeling",
-      slug: "darjeeling",
-      images: [{ image: darjeeling7Img }],
-      location: "Darjeeling, India",
-      price: "120000",
-      description: "A beautiful place in the mountains.",
-      category: "Sale",
-      bedrooms: 2,
-      bathrooms: 1,
-      area_sqft: "1,100",
-    },
-    {
-      id: 102,
-      title: "Gulmarg",
-      slug: "gulmarg",
-      images: [{ image: gulmarg8Img }],
-      location: "Gulmarg, India",
-      price: "150000",
-      description: "A paradise for skiing.",
-      category: "Sale",
-      bedrooms: 4,
-      bathrooms: 5,
-      area_sqft: "4,500",
-    },
-    {
-      id: 103,
-      title: "Honeymoon",
-      slug: "honeymoon",
-      images: [{ image: honeymoonImg }],
-      location: "Manali, India",
-      price: "78500",
-      description: "A romantic getaway.",
-      category: "Sale",
-      bedrooms: 5,
-      bathrooms: 4,
-      area_sqft: "3,800",
-    },
-    {
-      id: 104,
-      title: "Mussoorie",
-      slug: "mussoorie",
-      images: [{ image: mussoorieImg }],
-      location: "Mussoorie, India",
-      price: "95000",
-      description: "The queen of hills.",
-      category: "Sale",
-      bedrooms: 3,
-      bathrooms: 2,
-      area_sqft: "2,200",
-    },
-  ];
 
   const propertydata = activeTab === 'Domestic' ? domesticProperties : internationalProperties;
 
-  const formatPrice = (price) => {
+  const formatPrice = (price, currency = "₹") => {
     const num = parseFloat(price);
     if (isNaN(num)) {
       return price;
     }
     if (num >= 10000000) {
-      return `${(num / 10000000).toFixed(2)} Cr`;
+      return `${currency} ${(num / 10000000).toFixed(2)} Cr`;
     }
     if (num >= 100000) {
-      return `${(num / 100000).toFixed(2)} Lac`;
+      return `${currency} ${(num / 100000).toFixed(2)} Lac`;
     }
-    return num.toLocaleString('en-IN');
+    return `${currency} ${num.toLocaleString("en-IN")}`;
   };
 
   return (
@@ -156,7 +104,7 @@ const Browse_exp = () => {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left: Experiences grid (always show 4 boxes as before) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-1">
-            {propertydata.slice(0,4).map((property) => (
+            {Array.isArray(propertydata) && propertydata.slice(0,4).map((property) => (
               <div
                 key={property.id}
                 className="relative rounded-xl overflow-hidden shadow h-64 flex items-end"
@@ -175,8 +123,7 @@ const Browse_exp = () => {
                     <div className="text-base sm:text-lg text-white mt-1 transition-all duration-200 flex items-center">
                       {property.description}
                       <span className="font-bold transition-all duration-200 ml-1 flex items-center">
-                        <IndianRupee className="h-4 w-4 sm:h-5 sm:w-5 mr-1" />{" "}
-                        {formatPrice(property.price)}
+                        {formatPrice(property.price, activeTab === "Domestic" ? "₹" : "$")}
                       </span>
                     </div>
                   )}
@@ -191,7 +138,7 @@ const Browse_exp = () => {
                 STARTS FROM
               </span>
             </div>
-            {propertydata.map((property) => (
+            {Array.isArray(propertydata) && propertydata.map((property) => (
               <div
                 key={property.id}
                 className="py-3 border-b last:border-b-0"
@@ -212,7 +159,7 @@ const Browse_exp = () => {
                       {/* Price for mobile view, below name */}
                       <div className="md:hidden mt-1">
                         <span className="bg-gray-100 rounded-full px-2 py-1 text-gray-600 font-semibold text-xs transition-all duration-200 flex items-center w-fit">
-                          <IndianRupee className="h-3 w-3 mr-1" /> {formatPrice(property.price)}
+                          {formatPrice(property.price, activeTab === "Domestic" ? "₹" : "$")}
                         </span>
                       </div>
                       {/* Places for desktop view */}
@@ -225,7 +172,7 @@ const Browse_exp = () => {
                   {/* Price for desktop view */}
                   <div className="hidden md:block flex-shrink-0">
                     <span className="bg-gray-100 rounded-full px-3 py-2 text-gray-700 font-semibold text-base transition-all duration-200 flex items-center">
-                      <IndianRupee className="h-4 w-4 mr-1" /> {formatPrice(property.price)}
+                      {formatPrice(property.price, activeTab === "Domestic" ? "₹" : "$")}
                     </span>
                   </div>
                 </div>

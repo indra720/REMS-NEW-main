@@ -269,7 +269,7 @@ const AddProperty = () => {
       }, 1500);
 
     } catch (error: any) {
-      console.error("Error creating property:", error);
+      //console.error("Error creating property:", error);
       if (error.response) {
         // console.error("Error response:", error.response.data);
         // toast.error(

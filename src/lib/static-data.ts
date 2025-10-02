@@ -1,0 +1,73 @@
+import ladhakImg from '../assets/images/ladhak.jpg';
+import mussoorieImg from '../assets/images/mussoorie.jpg';
+import darjeeling7Img from '../assets/images/darjeeling7.jpg';
+import munnar2Img from '../assets/images/munnar2.jpg';
+import beachImg from '../assets/images/beach.jpg';
+
+export const internationalProperties = [
+  {
+    id: 201,
+    title: "Ladakh",
+    slug: "ladakh",
+    images: [{ image: ladhakImg }],
+    location: "Ladakh, India",
+    price: "500000",
+    description: "A beautiful place in the mountains.",
+    category: "Sale",
+    bedrooms: 2,
+    bathrooms: 1,
+    area_sqft: "1,200",
+  },
+  {
+    id: 202,
+    title: "Mussoorie",
+    slug: "mussoorie",
+    images: [{ image: mussoorieImg }],
+    location: "Mussoorie, India",
+    price: "1200000",
+    description: "The queen of hills.",
+    category: "Sale",
+    bedrooms: 3,
+    bathrooms: 2,
+    area_sqft: "2,500",
+  },
+  {
+    id: 203,
+    title: "Darjeeling",
+    slug: "darjeeling",
+    images: [{ image: darjeeling7Img }],
+    location: "Darjeeling, India",
+    price: "800000",
+    description: "A beautiful place in the mountains.",
+    category: "Sale",
+    bedrooms: 4,
+    bathrooms: 3,
+    area_sqft: "3,000",
+  },
+  {
+    id: 204,
+    title: "Munnar",
+    slug: "munnar",
+    images: [{ image: munnar2Img }],
+    location: "Munnar, India",
+    price: "600000",
+    description: "A beautiful place in the mountains.",
+    category: "Sale",
+    bedrooms: 2,
+    bathrooms: 1,
+    area_sqft: "1,000",
+  },
+  {
+    id: 205,
+    title: "Beach",
+    slug: "beach",
+    images: [{ image: beachImg }],
+    location: "Goa, India",
+    price: "1000000",
+    description: "A beautiful place by the sea.",
+    category: "Sale",
+    bedrooms: 3,
+    bathrooms: 2,
+    area_sqft: "2,000",
+  },
+];

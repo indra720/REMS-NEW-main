@@ -196,6 +196,7 @@ const PostProperty = () => {
       "ownerName",
       "phone",
       "email",
+      "possession_date",
     ];
     const missing = required.filter(
       (field) => !formData[field as keyof typeof formData]
@@ -247,16 +248,14 @@ const PostProperty = () => {
       property_type: formData.propertyType
         ? parseInt(formData.propertyType, 10)
         : null,
-      age_of_property: formData.age_of_property
-        ? parseInt(formData.age_of_property, 10)
-        : null,
+      age_of_property: formData.age_of_property || "",
       availability_status: formData.availability_status,
-      balconies: formData.balconies,
+      balconies: formData.balconies ? parseInt(formData.balconies, 10) : null,
       floor_no: formData.floor_no ? parseInt(formData.floor_no, 10) : null,
       furnishing: formData.furnishing,
       latitude: formData.latitude ? parseFloat(formData.latitude) : null,
       longitude: formData.longitude ? parseFloat(formData.longitude) : null,
-      maintenance_cost: formData.maintenance_cost,
+      maintenance_cost: formData.maintenance_cost ? parseFloat(formData.maintenance_cost) : null,
       ownership_type: formData.ownership_type,
       possession_date: formData.possession_date || null,
       price_per_sqft: formData.price_per_sqft,
@@ -306,6 +305,7 @@ const PostProperty = () => {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: false,
         }
       );
 
@@ -349,7 +349,7 @@ const PostProperty = () => {
       setUploadedImages([]);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // console.error("API Error:", error.response?.data || error.message);
+        console.error("API Error:", error.response?.data || error.message);
         // toast({
         //   title: "Error",
         //   description: `Failed to post property: ${
@@ -359,7 +359,7 @@ const PostProperty = () => {
         //   variant: "destructive",
         // });
       } else {
-        // console.error("Unexpected Error:", error);
+        console.error("Unexpected Error:", error);
         // toast({
         //   title: "Error",
         //   description: "An unexpected error occurred.",
@@ -843,7 +843,7 @@ const PostProperty = () => {
                       id="address"
                       value={formData.address}
                       onChange={handleInputChange}
-                      placeholder="Enter complete address with landmarks"
+                      placeholder="Enter complete address with landmarks (e.g., House No, Street, Landmark, Area, City, State, Country, Pincode)"
                       className="min-h-[100px]"
                     />
                   </div>

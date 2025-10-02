@@ -1,6 +1,6 @@
 import { BASE_URL } from "@/lib/constants";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "react-toastify";
 import { showSuccessToast, showErrorToast, showInfoToast } from "@/utils/toast";
+import { jwtDecode } from "jwt-decode";
 import { 
   Calendar as CalendarIcon, 
   Clock, 
@@ -30,6 +31,7 @@ import {
 
 const BookVisit = () => {
   const navigate = useNavigate();
+  const { propertyId } = useParams();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState("");
   const [visitType, setVisitType] = useState("");
@@ -51,18 +53,12 @@ const BookVisit = () => {
     const token = localStorage.getItem("access_token");
     
     if (!token) {
-      toast({
-        title: "Authentication Error",
-        description: "Please log in to book a visit",
-        variant: "destructive"
-      });
+      showErrorToast("Please log in to book a visit");
       return false;
     }
 
-    console.log("=== DEBUG INFO ===");
-    console.log("Sending preferred_time:", visitData.preferred_time);
-    console.log("Current time:", new Date().toISOString());
-    console.log("Time difference (minutes):", (new Date(visitData.preferred_time).getTime() - new Date().getTime()) / (1000 * 60));
+    console.log("=== SENDING DATA ===");
+    console.log("Visit Data:", visitData);
     console.log("===================");
 
     try {
@@ -82,63 +78,70 @@ const BookVisit = () => {
         return true;
       } else {
         const errorData = await response.json();
-        console.error("API Error Details:", errorData);
-        console.error("Response Status:", response.status);
+        console.error("=== API ERROR ===");
+        console.error("Status:", response.status);
+        console.error("Error Data:", errorData);
+        console.error("================");
         
-        // Show specific error message if available
+        // Show specific error message
         let errorMessage = "Failed to book visit. Please try again.";
-        if (errorData.preferred_time && Array.isArray(errorData.preferred_time)) {
-          errorMessage = `Time Error: ${errorData.preferred_time.join(', ')}`;
-        } else if (errorData.property && Array.isArray(errorData.property)) {
+        if (errorData.property && Array.isArray(errorData.property)) {
           errorMessage = `Property Error: ${errorData.property.join(', ')}`;
+        } else if (errorData.user && Array.isArray(errorData.user)) {
+          errorMessage = `User Error: ${errorData.user.join(', ')}`;
+        } else if (errorData.preferred_time && Array.isArray(errorData.preferred_time)) {
+          errorMessage = `Time Error: ${errorData.preferred_time.join(', ')}`;
+        } else if (errorData.detail) {
+          errorMessage = errorData.detail;
         }
         
-        toast({
-          title: "Booking Failed",
-          description: errorMessage,
-          variant: "destructive"
-        });
+        showErrorToast(errorMessage);
         return false;
       }
     } catch (error) {
       console.error("Network Error:", error);
-      toast({
-        title: "Network Error",
-        description: "Unable to connect to server. Please try again.",
-        variant: "destructive"
-      });
+      showErrorToast("Unable to connect to server. Please try again.");
       return false;
     }
   };
 
-  // Get current user ID
-  const getCurrentUserId = () => {
-    const userStr = localStorage.getItem("user");
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        return user.id || user.user_id || 1;
-      } catch (e) {
-        return 1;
+  // Get current user ID from API
+  const getCurrentUserId = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) return null;
+
+      const response = await fetch(`${BASE_URL}auth/user/`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        console.log("User data from API:", userData);
+        return userData.pk || userData.id || userData.user_id;
+      } else {
+        console.error("Failed to fetch user data:", response.status);
       }
+    } catch (error) {
+      console.error("Error fetching user ID:", error);
     }
-    return 1;
+    return null;
   };
 
   const handleCall = (phoneNumber: string) => {
     window.location.href = `tel:${phoneNumber}`;
-    toast({
-      title: "Initiating Call",
-      description: `Calling ${phoneNumber}...`,
-    });
+    // toast({
+    //   title: "Initiating Call",
+    //   description: `Calling ${phoneNumber}...`,
+    // });
   };
 
   const handleSelectAgent = (agentId: number) => {
     setSelectedAgent(agentId);
-    toast({
-      title: "Agent Selected",
-      description: "Great choice! This agent will guide your visit.",
-    });
+    // toast({
+    //   title: "Agent Selected",
+    //   description: "Great choice! This agent will guide your visit.",
+    // });
   };
 
   const createFutureDateTime = (date: Date, timeString: string) => {
@@ -165,75 +168,86 @@ const BookVisit = () => {
     if (timeDiff <= 0) {
       // If time is in past or too close, add 30 minutes buffer
       appointmentDateTime.setMinutes(appointmentDateTime.getMinutes() + 30);
-      console.log("Added buffer time - new appointment time:", appointmentDateTime.toISOString());
+      //console.log("Added buffer time - new appointment time:", appointmentDateTime.toISOString());
     }
 
     return appointmentDateTime;
   };
 
   const handleBookingConfirm = async () => {
+    // Get property ID from the correct API endpoint
+    let finalPropertyId = null;
+    
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch(`${BASE_URL}properties/`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        // Handle different response formats
+        let properties = data;
+        if (data.results) properties = data.results;
+        
+        if (Array.isArray(properties) && properties.length > 0) {
+          finalPropertyId = properties[0].id;
+          console.log("Found property ID:", finalPropertyId);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching properties:", error);
+    }
+
+    if (!finalPropertyId) {
+      showErrorToast("No properties available. Please add a property first.");
+      return;
+    }
+
     // Validation
     if (!formData.name || !formData.phone || !formData.email) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive"
-      });
+      showErrorToast("Please fill in all required fields (Name, Phone, Email)");
       return;
     }
 
-    if (!selectedDate || !selectedTime || !selectedAgent) {
-      toast({
-        title: "Incomplete Booking",
-        description: "Please select date, time, and agent.",
-        variant: "destructive"
-      });
+    if (!selectedDate || !selectedTime) {
+      showErrorToast("Please select date and time");
       return;
     }
 
-    if (typeof selectedAgent !== 'number' || selectedAgent <= 0) {
-      toast({
-        title: "Invalid Agent",
-        description: "Please select a valid agent.",
-        variant: "destructive"
-      });
+    if (!selectedAgent) {
+      showErrorToast("Please select an agent");
+      return;
+    }
+
+    const currentUserId = await getCurrentUserId();
+    if (!currentUserId) {
+      showErrorToast("Please log in to book a visit");
+      navigate("/login");
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      // Create proper future datetime
       const appointmentDateTime = createFutureDateTime(selectedDate, selectedTime);
 
       const visitData = {
-        user: getCurrentUserId(),
-        property: 1,
+        user: currentUserId,
+        property: finalPropertyId,
         preferred_time: appointmentDateTime.toISOString(),
-        agent: selectedAgent,
       };
 
       console.log("Final visit data:", visitData);
-
       const success = await bookVisit(visitData);
       
       if (success) {
-        toast({
-          title: "Visit Booked Successfully!",
-          description: "You'll receive a confirmation email shortly.",
-        });
-
+        showSuccessToast("Visit booked successfully! You'll receive a confirmation email shortly.");
         setTimeout(() => {
           navigate('/dashboard');
         }, 2000);
       }
     } catch (error) {
-      console.error("Booking error:", error);
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive"
-      });
+      showErrorToast("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

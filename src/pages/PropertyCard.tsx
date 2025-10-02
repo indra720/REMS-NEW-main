@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import Brochure from '../components/Brochure';
 import { useNavigate } from "react-router-dom";
 // import { toast } from 'react-toastify';
 
@@ -67,37 +69,40 @@ const amenityIcons: { [key: string]: any } = {
   Camera: Camera,
 };
 
-export function PropertyCard({
-  id,
-  slug,
-  image,
-  images = [], // Add images prop
-  title,
-  builder,
-  location,
-  bhkOptions = [],
-  description,
-  badges = [],
-  ribbon,
-  bedrooms,
-  bathrooms,
-  amenities = [],
-  isWishlisted = false,
-  onWishlistToggle,
-  isProfileView = false,
-  price,
-  area,
-  views,
-  rating,
-  tags = [],
-  featured = false,
-  layout = 'list', // Default to list view
-  // New props
-  category,
-  property_status,
-  listed_on,
-  created_at,
-}: PropertyCardProps) {
+export function PropertyCard(props: PropertyCardProps) {
+  const { 
+    id,
+    slug,
+    image,
+    images = [],
+    title,
+    builder,
+    location,
+    bhkOptions = [],
+    description,
+    badges = [],
+    ribbon,
+    bedrooms,
+    bathrooms,
+    amenities = [],
+    isWishlisted = false,
+    onWishlistToggle,
+    isProfileView = false,
+    price,
+    area,
+    views,
+    rating,
+    tags = [],
+    featured = false,
+    layout = 'list',
+    category,
+    property_status,
+    listed_on,
+    created_at,
+  } = props;
+
+  const property = props;
+
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -111,7 +116,7 @@ export function PropertyCard({
   const currentImage = displayImages[currentImageIndex];
 
   const handleContactOwner = (propertyId: string) => {
-    // toast.info("Connecting to Owner: Opening contact options...");
+    navigate("/contact");
   };
 
   const handleViewDetails = () => { 
@@ -420,16 +425,20 @@ export function PropertyCard({
                 </Button>
                 <Button
                   className="text-[#7f23cf] bg-transparent border hover:bg-purple-600 hover:text-white font-medium text-xs"
-                  onClick={() => handleContactOwner(id)}
+                  onClick={() => navigate(`/book-visit/${id}`)}
                 >
-                  Contact Owner
+                  Book Visit
                 </Button>
-                <Button
-                  variant="secondary"
-                  className="bg-secondary hover:bg-secondary/80 font-medium text-xs"
-                >
-                  Brochure
-                </Button>
+                <PDFDownloadLink document={<Brochure property={property} />} fileName={`${property.slug}-brochure.pdf`}>
+                  {({ blob, url, loading, error }) =>
+                    loading ? 'Loading document...' : <Button
+                      variant="secondary"
+                      className="bg-secondary hover:bg-secondary/80 font-medium text-xs"
+                    >
+                      Brochure
+                    </Button>
+                  }
+                </PDFDownloadLink>
               </div>
             )}
           </div>

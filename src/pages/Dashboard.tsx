@@ -116,12 +116,12 @@ const Dashboard = () => {
       if (response.ok) {
         const data = await response.json();
         setVisits(data);
-        console.log("Visits fetched:", data);
+        ////console.log("Visits fetched:", data);
       } else {
-        console.error("Failed to fetch visits:", response.status);
+        ////console.error("Failed to fetch visits:", response.status);
       }
     } catch (error) {
-      console.error("Error fetching visits:", error);
+      ////console.error("Error fetching visits:", error);
     } finally {
       setLoading(false);
     }
@@ -145,12 +145,12 @@ const Dashboard = () => {
       if (response.ok) {
         const data = await response.json();
         setProblemReports(data.results || data || []);
-        console.log("Problem reports fetched:", data);
+        ////console.log("Problem reports fetched:", data);
       } else {
-        console.error("Failed to fetch problem reports:", response.status);
+        ////console.error("Failed to fetch problem reports:", response.status);
       }
     } catch (error) {
-      console.error("Error fetching problem reports:", error);
+      ////console.error("Error fetching problem reports:", error);
     }
   };
 
@@ -162,24 +162,36 @@ const Dashboard = () => {
   // Edit visit function
   const handleEditVisit = async (visit) => {
     setEditMode(true);
+    const now = new Date();
+    const visitTime = new Date(visit.preferred_time);
+    let newPreferredTime = visit.preferred_time.slice(0, 16);
+
+    if (visitTime < now) {
+      // If the visit time is in the past, set it to current time + 1 hour
+      now.setHours(now.getHours() + 1);
+      newPreferredTime = now.toISOString().slice(0, 16);
+    }
+
     setEditFormData({
-      preferred_time: visit.preferred_time.slice(0, 16), // Format for datetime-local input
+      preferred_time: newPreferredTime, // Format for datetime-local input
       status: visit.status,
       property: visit.property.toString(),
     });
-    console.log("Editing visit:", visit);
+    ////console.log("Editing visit:", visit);
   };
 
   // Save edited visit
-  const handleSaveEdit = async (visit) => {
+  const handleSaveEdit = async () => {
+    //console.log("handleSaveEdit called with selectedVisit:", selectedVisit);
     const token = localStorage.getItem("access_token");
 
     if (!token) {
-      // toast({
-      //   title: "Authentication Error",
-      //   description: "Please log in to save changes",
-      //   variant: "destructive",
-      // });
+      //console.log("No token found.");
+      return;
+    }
+
+    if (!selectedVisit) {
+      //console.error("No visit selected for editing.");
       return;
     }
 
@@ -187,12 +199,13 @@ const Dashboard = () => {
       const updateData = {
         preferred_time: editFormData.preferred_time,
         status: editFormData.status,
-        user: visit.user,
+        user: selectedVisit.user,
         property: parseInt(editFormData.property),
       };
+      //console.log("Sending updateData:", updateData);
 
        const response = await fetch(
-        `${BASE_URL}visits/${visit.slug}/`,
+        `${BASE_URL}visits/${selectedVisit.slug}/`,
         {
           method: "PUT",
           headers: {
@@ -202,8 +215,10 @@ const Dashboard = () => {
           body: JSON.stringify(updateData),
         }
       );
+      //console.log("API Response:", response);
 
       if (response.ok) {
+        //console.log("Visit updated successfully.");
         // toast({
         //   title: "Visit Updated",
         //   description: "Visit has been successfully updated.",
@@ -212,10 +227,10 @@ const Dashboard = () => {
         setEditMode(false);
 
         fetchUserVisits(); // Refresh list
-        setVisits(visits.map(v => v.slug === visit.slug ? {...v, ...updateData} : v));
+        setVisits(visits.map(v => v.slug === selectedVisit.slug ? {...v, ...updateData} : v));
       } else {
         const errorData = await response.json();
-        console.error("Update Error:", errorData);
+        //console.error("Update Error:", errorData);
         // toast({
         //   title: "Update Failed",
         //   description: "Failed to update visit. Please try again.",
@@ -223,7 +238,7 @@ const Dashboard = () => {
         // });
       }
     } catch (error) {
-      // console.error("Network Error:", error);
+      //console.error("Network Error:", error);
       // toast({
       //   title: "Network Error",
       //   description: "Unable to connect to server. Please try again.",
@@ -283,7 +298,7 @@ const Dashboard = () => {
 
       } else {
         const errorData = await response.json();
-        console.error("Delete Error:", errorData);
+        ////console.error("Delete Error:", errorData);
         // toast({
         //   title: "Delete Failed",
         //   description: "Failed to delete visit. Please try again.",
@@ -291,7 +306,7 @@ const Dashboard = () => {
         // });
       }
     } catch (error) {
-      console.error("Network Error:", error);
+      ////console.error("Network Error:", error);
       // toast({
       //   title: "Network Error",
       //   description: "Unable to connect to server. Please try again.",
@@ -366,7 +381,7 @@ const Dashboard = () => {
       if (response.ok) {
         const notice = await response.json();
         setnoticeData(notice);
-        console.log(notice);
+        ////console.log(notice);
         // toast({
         //   title: "Success",
         //   description: "Legal notice data fetched successfully",
@@ -378,7 +393,7 @@ const Dashboard = () => {
         // });
       }
     } catch (error) {
-      console.log(error);
+      ////console.log(error);
       // toast({
       //   title: "Error",
       //   description:
@@ -426,17 +441,37 @@ const Dashboard = () => {
 
   const handlenoticeEditSubmit = async (e, slug: string) => {
     e.preventDefault();
+    // //console.log("🔄 Starting notice edit...");
+    // //console.log("📝 Edit data:", noticeEdit);
+    // //console.log("🆔 Using slug:", slug);
+    
     try {
       const formData = new FormData();
-      formData.append("notice_id", noticeEdit.notice_id);
-      formData.append("response_type", noticeEdit.response_type);
-      formData.append("response_details", noticeEdit.response_details);
+      formData.append("notice_id", noticeEdit.notice_id || "");
+      formData.append("response_type", noticeEdit.response_type || "");
+      formData.append("response_details", noticeEdit.response_details || "");
 
       if (noticeEdit.status) {
         formData.append("status", noticeEdit.status);
       }
-      if (noticeEdit.supporting_document) {
+      
+      // Only append file if it's a new File object, not existing URL
+      if (noticeEdit.supporting_document && noticeEdit.supporting_document instanceof File) {
         formData.append("supporting_document", noticeEdit.supporting_document);
+        //console.log("📎 New file attached:", noticeEdit.supporting_document.name);
+      } else if (typeof noticeEdit.supporting_document === 'string') {
+        //console.log("📎 Keeping existing file:", noticeEdit.supporting_document);
+        // Don't append existing file URL - backend will keep it
+      }
+
+      // Add user field if available
+      if (noticeEdit.user) {
+        formData.append("user", noticeEdit.user);
+      }
+
+      //console.log("📤 Sending FormData:");
+      for (let [key, value] of formData.entries()) {
+        //console.log(`  ${key}:`, value);
       }
 
       const token = localStorage.getItem("access_token");
@@ -451,11 +486,16 @@ const Dashboard = () => {
         }
       );
 
+      //console.log("📡 Response status:", response.status);
+
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Backend error response:", errorData);
+        //console.error("❌ Backend error response:", errorData);
         throw new Error("Failed to update notice");
       }
+
+      const updatedNotice = await response.json();
+      //console.log("✅ Notice updated successfully:", updatedNotice);
 
       // toast({
       //   title: "Notice updated successfully",
@@ -473,7 +513,7 @@ const Dashboard = () => {
 
       fetchnoticeData();
     } catch (error) {
-      console.error("Error updating notice:", error);
+      ////console.error("Error updating notice:", error);
       // toast({
       //   title: "Error updating notice",
       //   description:
@@ -501,10 +541,10 @@ const Dashboard = () => {
       if (response.ok) {
         setnoticeData((prev) => prev.filter((notice) => notice.slug !== slug));
         setnoticeOpen(false);
-        toast({
-          title: "Success",
-          description: "notice data deleted successfully",
-        });
+        // toast({
+        //   title: "Success",
+        //   description: "notice data deleted successfully",
+        // });
       } else {
         // toast({
         //   title: "Error",
@@ -512,7 +552,7 @@ const Dashboard = () => {
         // });
       }
     } catch (error) {
-      console.log(error);
+      ////console.log(error);
       // toast({
       //   title: "Error",
       //   description: "Failed to delete notice data because of method is wrong",
@@ -581,7 +621,8 @@ const Dashboard = () => {
                   visits.slice(0, 4).map((visit, index) => (
                     <Dialog key={visit.id}>
                       <DialogTrigger asChild>
-                        <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                        <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                             onClick={() => setSelectedVisit(visit)}>
                           <div className="bg-purple-100 p-2 rounded-full">
                             <Calendar className="h-4 w-4 text-purple-600" />
                           </div>
@@ -731,7 +772,7 @@ const Dashboard = () => {
                               <div className="flex gap-3 pt-4 border-t">
                                 <Button
                                   className="flex-1 bg-purple-600 text-white hover:bg-purple-700"
-                                  onClick={() => handleSaveEdit(visit)}
+                                  onClick={handleSaveEdit}
                                 >
                                   <Save className="h-4 w-4 mr-2" />
                                   Save Changes
@@ -1317,49 +1358,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Quick Filters for PropertySearch */}
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex flex-wrap gap-3 items-center">
-          <span className="text-sm font-medium text-muted-foreground">
-            Quick Filters:
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setFilterState({ ...filterState, sortBy: "price-low" })
-            }
-          >
-            Price: Low to High
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setFilterState({ ...filterState, sortBy: "price-high" })
-            }
-          >
-            Price: High to Low
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setFilterState({ ...filterState, sortBy: "newest" })}
-          >
-            Newest First
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setFilterState({ ...filterState, sortBy: "relevance" })
-            }
-          >
-            Relevance
-          </Button>
-        </div>
-      </div>
-
+      
       <PropertySearch
         onFilterChange={setFilterState}
       />

@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Info, Building, MapPin, IndianRupee, CheckCircle } from "lucide-react";
 import { toast } from "react-toastify";
-import { useState, useEffect } from "react";
 import { BASE_URL } from "../../lib/constants";
-import imageshow from "../../assets/images/delhi.jpg";
+
+import { useSearch } from "../../context/SearchContext"; // Import useSearch
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 interface Property {
   id: number;
@@ -16,48 +17,14 @@ interface Property {
   price: number | string;
   property_status: string;
   rera_approved: boolean;
+  listed_on: string;
+  images?: Array<{ image: string; }>;
 }
 
 const PropertiesList = () => {
-  const [loading, setLoading] = useState(true);
-  const [properties, setProperties] = useState<Property[]>([]);
-
-  const fetchProperties = async () => {
-    const token = localStorage.getItem("access_token");
-    try {
-                const response = await fetch(`${BASE_URL}properties/all`);
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setProperties(data.results || data || []);
-        // console.log(data);
-      } else {
-        // console.error("Failed to fetch properties:", response.status);
-        // toast({
-        //   title: "Error",
-        //   description: "Failed to fetch properties.",
-        //   variant: "destructive",
-        // });
-      }
-    } catch (error) {
-      // console.error("Error fetching properties:", error);
-      // toast({
-      //   title: "Error",
-      //   description: "An error occurred while fetching properties.",
-      //   variant: "destructive",
-      // });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProperties();
-  }, []);
+  const navigate = useNavigate()
+  const { searchResults: properties, loading, error } = useSearch(); // Use searchResults from context
+  // console.log("PropertiesList: properties from useSearch", properties);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -116,17 +83,17 @@ const PropertiesList = () => {
           </div>
         ) : properties.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
-            {properties.map((property: Property) => (
+            {properties.filter(property => property.images && property.images.length > 0).slice(0, 6).map((property: Property) => (
               <div
                 key={property.id}
                 className="group p-3 sm:p-6 rounded-xl border border-gray-200 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg hover:scale-[1.01] hover:border-blue-200"
               >
                 {/* Mobile Layout */}
                 <div className="block sm:hidden">
-                  <div className="flex items-start gap-3 mb-3">
+                  <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="relative flex-shrink-0">
                       <img
-                        src={imageshow}
+                        src={property.images && property.images.length > 0 ? property.images[0].image : '/placeholder.svg'}
                         alt={property.title}
                         className="w-16 h-16 object-cover rounded-lg border-2 border-gray-200 group-hover:border-blue-300 transition-colors duration-300 shadow-sm"
                       />
@@ -190,10 +157,10 @@ const PropertiesList = () => {
                   </div>
                 </div>
                 {/* Desktop Layout */}
-                <div className="hidden sm:flex items-start gap-5">
+                <div className="hidden sm:flex items-start justify-between gap-5">
                   <div className="relative flex-shrink-0">
                     <img
-                      src={imageshow}
+                      src={property.images && property.images.length > 0 ? property.images[0].image : '/placeholder.svg'}
                       alt={property.title}
                       className="w-20 h-20 object-cover rounded-xl border-2 border-gray-200 group-hover:border-blue-300 transition-colors duration-300 shadow-sm"
                     />
@@ -277,12 +244,17 @@ const PropertiesList = () => {
               <Building className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400" />{" "}
             </div>{" "}
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-              No Properties Found
+              No properties found for your search criteria.
             </h3>{" "}
-            <p className="text-gray-600 text-sm sm:text-base">
-              {" "}
-              There are currently no properties available to display.{" "}
-            </p>{" "}
+            <p className="text-gray-600 text-sm sm:text-base mb-4">
+              Try different filters.
+            </p>
+            <button
+              onClick={() => navigate("/")}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300"
+            >
+              Clear Filters
+            </button>
           </div>
         )}
       </CardContent>

@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { showSuccessToast, showErrorToast } from "@/utils/toast";
 import { MapPin, Phone, Mail, Clock, MessageSquare, Headphones } from "lucide-react";
 import Header from "@/components/Header";
-import { LOCAL_BASE_URL } from "../lib/constants";
+import { BASE_URL } from "../lib/constants";
 import Footer from "@/components/Footer";
 
 const ContactUs = () => {
@@ -23,11 +23,11 @@ const ContactUs = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email) {
-      toast({
-        title: "Required Fields Missing",
-        description: "Please fill in all required fields.",
-        variant: "destructive"
-      });
+      // toast({
+      //   title: "Required Fields Missing",
+      //   description: "Please fill in all required fields.",
+      //   variant: "destructive"
+      // });
       return;
     }
     
@@ -39,10 +39,10 @@ const ContactUs = () => {
         status: 'New'
       };
 
-      console.log('Sending contact data:', contactData);
+      //console.log('Sending contact data:', contactData);
 
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`${LOCAL_BASE_URL}leads/`, {
+      const response = await fetch(`${BASE_URL}leads/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,13 +52,13 @@ const ContactUs = () => {
       });
 
       const result = await response.json();
-      console.log('API Response:', result);
+      //console.log('API Response:', result);
 
       if (response.ok) {
-        toast({
-          title: "Message Sent Successfully",
-          description: "We'll get back to you within 24 hours.",
-        });
+        // toast({
+        //   title: "Message Sent Successfully",
+        //   description: "We'll get back to you within 24 hours.",
+        // });
         
         setFormData({
           name: '',
@@ -71,35 +71,35 @@ const ContactUs = () => {
         throw new Error(result.message || 'Failed to send message');
       }
     } catch (error) {
-      console.error('Error sending message:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive"
-      });
+      //console.error('Error sending message:', error);
+      // toast({
+      //   title: "Error",
+      //   description: "Failed to send message. Please try again.",
+      //   variant: "destructive"
+      // });
     }
   };
 
   const handleCall = (phoneNumber: string) => {
     window.location.href = `tel:${phoneNumber}`;
-    toast({
-      title: "Initiating Call",
-      description: `Calling ${phoneNumber}...`,
-    });
+    // toast({
+    //   title: "Initiating Call",
+    //   description: `Calling ${phoneNumber}...`,
+    // });
   };
 
   const handleLiveChat = () => {
-    toast({
-      title: "Starting Live Chat",
-      description: "Connecting you to our support team...",
-    });
+    // toast({
+    //   title: "Starting Live Chat",
+    //   description: "Connecting you to our support team...",
+    // });
   };
 
   const handleScheduleCall = () => {
-    toast({
-      title: "Schedule Call",
-      description: "Redirecting to booking calendar...",
-    });
+    // toast({
+    //   title: "Schedule Call",
+    //   description: "Redirecting to booking calendar...",
+    // });
   };
 
   const contactInfo = [

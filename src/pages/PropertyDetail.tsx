@@ -141,6 +141,7 @@ const PropertyDetail = () => {
   const { slug } = useParams();
   const location = useLocation();
   const videoUrl = location.state?.videoUrl;
+  const staticPropertyData = location.state?.propertyData; // Get static data
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
@@ -156,6 +157,15 @@ const PropertyDetail = () => {
         setLoading(false);
         return;
       }
+
+      // If static data is available, use it instead of API call
+      if (staticPropertyData) {
+        console.log("✅ Using static property data:", staticPropertyData);
+        setProperty(staticPropertyData);
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       try {
         const token = localStorage.getItem("access_token");
@@ -175,10 +185,12 @@ const PropertyDetail = () => {
           // console.log("Fetched Property Data:", data);
           // console.log("Property images array:", data?.images); // Add this line
         } else {
+          console.error("❌ Property not found, no static data available");
           // toast.error("Failed to load property details.");
           //console.error("Fetch failed with status:", response.status);
         }
       } catch (error) {
+        console.error("❌ Error fetching property:", error);
         //toast.error("An error occurred while fetching property details.");
        // console.error("An error occurred during fetch:", error);
       } finally {
@@ -186,7 +198,7 @@ const PropertyDetail = () => {
       }
     };
     fetchPropertyDetails();
-  }, [slug]);
+  }, [slug, staticPropertyData]); // Add staticPropertyData to dependencies
 
   const propertyId = property?.slug;
   const [loanAmount, setLoanAmount] = useState(2000000);
@@ -1097,30 +1109,30 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
       
               {/* Top Navigation */}
-              <div className="absolute top-6 left-6 right-6 flex justify-between items-center">
+              <div className="absolute top-6 left-6 right-6 flex flex-wrap justify-between items-center gap-2">
                 <Button
                   variant="ghost"
-                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2"
                 >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Search
+                  <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Back to Search</span>
                 </Button>
                 <div className="flex gap-2">
                   <Button
                     variant="ghost"
-                    className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 p-2 sm:p-3"
                   >
                     <Heart className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="ghost"
-                    className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 p-2 sm:p-3"
                   >
                     <Share2 className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="ghost"
-                    className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 p-2 sm:p-3"
                   >
                     <Bookmark className="h-4 w-4" />
                   </Button>
@@ -1156,26 +1168,26 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
                 </>
               )}
       
-              <div className="absolute bottom-6 left-6 flex gap-3">
+              <div className="absolute bottom-6 left-6 flex flex-wrap gap-2 sm:gap-3">
                 <Button
                   variant="ghost"
-                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2"
                 >
-                  <Camera className="h-4 w-4 mr-2" />
+                  <Camera className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   {images.length} Photos
                 </Button>
                 <Button
                   variant="ghost"
-                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2"
                 >
-                  <Video className="h-4 w-4 mr-2" />
+                  <Video className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   Virtual Tour
                 </Button>
                 <Button
                   variant="ghost"
-                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2"
                 >
-                  <Eye className="h-4 w-4 mr-2" />
+                  <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   360° View
                 </Button>
               </div>
@@ -1285,35 +1297,35 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
           <div className="lg:col-span-2 space-y-8">
             {/* Property Header */}
             <div>
-              <div className="flex justify-between items-start mb-6">
+              <div className="flex flex-col md:flex-row justify-between items-start mb-6">
                 <div>
-                  <h1 className="text-4xl font-bold mb-3">
+                  <h1 className="text-2xl md:text-4xl font-bold mb-2 md:mb-3">
                     {property?.title}
                   </h1>
-                  <p className="text-muted-foreground text-lg flex items-center mb-2">
-                    <MapPin className="h-5 w-5 mr-2" />
+                  <p className="text-muted-foreground text-base md:text-lg flex items-center mb-2">
+                    <MapPin className="h-4 w-4 md:h-5 md:w-5 mr-2" />
                     {property?.location}
                   </p>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-muted-foreground">
                     <div className="flex items-center">
-                      <Eye className="h-4 w-4 mr-1" />
+                      <Eye className="h-3 w-3 md:h-4 md:w-4 mr-1" />
                       {property?.views || 0} views
                     </div>
                     <div className="flex items-center">
-                      <Clock className="h-4 w-4 mr-1" />
+                      <Clock className="h-3 w-3 md:h-4 md:w-4 mr-1" />
                       Listed on {property?.listed_on ? new Date(property.listed_on).toLocaleDateString() : 'N/A'}
                     </div>
                     {property?.rera_approved && <div className="flex items-center">
-                      <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
+                      <CheckCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 text-green-500" />
                       Verified Property
                     </div>}
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-4xl font-bold text-purple-600">
+                <div className="text-left md:text-right mt-4 md:mt-0">
+                  <div className="text-2xl md:text-4xl font-bold text-purple-600">
                   ₹{property?.price ? parseFloat(property.price).toLocaleString('en-IN') : 'N/A'}
                   </div>
-                  <div className="text-lg text-muted-foreground">
+                  <div className="text-base md:text-lg text-muted-foreground">
                   ₹{property?.price_per_sqft ? parseFloat(property.price_per_sqft).toLocaleString('en-IN') : 'N/A'}/sq ft
                   </div>
                   {property?.ai_price_estimate && <Badge className="mt-2 bg-green-100 text-green-800">
@@ -1322,22 +1334,22 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-8 mb-6">
+              <div className="flex flex-wrap items-center gap-4 md:gap-8 mb-6">
                 <div className="flex items-center">
-                  <Bed className="h-5 w-5 mr-2 text-purple-600" />
-                  <span className="font-medium">{property?.bedrooms} Bedrooms</span>
+                  <Bed className="h-4 w-4 md:h-5 md:w-5 mr-2 text-purple-600" />
+                  <span className="text-sm md:text-base font-medium">{property?.bedrooms} Bedrooms</span>
                 </div>
                 <div className="flex items-center">
-                  <Bath className="h-5 w-5 mr-2 text-purple-600" />
-                  <span className="font-medium">{property?.bathrooms} Bathrooms</span>
+                  <Bath className="h-4 w-4 md:h-5 md:w-5 mr-2 text-purple-600" />
+                  <span className="text-sm md:text-base font-medium">{property?.bathrooms} Bathrooms</span>
                 </div>
                 <div className="flex items-center">
-                  <Square className="h-5 w-5 mr-2 text-purple-600" />
-                  <span className="font-medium">{property?.area_sqft} sq ft</span>
+                  <Square className="h-4 w-4 md:h-5 md:w-5 mr-2 text-purple-600" />
+                  <span className="text-sm md:text-base font-medium">{property?.area_sqft} sq ft</span>
                 </div>
                 <div className="flex items-center">
-                  <Star className="h-5 w-5 mr-2 fill-yellow-400 text-yellow-400" />
-                  <span className="font-medium">{property?.ai_recommended_score || 'N/A'} Rating (0 reviews)</span>
+                  <Star className="h-4 w-4 md:h-5 md:w-5 mr-2 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm md:text-base font-medium">{property?.ai_recommended_score || 'N/A'} Rating (0 reviews)</span>
                 </div>
               </div>
 
@@ -1347,7 +1359,6 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
                 <Badge variant="secondary">{property?.ownership_type}</Badge>
               </div>
             </div>
-
             <Separator />
 
             {/* Dynamic Content based on active tab */}
@@ -2028,7 +2039,7 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
                     </CardHeader>
                     <CardContent>
                       <div className="mb-6">
-                        <div className="flex items-center gap-4 mb-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
                           <div className="text-4xl font-bold">4.8</div>
                           <div>
                             <div className="flex items-center gap-1 mb-1">
@@ -2074,12 +2085,12 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
                       <div className="space-y-6">
                         {reviews.map((review, index) => (
                           <div key={index} className="border-b pb-4">
-                            <div className="flex items-start gap-4">
+                            <div className="flex flex-col sm:flex-row items-start gap-4">
                               <Avatar>
                                 <AvatarFallback>{review.avatar}</AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex flex-wrap items-center gap-2 mb-2">
                                   <h4 className="font-medium">{review.name}</h4>
                                   <div className="flex items-center gap-1">
                                     {[...Array(review.rating)].map((_, i) => (
@@ -2096,7 +2107,7 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
                                 <p className="text-sm text-muted-foreground mb-2">
                                   {review.comment}
                                 </p>
-                                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                                   <button className="flex items-center gap-1 hover:text-foreground">
                                     <ThumbsUp className="h-3 w-3" />
                                     Helpful ({review.helpful})

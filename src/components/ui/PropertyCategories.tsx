@@ -22,17 +22,31 @@ const PropertyCategories: React.FC<PropertyCategoriesProps> = ({ onCategorySelec
     const fetchStats = async () => {
       try {
         const response = await fetch(
-          `${BASE_URL}properties/categories/`
+          `${BASE_URL}properties/stats/property-type/`
         );
-        const data = await response.json();
-        setPropertyStats(data);
+        if (response.ok) {
+          const data = await response.json();
+          // console.log("API Response Data:", data);
+          if (Array.isArray(data)) {
+            setPropertyStats(data);
+          } else {
+            // console.error("API returned non-array data:", data);
+            setPropertyStats([]);
+          }
+        } else {
+          // console.error("Failed to fetch property categories:", response.status);
+          setPropertyStats([]);
+        }
       } catch (error) {
         // console.error('Error fetching property stats:', error);
+        setPropertyStats([]);
       }
     };
 
     fetchStats();
   }, []);
+
+  // console.log("Property Stats:", propertyStats);
 
   const handleCategorySelect = (category: string) => {
     const token = localStorage.getItem("access_token");
@@ -51,7 +65,7 @@ const PropertyCategories: React.FC<PropertyCategoriesProps> = ({ onCategorySelec
     },
     {
       icon: faBuilding,
-      title: "Apartments",
+      title: "Apartment",
       color: "text-accent",
       bgColor: "bg-accent/10",
       hoverColor: "hover:bg-accent/20"
@@ -77,7 +91,7 @@ const PropertyCategories: React.FC<PropertyCategoriesProps> = ({ onCategorySelec
     },
     {
       icon: faBuilding,
-      title: "Penthouse",
+      title: "PentHouse",
       color: "text-accent",
       bgColor: "bg-accent/10",
       hoverColor: "hover:bg-accent/20"
@@ -91,7 +105,7 @@ const PropertyCategories: React.FC<PropertyCategoriesProps> = ({ onCategorySelec
     },
     {
       icon: faWarehouse,
-      title: "Villa",
+      title: "villa",
       color: "text-real-estate-success",
       bgColor: "bg-real-estate-success/10",
       hoverColor: "hover:bg-real-estate-success/20"
@@ -107,7 +121,8 @@ const PropertyCategories: React.FC<PropertyCategoriesProps> = ({ onCategorySelec
     const stat = propertyStats.find(s => {
       const apiName = s.property_type__name.toLowerCase();
       const categoryName = category.title.toLowerCase();
-      return apiName === categoryName || apiName === categoryName.slice(0, -1) || `${apiName}s` === categoryName;
+      // console.log("Matching:", { apiName, categoryName });
+      return apiName === categoryName;
     });
     return {
       ...category,

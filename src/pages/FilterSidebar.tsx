@@ -195,12 +195,12 @@ export function FilterSidebar({ className, onFilterChange, properties = [], setS
       {/* BHK Selection */}
       <div className="mb-6">
         <Label className="text-sm font-medium mb-3 block">BHK</Label>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-2 ">
           {bhkOptions.map((bhk) => (
             <Badge
               key={bhk}
               variant={filters.bhk === bhk ? "default" : "outline"}
-              className={`cursor-pointer text-center py-2 transition-all`}
+              className={`cursor-pointer text-center py-2 transition-all justify-center`}
               onClick={() => handleSingleSelectChange('bhk', bhk)}
             >
               {bhk}

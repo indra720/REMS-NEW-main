@@ -84,7 +84,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
 
     const data = await response.json();
-    console.log("Feedback API response:", data);
+    //console.log("Feedback API response:", data);
 
     if (response.ok) {
       toast.success("✅ Feedback submitted successfully");
@@ -101,13 +101,13 @@ const handleSubmit = async (e: React.FormEvent) => {
         rating: 0,
       });
     } else if (response.status === 401) {
-      toast.error("❌ Unauthorized! Please log in again.");
+      //toast.error("❌ Unauthorized! Please log in again.");
     } else {
-      toast.error("❌ Failed to submit feedback. Try again.");
+      //toast.error("❌ Failed to submit feedback. Try again.");
     }
   } catch (error) {
-    console.error("Error submitting feedback:", error);
-    toast.error("⚠️ Network error. Please try again later.");
+    //console.error("Error submitting feedback:", error);
+    //toast.error("⚠️ Network error. Please try again later.");
   }
 };
 

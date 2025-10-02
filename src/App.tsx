@@ -140,7 +140,7 @@ const App = () => {
                 <AddProperty />
               </ProtectedRoute>
             } />
-            <Route path="/book-visit" element={
+            <Route path="/book-visit/" element={
               <ProtectedRoute isLoggedIn={isLoggeIn}>
                 <BookVisit />
               </ProtectedRoute>

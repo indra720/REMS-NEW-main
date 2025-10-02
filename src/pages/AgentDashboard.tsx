@@ -47,6 +47,7 @@ const AgentDashboard = () => {
   // Fetch leads on component mount and set interval for auto-refresh
   useEffect(() => {
     fetchLeads();
+    fetchImages(); // Add image fetching
     // Auto-refresh every 30 seconds
     const interval = setInterval(fetchLeads, 30000);
     return () => clearInterval(interval);
@@ -55,51 +56,51 @@ const AgentDashboard = () => {
   const fetchLeads = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      // console.log("Fetching leads with token:", token ? "Token exists" : "No token");
+      // //console.log("Fetching leads with token:", token ? "Token exists" : "No token");
 
-      const response = await fetch(`${BASE_URL}/leads/`, {
+      const response = await fetch(`${BASE_URL}leads/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // console.log("Leads API response status:", response.status);
+      // //console.log("Leads API response status:", response.status);
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Raw API response:", result);
-        console.log("Response type:", typeof result);
-        // console.log("Is array:", Array.isArray(result));
+        // //console.log("Raw API response:", result);
+        // //console.log("Response type:", typeof result);
+        // //console.log("Is array:", Array.isArray(result));
 
         // Handle different response structures
         let leadsData = result;
         if (result.results) {
           leadsData = result.results; // Paginated response
-          console.log("Using paginated results:", leadsData);
+          //console.log("Using paginated results:", leadsData);
         }
 
-        console.log("Leads data to process:", leadsData);
-        console.log("Total leads count:", leadsData.length);
+        //console.log("Leads data to process:", leadsData);
+        //console.log("Total leads count:", leadsData.length);
 
         if (leadsData.length > 0) {
-          console.log("First lead structure:", leadsData[0]);
-          console.log("First lead created_at:", leadsData[0].created_at);
+          //console.log("First lead structure:", leadsData[0]);
+          //console.log("First lead created_at:", leadsData[0].created_at);
         }
 
         // Show all leads first (remove date filter for testing)
-        console.log("Setting all leads in state for testing");
+        //console.log("Setting all leads in state for testing");
         setLeads(leadsData);
       } else {
         const errorText = await response.text();
-        console.log(
-          "Failed to fetch leads:",
-          response.status,
-          response.statusText,
-          errorText
-        );
+        // console.log(
+        //   "Failed to fetch leads:",
+        //   response.status,
+        //   response.statusText,
+        //   errorText
+        // );
       }
     } catch (error) {
-      console.error("Error fetching leads:", error);
+      //console.error("Error fetching leads:", error);
     }
   };
 
@@ -140,7 +141,7 @@ const AgentDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `${BASE_URL}/support-tickets/`,
+        `${BASE_URL}support-tickets/`,
         {
           method: "GET",
           headers: {
@@ -149,16 +150,16 @@ const AgentDashboard = () => {
           },
         }
       );
-      console.log(response);
+      //console.log(response);
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         setCustomerData(data);
       } else {
-        console.log("Failed to fetch customer data");
+        //console.log("Failed to fetch customer data");
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -183,16 +184,20 @@ const AgentDashboard = () => {
     e.preventDefault();
 
     if (!selectedCustomer?.id) {
-      console.error("No customer selected for edit!");
+      //console.error("No customer selected for edit!");
       return;
     }
+
+    // console.log("Selected customer object:", selectedCustomer);
+    // console.log("Available fields:", Object.keys(selectedCustomer));
+    // console.log("Slug field:", selectedCustomer.slug);
 
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `${BASE_URL}/support-tickets/${selectedCustomer.id}/`, // 👈 numeric id use kar
+        `${BASE_URL}support-tickets/${selectedCustomer.slug}/`, // 👈 use slug
         {
-          method: "PATCH", // PATCH better than PUT
+          method: "PUT", // Change to PUT method
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -208,22 +213,22 @@ const AgentDashboard = () => {
         );
         setSelectedCustomer(update);
         setCustomerEditMode(false);
-        toast.success("Customer updated!");
+        // toast.success("Customer updated!");
       } else {
         const err = await response.json();
-        console.log("Update error:", err);
+        //console.log("Update error:", err);
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
   // Delete
-  const handleCustomerDelete = async (id: number) => {
+  const handleCustomerDelete = async (slug: string) => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `${BASE_URL}/support-tickets/${id}/`, // 👈 numeric id
+        `${BASE_URL}support-tickets/${slug}/`, // 👈 use slug parameter
         {
           method: "DELETE",
           headers: {
@@ -233,15 +238,15 @@ const AgentDashboard = () => {
       );
 
       if (response.ok) {
-        setCustomerData((prev) => prev.filter((c) => c.id !== id));
+        setCustomerData((prev) => prev.filter((c) => c.slug !== slug));
         setOpen(false);
-        toast.success("Customer deleted!");
+        // toast.success("Customer deleted!");
       } else {
         const err = await response.json();
-        console.log("Delete error:", err);
+        //console.log("Delete error:", err);
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -249,12 +254,30 @@ const AgentDashboard = () => {
   const [SelectedFeedback, setSelectedFeedback] = useState(null);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackData, setFeedbackData] = useState([]);
+  const [imageData, setImageData] = useState([]);
+
+  // Fetch Images
+  const fetchImages = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch(`${BASE_URL}property-images/`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setImageData(data.results || data);
+        // console.log("Images fetched:", data);
+      }
+    } catch (error) {
+      // console.error("Error fetching images:", error);
+    }
+  };
   const [feedbackDataEditMode, setFeedbackDataEditMode] = useState(false);
 
   const fetchFeedbackData = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("${BASE_URL}/feedback/", {
+      const response = await fetch(`${BASE_URL}feedback/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -264,14 +287,14 @@ const AgentDashboard = () => {
       if (response.ok) {
         const feeddata = await response.json();
         setFeedbackData(feeddata);
-        console.log(feeddata);
-        toast.success("Feedback data fetched successfully");
+        //console.log(feeddata);
+        // toast.success("Feedback data fetched successfully");
       } else {
-        toast.error("Failed to fetch Feedback data");
+        // toast.error("Failed to fetch Feedback data");
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to fetch Feedback data because of method is wrong");
+      //console.log(error);
+      // toast.error("Failed to fetch Feedback data because of method is wrong");
     }
   };
 
@@ -302,10 +325,15 @@ const AgentDashboard = () => {
 
   const handleFeedbackEditSubmit = async (e: any) => {
     e.preventDefault();
+    // console.log("Selected feedback object:", SelectedFeedback);
+    // console.log("Feedback slug:", SelectedFeedback.slug);
+
+    const identifier = SelectedFeedback.slug; // Use slug
+
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `${BASE_URL}/feedback/${SelectedFeedback.slug}/`,
+        `${BASE_URL}feedback/${identifier}/`,
         {
           method: "PUT",
           headers: {
@@ -317,7 +345,7 @@ const AgentDashboard = () => {
       );
       if (response.ok) {
         const feedupdate = await response.json();
-        console.log(feedupdate);
+        //console.log(feedupdate);
         setSelectedFeedback(feedupdate);
         setFeedbackDataEditMode(false);
         // optionally refresh the customer data list
@@ -326,13 +354,13 @@ const AgentDashboard = () => {
             feedback.slug === feedupdate.slug ? feedupdate : feedback
           )
         );
-        toast.success("Feedback data updated successfully");
+        // toast.success("Feedback data updated successfully");
       } else {
-        console.log("Failed to update Feedback data");
+        //console.log("Failed to update Feedback data");
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to update Feedback data because of method is wrong");
+      //console.log(error);
+      // toast.error("Failed to update Feedback data because of method is wrong");
     }
   };
 
@@ -341,7 +369,7 @@ const AgentDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `${BASE_URL}/feedback/${slug}/`,
+        `${BASE_URL}feedback/${slug}/`,
         {
           method: "DELETE",
           headers: {
@@ -355,13 +383,13 @@ const AgentDashboard = () => {
           prev.filter((feedback) => feedback.slug !== slug)
         );
         setFeedbackOpen(false);
-        toast.success("Feedback data deleted successfully");
+        // toast.success("Feedback data deleted successfully");
       } else {
-        toast.error("Failed to delete feedback data");
+        // toast.error("Failed to delete feedback data");
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to delete feedback data because of method is wrong");
+      //console.log(error);
+      // toast.error("Failed to delete feedback data because of method is wrong");
     }
   };
 
@@ -494,7 +522,7 @@ const AgentDashboard = () => {
                     <div>
                       <p className="font-medium">No leads found</p>
                       <p className="text-sm text-muted-foreground">
-                        Check console for API response
+                        Check //console for API response
                       </p>
                     </div>
                   </div>
@@ -789,7 +817,7 @@ const AgentDashboard = () => {
                       <Button
                         variant="destructive"
                         onClick={() =>
-                          handleCustomerDelete(selectedCustomer.id)
+                          handleCustomerDelete(selectedCustomer.slug)
                         }
                       >
                         Delete Customer

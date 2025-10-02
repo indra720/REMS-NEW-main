@@ -68,6 +68,9 @@ import { BASE_URL } from "@/lib/constants";
 import videoApartment from "@/Video/apartment.mp4";
 
 import sharmaPriyaImg from '../assets/images/sharma_priya.jpg';
+import amitkumarImg from "../assets/images/amitkumar.webp";
+import anitapatelImg from "../assets/images/anita paterl.jpg";
+import rajeshkumarImg from "../assets/images/rajesh.jpg";
 
 // Define interfaces for type safety
 interface FormData {
@@ -408,8 +411,7 @@ const Index = () => {
       experience: "8+ Years",
       rating: 4.9,
       deals: "500+ Deals",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200",
+      image: rajeshkumarImg,
       phone: "+91 98765 43210",
       email: "rajesh@realestate.com",
     },
@@ -431,8 +433,7 @@ const Index = () => {
       experience: "10+ Years",
       rating: 4.9,
       deals: "600+ Deals",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200",
+      image: amitkumarImg,
       phone: "+91 76543 21098",
       email: "amit@realestate.com",
     },
@@ -861,7 +862,7 @@ const Index = () => {
       <FeaturesGrid />
 
       {/* Enquiry Form Section */}
-      <section className="py-20 bg-gradient-to-r from-primary/10 to-accent/10">
+      {/* <section className="py-20 bg-gradient-to-r from-primary/10 to-accent/10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -1019,7 +1020,7 @@ const Index = () => {
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <AIFeatures />
 
@@ -1053,7 +1054,7 @@ const Index = () => {
                 </p>
                 <div className="flex items-center">
                   <img
-                    src="https://images.unsplash.com/photo-1494790108755-2616b612b287?w=50&h=50&fit=crop&crop=face"
+                    src={sharmaPriyaImg}
                     alt="Customer"
                     className="w-10 h-10 rounded-full mr-3"
                   />
@@ -1086,7 +1087,7 @@ const Index = () => {
                 </p>
                 <div className="flex items-center">
                   <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face"
+                    src={rajeshkumarImg}
                     alt="Customer"
                     className="w-10 h-10 rounded-full mr-3"
                   />
@@ -1120,7 +1121,7 @@ const Index = () => {
                 </p>
                 <div className="flex items-center">
                   <img
-                    src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop&crop=face"
+                    src={anitapatelImg}
                     alt="Customer"
                     className="w-10 h-10 rounded-full mr-3"
                   />

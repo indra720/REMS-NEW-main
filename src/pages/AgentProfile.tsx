@@ -10,18 +10,19 @@ import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../lib/constants";
+import sharmaPriyaImg from "../assets/images/sharma_priya.jpg";
+import amitkumarImg from "../assets/images/amitkumar.webp";
+import anitapatelImg from "../assets/images/anita paterl.jpg";
+import rajeshkumarImg from "../assets/images/rajesh.jpg";
 
-const AgentProfile = () => {
-  const { agentId } = useParams();
-
-  // Mock agent data - in real app would fetch from API
-  const agent = {
-    id: agentId,
+const agentsData = {
+  "1": {
+    id: "1",
     name: "Rajesh Sharma",
     title: "Senior Property Consultant",
     company: "Prime Real Estate",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-    rating: 4.8,
+    image: rajeshkumarImg,
+    rating: 4.9,
     reviews: 156,
     experience: "8+ Years",
     properties: 89,
@@ -34,7 +35,52 @@ const AgentProfile = () => {
     responseTime: "Within 2 hours",
     deals: 234,
     bio: "Experienced real estate professional with over 8 years in the Mumbai property market. Specialized in luxury residential and commercial properties. Known for transparent dealings and excellent customer service."
-  };
+  },
+  "2": {
+    id: "2",
+    name: "Priya Patel",
+    title: "Property Consultant",
+    company: "Prime Real Estate",
+    image: sharmaPriyaImg,
+    rating: 4.8,
+    reviews: 120,
+    experience: "6+ Years",
+    properties: 75,
+    location: "Pune, Maharashtra",
+    phone: "+91 87654 32109",
+    email: "priya.patel@primerealestate.com",
+    specialties: ["Residential", "Rentals"],
+    languages: ["Hindi", "English"],
+    verified: true,
+    responseTime: "Within 4 hours",
+    deals: 180,
+    bio: "Priya is a dedicated property consultant with a passion for helping clients find their dream homes. She has a deep understanding of the Pune real estate market."
+  },
+  "3": {
+    id: "3",
+    name: "Amit Kumar",
+    title: "Investment Specialist",
+    company: "Prime Real Estate",
+    image: amitkumarImg,
+    rating: 4.9,
+    reviews: 210,
+    experience: "10+ Years",
+    properties: 120,
+    location: "Delhi, NCR",
+    phone: "+91 76543 21098",
+    email: "amit.kumar@primerealestate.com",
+    specialties: ["Commercial", "Investment", "Land"],
+    languages: ["Hindi", "English", "Punjabi"],
+    verified: true,
+    responseTime: "Within 1 hour",
+    deals: 300,
+    bio: "Amit is a seasoned real estate investment specialist with over a decade of experience. He has a proven track record of helping clients achieve their investment goals."
+  }
+};
+
+const AgentProfile = () => {
+  const { agentId } = useParams();
+  const agent = agentsData[agentId];
 
   const recentProperties = [
     {
@@ -112,7 +158,7 @@ const AgentProfile = () => {
         // console.log("data not fetched");
       }
     } catch (error) {
-      console.log(error);
+     // console.log(error);
       // toast({ title: "fetched data", description: " fetched data is wrong" });
     }
   };

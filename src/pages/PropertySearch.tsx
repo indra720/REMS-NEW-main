@@ -118,7 +118,7 @@ const PropertySearch = ({ onFilterChange }) => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="text-center mb-6">
+        <div className="text-center ">
           <h2 className="text-2xl font-bold mb-2">
             Find Your Perfect Property
           </h2>
@@ -129,7 +129,7 @@ const PropertySearch = ({ onFilterChange }) => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="space-y-6">
           {/* <div className="sm:flex  justify-between items-center">
             <div>
@@ -334,14 +334,14 @@ const PropertySearch = ({ onFilterChange }) => {
                         </Badge>
                       ))}
                     </div>
-                    <div className="sm:flex justify-center gap-10 space-y-2 items-center ">
+                    <div className="flex justify-center gap-4 items-center">
                       <button
                         onClick={() => navigate(`/property/${property.slug}`)}
-                        className="border py-3 px-8 w-full sm:w-30 bg-white hover:bg-purple-600 hover:text-white font-semibold  rounded-md "
+                        className="border py-3 px-4 flex-1 bg-white hover:bg-purple-600 hover:text-white font-semibold rounded-md whitespace-nowrap"
                       >
                         View Details
                       </button>
-                      <button className="border py-3 px-10 w-full sm:w-30 bg-purple-400 hover:bg-purple-600 text-white font-semibold  rounded-md ">
+                      <button className="border py-3 px-4 flex-1 bg-purple-400 hover:bg-purple-600 text-white font-semibold rounded-md whitespace-nowrap">
                         Contact
                       </button>
                     </div>

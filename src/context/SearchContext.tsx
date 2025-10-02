@@ -101,28 +101,44 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     setError(null);
     try {
-      // console.log("SearchContext: searchParams before mapping to queryParams:", searchParams);
+      const propertyTypeMapping: { [key: string]: number } = {
+        "Apartment": 2, // Corrected based on API response
+        "House": 3,
+        "Commercial": 4,
+        "Penthouse": 5,
+        "Retail": 6,
+        "Industrial": 7,
+        "Plots": 8,
+        "Vacation": 9,
+        // Add other mappings as needed based on your backend's property_type IDs
+        // If 'Villa' has a specific ID, add it here. For now, it's removed as its ID is unknown.
+      };
+
       const queryParams: any = {};
       if (searchParams.location) queryParams.location = searchParams.location;
-      if (searchParams.propertyType) queryParams.type = searchParams.propertyType;
+      if (searchParams.propertyType) {
+        const mappedType = propertyTypeMapping[searchParams.propertyType];
+        if (mappedType) {
+          queryParams.property_type = mappedType; // Use property_type as expected by backend
+        } else {
+          //console.warn(`Unknown propertyType: ${searchParams.propertyType}. Not sending 'property_type' to API.`);
+        }
+      }
       if (searchParams.category) queryParams.category = searchParams.category;
       if (searchParams.newLaunch) queryParams.new_launch = 'true';
       if (searchParams.propertyStatus) queryParams.property_status = searchParams.propertyStatus;
-      // If keyword is present, and location is not already set, use keyword as location
       if (searchParams.keyword) queryParams.search = searchParams.keyword;
-      // console.log("SearchContext: Fetching properties with queryParams:", queryParams);
 
-      console.log("SearchContext: Query parameters sent to API:", queryParams); // ADDED LOG
+      //console.log("SearchContext: Query parameters sent to API:", queryParams);
 
-      const response = await publicApi.get(`${BASE_URL}/properties/search/`, {
+      const response = await publicApi.get(`${BASE_URL}properties/search/`, {
         params: queryParams,
-        withCredentials: false, // Set withCredentials to false to resolve CORS issue
+        withCredentials: false,
       });
-      console.log("SearchContext: API response data:", response.data); // ADDED LOG
+      // console.log("SearchContext: API response data:", response.data);
       setSearchResults(response.data);
-      // console.log("SearchContext: Updated searchResults:", response.data);
     } catch (err) {
-      console.error("Failed to fetch properties:", err);
+      // console.error("Failed to fetch properties:", err);
       setError("Failed to load properties. Please try again later.");
       setSearchResults([]);
     } finally {

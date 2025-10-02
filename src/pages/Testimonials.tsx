@@ -2,6 +2,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, Quote, Award, Users, TrendingUp } from "lucide-react";
+import sharmaPriyaImg from "../assets/images/sharma_priya.jpg";
+import amitkumarImg from "../assets/images/amitkumar.webp";
+import anitapatelImg from "../assets/images/anita paterl.jpg";
+import rajeshkumarImg from "../assets/images/rajesh.jpg";
 
 const Testimonials = () => {
   const testimonials = [
@@ -10,8 +14,9 @@ const Testimonials = () => {
       role: "Software Engineer",
       location: "Mumbai",
       rating: 5,
-      comment: "RealEstate Pro made finding my dream home incredibly easy. The AI recommendations were spot-on, and the virtual tours saved me so much time. The entire process was transparent and hassle-free.",
-      property: "2BHK Apartment in Bandra"
+      comment: "Amazing experience! Found my dream home in just 2 weeks. The virtual tour feature helped me narrow down my choices before visiting. Highly recommended!",
+      property: "2BHK Apartment in Bandra",
+      image:sharmaPriyaImg,
     },
     {
       name: "Rajesh Kumar",
@@ -19,7 +24,8 @@ const Testimonials = () => {
       location: "Delhi",
       rating: 5,
       comment: "As a property investor, I've used many platforms, but RealEstate Pro stands out. Their market analysis tools and ROI calculators helped me make informed decisions. Excellent service!",
-      property: "Commercial Office Space"
+      property: "Commercial Office Space",
+      image: rajeshkumarImg,
     },
     {
       name: "Anjali Patel",
@@ -27,15 +33,17 @@ const Testimonials = () => {
       location: "Bangalore",
       rating: 5,
       comment: "The team was incredibly professional and patient. They understood my specific requirements and showed me properties that matched perfectly. Found my ideal home within a month!",
-      property: "3BHK Villa in Whitefield"
+      property: "3BHK Villa in Whitefield",
+      image: anitapatelImg,
     },
     {
-      name: "Vikram Singh",
+      name: "Amit Kumar",
       role: "Marketing Manager",
       location: "Pune",
       rating: 4,
       comment: "Great platform with extensive property listings. The search filters are very detailed, and the agent was knowledgeable about the locality. Would definitely recommend to others.",
-      property: "2BHK Flat in Koregaon Park"
+      property: "2BHK Flat in Koregaon Park",
+      image: amitkumarImg,
     },
     {
       name: "Meera Reddy",
@@ -43,7 +51,8 @@ const Testimonials = () => {
       location: "Hyderabad",
       rating: 5,
       comment: "First-time home buyer and was quite nervous about the process. The RealEstate Pro team guided me through every step, from property selection to loan processing. Fantastic experience!",
-      property: "1BHK Apartment in Gachibowli"
+      property: "1BHK Apartment in Gachibowli",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200", // Generic placeholder
     },
     {
       name: "Arjun Mehta",
@@ -51,7 +60,8 @@ const Testimonials = () => {
       location: "Chennai",
       rating: 5,
       comment: "The digital documentation process was seamless. Everything was handled online, and I could track the progress in real-time. The legal verification service gave me complete peace of mind.",
-      property: "4BHK Independent House"
+      property: "4BHK Independent House",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200", // Generic placeholder
     }
   ];
 
@@ -128,9 +138,11 @@ const Testimonials = () => {
                   </p>
                   <div className="border-t pt-4 mt-auto">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
-                        {testimonial.name.charAt(0)}
-                      </div>
+                      <img
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        className="w-10 h-10 rounded-full object-cover border-2 border-purple-400"
+                      />
                       <div>
                         <p className="font-semibold">{testimonial.name}</p>
                         <p className="text-sm text-muted-foreground">{testimonial.role}</p>

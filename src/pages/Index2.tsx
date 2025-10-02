@@ -54,15 +54,23 @@ const propertyTypesForSelect = [
   { id: "villa", label: "Villa" },
   { id: "plot", label: "Plot" },
   { id: "commercial", label: "Commercial" },
+  { id: "penthouse", label: "PentHouse" },
+  { id: "retail", label: "Retail" },
+  { id: "industrial", label: "Industrial" },
+  { id: "house", label: "House" },
 ];
 
 // Hardcoded mapping based on the provided property-types API data
 const propertyTypeLabelToApiIdMap: { [key: string]: number | undefined } = {
-  "Villa": 1,
-  "Apartment": 2, // Assuming 'Apartment' maps to id 2 from the property-types API data
-  "PentHouse": 3,
-  // Note: 'Apartment' also has id 5 in property-types API. Using 2 for now.
-  // 'Plot' and 'Commercial' are in propertyTypesForSelect but not in property-types API data.
+  "Apartment": 2, // Confirmed from previous API response
+  "Villa": 1, // Placeholder - User needs to verify this ID
+  "House": 3, // Placeholder - User needs to verify this ID
+  "Commercial": 4, // Placeholder - User needs to verify this ID
+  "PentHouse": 5, // Placeholder - User needs to verify this ID
+  "Retail": 6, // Placeholder - User needs to verify this ID
+  "Industrial": 7, // Placeholder - User needs to verify this ID
+  "Plot": 8, // Placeholder - User needs to verify this ID
+  // Add other mappings as needed based on your backend's property_type IDs
 };
 
 export const Index2 = () => {
@@ -84,11 +92,12 @@ export const Index2 = () => {
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [propertyType, setPropertyType] = useState(initialPropertyType);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<{ id: number; text: string }[]>([]);
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [selectedCity, setSelectedCity] = useState(initialSelectedCity);
   const [selectedCategory, setSelectedCategory] = useState(initialSelectedCategory);
+  const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null); // New state for selected property ID
 
   // Property states
   const [filteredProperties, setFilteredProperties] = useState<any[]>([]);
@@ -195,110 +204,200 @@ export const Index2 = () => {
     navigate(`/search?city=${city}`);
   };
 
-  // Master useEffect for all filtering
-  useEffect(() => {
-    let filtered = [...searchResults]; // Start with searchResults from context
+      // Master useEffect for all filtering
+      useEffect(() => {
+        let filtered = [...searchResults]; // Start with searchResults from context
+    
+        // Get search parameters from URL for filtering
+        const searchParams = new URLSearchParams(location.search);
+        const urlSearchQuery = searchParams.get("q");
+        const urlSearchType = searchParams.get("type");
+        const urlSearchTab = searchParams.get("tab");
+    
+        if (selectedPropertyId !== null) {
+          // If a specific property was selected from suggestions, show only that one
+          filtered = filtered.filter(p => p.id === selectedPropertyId);
+        } else {
+          // Apply URL-based search filters first
+          if (urlSearchQuery) {
+            const queryTerms = urlSearchQuery.toLowerCase().split(',').map(term => term.trim()).filter(term => term.length > 0);
+    
+            filtered = filtered.filter((p) => {
+              const title = (p.title || "").toLowerCase();
+              const location = (p.location || "").toLowerCase();
+              const description = (p.description || "").toLowerCase();
+    
+              // Check if any of the query terms are included in title, location, or description
+              return queryTerms.some(term =>
+                title.includes(term) || location.includes(term) || description.includes(term)
+              );
+            });
+          }
+    
+          if (urlSearchTab) {
+            // ... (filtering logic from before)
+          }
+    
+          if (urlSearchType && urlSearchType !== "all-residential") {
+            // ... (filtering logic from before)
+          }
+    
+          if (selectedCity) {
+            filtered = filtered.filter((p) =>
+              (p.location || "").toLowerCase().includes(selectedCity.toLowerCase())
+            );
+          }
+    
+          if (selectedCategory) {
+            const lowercasedCategory = selectedCategory.toLowerCase();
+            filtered = filtered.filter(
+              (p) => (p.category || "").toLowerCase() === lowercasedCategory
+            );
+          }
+    
+                // --- Apply Top Bar Filters ---
+                const lowercasedSearchTerm = searchTerm.toLowerCase();
+                if (lowercasedSearchTerm) {
+                  filtered = filtered.filter(
+                    (p) =>
+                      (p.title || "").toLowerCase().includes(lowercasedSearchTerm) ||
+                      (p.location || "").toLowerCase().includes(lowercasedSearchTerm)
+                  );
+                } else {
+                  // If search term is empty, reset filtered to searchResults to show all properties
+                  filtered = [...searchResults];
+                }          if (propertyType && propertyType !== "all") {
+            const lowercasedType = propertyType.toLowerCase(); // "apartment"
+            const apiPropertyTypeId = propertyTypeLabelToApiIdMap[propertyType]; // 2 for "Apartment"
+    
+            filtered = filtered.filter((p) => {
+              const title = (p.title || "").toLowerCase();
+              const description = (p.description || "").toLowerCase();
+              const category = (p.category || "").toLowerCase();
+    
+              // Check if the numeric property_type matches the mapped ID
+              const matchesNumericId = (apiPropertyTypeId !== undefined && p.property_type === apiPropertyTypeId);
+    
+              // Check if the type label is present in title, description, or category
+              const matchesStringContent = (
+                title.includes(lowercasedType) ||
+                description.includes(lowercasedType) ||
+                category.includes(lowercasedType)
+              );
+    
+              // A property matches if either the numeric ID matches OR the string content matches
+              return matchesNumericId || matchesStringContent;
+            });
+          }
+        }
+    
+        // --- Apply Sidebar Filters ---
+        if (sidebarFilters) {
+          // Filter by sidebar searchQuery
+          if (sidebarFilters.searchQuery) {
+            const lowercasedSidebarSearch = sidebarFilters.searchQuery.toLowerCase();
+            filtered = filtered.filter(
+              (p) =>
+                (p.title || "").toLowerCase().includes(lowercasedSidebarSearch) ||
+                (p.location || "").toLowerCase().includes(lowercasedSidebarSearch) ||
+                (p.description || "").toLowerCase().includes(lowercasedSidebarSearch)
+            );
+          }
 
-    // Get search parameters from URL for filtering
-    const searchParams = new URLSearchParams(location.search);
-    const urlSearchQuery = searchParams.get("q");
-    const urlSearchType = searchParams.get("type");
-    const urlSearchTab = searchParams.get("tab");
+          // Filter by sidebar locations
+          if (sidebarFilters.locations) {
+            const lowercasedLocation = sidebarFilters.locations.toLowerCase();
+            filtered = filtered.filter(
+              (p) => (p.location || "").toLowerCase().includes(lowercasedLocation)
+            );
+          }
 
-    // Apply URL-based search filters first
-    if (urlSearchQuery) {
-      const queryTerms = urlSearchQuery.toLowerCase().split(',').map(term => term.trim()).filter(term => term.length > 0);
+          // Filter by sidebar propertyType
+          if (sidebarFilters.propertyType) {
+            const apiPropertyTypeId = propertyTypeLabelToApiIdMap[sidebarFilters.propertyType];
+            if (apiPropertyTypeId !== undefined) {
+              filtered = filtered.filter(p => p.property_type === apiPropertyTypeId);
+            }
+          }
 
-      filtered = filtered.filter((p) => {
-        const title = (p.title || "").toLowerCase();
-        const location = (p.location || "").toLowerCase();
-        const description = (p.description || "").toLowerCase();
+          // Filter by sidebar bhk
+          if (sidebarFilters.bhk) {
+            const bhkFilterValue = sidebarFilters.bhk;
+            filtered = filtered.filter(p => {
+              const propertyBedrooms = p.bedrooms;
+              if (typeof propertyBedrooms !== 'number' || isNaN(propertyBedrooms)) {
+                return false; // Skip properties with invalid bedroom data
+              }
 
-        // Check if any of the query terms are included in title, location, or description
-        return queryTerms.some(term =>
-          title.includes(term) || location.includes(term) || description.includes(term)
-        );
-      });
-    }
+              if (bhkFilterValue === "4+") {
+                return propertyBedrooms >= 4;
+              } else {
+                const bhkValue = parseInt(bhkFilterValue);
+                return propertyBedrooms === bhkValue;
+              }
+            });
+          }
 
-    if (urlSearchTab) {
-      // ... (filtering logic from before)
-    }
+          // Filter by sidebar priceRange
+          if (sidebarFilters.priceRange && (sidebarFilters.priceRange[0] !== 10 || sidebarFilters.priceRange[1] !== 1000)) {
+            const [minPrice, maxPrice] = sidebarFilters.priceRange;
+            filtered = filtered.filter(p => {
+              const price = parseFloat(p.price);
+              return price >= minPrice * 100000 && price <= maxPrice * 100000; // Assuming price is in Lakhs (L)
+            });
+          }
 
-    if (urlSearchType && urlSearchType !== "all-residential") {
-      // ... (filtering logic from before)
-    }
+          // Filter by sidebar possessionStatus
+          if (sidebarFilters.possessionStatus && sidebarFilters.possessionStatus.length > 0) {
+            const lowercasedStatuses = sidebarFilters.possessionStatus.map((s: string) => s.toLowerCase());
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    if (selectedCity) {
-      filtered = filtered.filter((p) =>
-        (p.location || "").toLowerCase().includes(selectedCity.toLowerCase())
-      );
-    }
+            filtered = filtered.filter(p => {
+              const availabilityStatus = (p.availability_status || "").toLowerCase();
+              const isNewLaunchByStatus = lowercasedStatuses.includes(availabilityStatus) && availabilityStatus === "new launch";
 
-    if (selectedCategory) {
-      const lowercasedCategory = selectedCategory.toLowerCase();
-      filtered = filtered.filter(
-        (p) => (p.category || "").toLowerCase() === lowercasedCategory
-      );
-    }
+              let isNewLaunchByDate = false;
+              if (lowercasedStatuses.includes("new launch") && p.listed_on) {
+                const listedOnDate = new Date(p.listed_on);
+                isNewLaunchByDate = listedOnDate >= thirtyDaysAgo;
+              }
 
-    // --- Apply Top Bar Filters ---
-    const lowercasedSearchTerm = searchTerm.toLowerCase();
-    if (lowercasedSearchTerm) {
-      filtered = filtered.filter(
-        (p) =>
-          (p.title || "").toLowerCase().includes(lowercasedSearchTerm) ||
-          (p.location || "").toLowerCase().includes(lowercasedSearchTerm)
-      );
-    }
-    if (propertyType && propertyType !== "all") {
-      const lowercasedType = propertyType.toLowerCase(); // "apartment"
-      const apiPropertyTypeId = propertyTypeLabelToApiIdMap[propertyType]; // 2 for "Apartment"
+              return lowercasedStatuses.includes(availabilityStatus) || isNewLaunchByDate;
+            });
+          }
 
-      filtered = filtered.filter((p) => {
-        const title = (p.title || "").toLowerCase();
-        const description = (p.description || "").toLowerCase();
-        const category = (p.category || "").toLowerCase();
-
-        // Check if the numeric property_type matches the mapped ID
-        const matchesNumericId = (apiPropertyTypeId !== undefined && p.property_type === apiPropertyTypeId);
-
-        // Check if the type label is present in title, description, or category
-        const matchesStringContent = (
-          title.includes(lowercasedType) ||
-          description.includes(lowercasedType) ||
-          category.includes(lowercasedType)
-        );
-
-        // A property matches if either the numeric ID matches OR the string content matches
-        return matchesNumericId || matchesStringContent;
-      });
-    }
-
-    // --- Apply Sidebar Filters ---
-    if (sidebarFilters) {
-      // ... (sidebar filtering logic)
-    }
-
-    const sorted = sortProperties(filtered, sortBy);
-    setFilteredProperties(sorted);
-    setCurrentPage(1);
-
-    if ((searchParams.get("q") || searchParams.get("tab") || searchParams.get("type")) && sorted.length === 0) {
-      toast.error("No properties found matching your search criteria. Try different filters.");
-    }
-  }, [
-    searchResults, // Depend on searchResults instead of properties
-    searchTerm,
-    propertyType,
-    sidebarFilters,
-    sortBy,
-    selectedCity,
-    selectedCategory,
-    location.search,
-  ]);
-
-  const sortProperties = (properties: any[], sortType: string) => {
+          // Filter by sidebar amenities
+          if (sidebarFilters.amenities && sidebarFilters.amenities.length > 0) {
+            const lowercasedSelectedAmenities = sidebarFilters.amenities.map((a: string) => a.toLowerCase());
+            filtered = filtered.filter(p => {
+              if (!p.amenities || p.amenities.length === 0) return false;
+              const propertyAmenities = p.amenities.map((pa: any) => (pa.name || pa.amenity || pa).toLowerCase());
+              return lowercasedSelectedAmenities.every((selectedAmenity: string) =>
+                propertyAmenities.includes(selectedAmenity)
+              );
+            });
+          }
+        } // <--- Added missing closing brace for if (sidebarFilters)
+    
+        const sorted = sortProperties(filtered, sortBy);
+        setFilteredProperties(sorted);
+        setCurrentPage(1);
+    
+        if ((urlSearchQuery || urlSearchTab || urlSearchType) && sorted.length === 0) {
+          // toast.error("No properties found matching your search criteria. Try different filters.");
+        }
+      }, [
+        searchResults, // Depend on searchResults instead of properties
+        searchTerm,
+        propertyType,
+        sidebarFilters,
+        sortBy,
+        selectedCity,
+        selectedCategory,
+        location.search,
+        selectedPropertyId, // Add new dependency
+      ]);  const sortProperties = (properties: any[], sortType: string) => {
     const sorted = [...properties];
     switch (sortType) {
       case "price-low":
@@ -325,21 +424,27 @@ export const Index2 = () => {
   useEffect(() => {
     if (searchTerm.length > 1) {
       const lowercasedSearchTerm = searchTerm.toLowerCase();
-      const suggestionSet = new Set<string>();
+      const suggestionMap = new Map<string, { id: number, text: string }>(); // Use a map to store unique suggestions with their property ID
 
-      searchResults.forEach((property) => { // Use searchResults here
+      searchResults.forEach((property) => {
         if (property.title?.toLowerCase().includes(lowercasedSearchTerm)) {
-          suggestionSet.add(property.title);
+          suggestionMap.set(`title-${property.id}`, { id: property.id, text: property.title });
         }
         if (property.location?.toLowerCase().includes(lowercasedSearchTerm)) {
-          suggestionSet.add(property.location);
+          // Only add location suggestions if they are distinct from titles or if we want to show both
+          // For now, let's prioritize unique property titles for exact match
+          if (!suggestionMap.has(`location-${property.id}`)) {
+             suggestionMap.set(`location-${property.id}`, { id: property.id, text: property.location });
+          }
         }
-        if (property.builder?.toLowerCase().includes(lowercasedSearchTerm)) {
-          suggestionSet.add(property.builder);
-        }
+        // if (property.builder?.toLowerCase().includes(lowercasedSearchTerm)) {
+        //   suggestionMap.set(`builder-${property.id}`, { id: property.id, text: property.builder });
+        // }
       });
 
-      setSuggestions(Array.from(suggestionSet).slice(0, 5));
+      // Convert map values to an array of objects { id, text }
+      const uniqueSuggestions = Array.from(suggestionMap.values()).slice(0, 5);
+      setSuggestions(uniqueSuggestions);
       setIsSuggestionsOpen(true);
     } else {
       setSuggestions([]);
@@ -347,15 +452,22 @@ export const Index2 = () => {
     }
   }, [searchTerm, searchResults]); // Depend on searchResults
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchTerm(suggestion);
+  const handleSuggestionClick = (suggestion: { id: number, text: string }) => {
+    setSelectedPropertyId(suggestion.id); // Set the ID of the selected property
     setIsSuggestionsOpen(false);
+    // No need to call setSearchParams here, as the main filtering useEffect will react to selectedPropertyId
   };
 
   const handleSearchKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       setIsSuggestionsOpen(false);
-      navigate(`/search?q=${searchTerm}&type=${propertyType}&location=${selectedCity}&category=${selectedCategory}`);
+      setSelectedPropertyId(null); // Clear selected property ID on new search
+      setSearchParams({
+        keyword: searchTerm,
+        propertyType: propertyType,
+        location: selectedCity,
+        category: selectedCategory,
+      });
     }
   };
 
@@ -510,7 +622,17 @@ export const Index2 = () => {
                   <Input
                     placeholder="Search properties"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      if (e.target.value === "") {
+                        setSearchParams({
+                          keyword: "",
+                          propertyType: propertyType,
+                          location: selectedCity,
+                          category: selectedCategory,
+                        });
+                      }
+                    }}
                     onFocus={() => setIsSuggestionsOpen(true)}
                     onKeyPress={handleSearchKeyPress}
                     className="pl-10 bg-white/90 text-lg py-6"
@@ -525,7 +647,7 @@ export const Index2 = () => {
                             className="p-2 hover:bg-muted rounded-md cursor-pointer"
                             onClick={() => handleSuggestionClick(s)}
                           >
-                            {s}
+                            {s.text}
                           </div>
                         ))}
                       </CardContent>
@@ -550,6 +672,7 @@ export const Index2 = () => {
                   size="lg"
                   onClick={() => {
                     setIsSuggestionsOpen(false);
+                    setSelectedPropertyId(null); // Clear selected property ID on new search
                     setSearchParams({
                       keyword: searchTerm,
                       propertyType: propertyType,

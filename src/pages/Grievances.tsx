@@ -153,7 +153,7 @@ const Grievances = () => {
         },
         body: formDataToSend,
       });
-      console.log(response)
+      // console.log(response)
 
       if (response.ok) {
         await response.json();

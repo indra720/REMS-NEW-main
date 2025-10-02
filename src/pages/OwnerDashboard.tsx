@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 // import { toast, useToast } from "@/hooks/use-toast";
 import { BASE_URL } from "@/lib/constants";
+import PropertiesList from "@/components/ui/PropertiesList";
 import { useEffect, useState } from "react";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -87,14 +88,21 @@ const OwnerDashboard = () => {
       });
       if (response.ok) {
         const grievances = await response.json();
+        //console.log("✅ Grievances fetched successfully:", grievances);
+        //console.log("📊 Total grievances:", grievances.length);
+        if (grievances.length > 0) {
+          //console.log("🔍 First grievance structure:", grievances[0]);
+          //console.log("🆔 First grievance ID:", grievances[0].id);
+          //console.log("📝 First grievance title:", grievances[0].title);
+        }
         setGrievanceData(grievances);
-        // console.log(grievances);
-        // toast.success("grievances data fetched successfully");
       } else {
-        // toast.error("Failed to fetch grievances data");
+        //console.error("❌ Response not ok:", response.status, response.statusText);
+        const errorText = await response.text();
+        //console.error("📄 Error details:", errorText);
       }
     } catch (error) {
-              // console.log(error);
+              // //console.log(error);
               // toast.error(
               //   "Failed to fetch grievances data  because of method is wrong"
               // );
@@ -142,48 +150,78 @@ const OwnerDashboard = () => {
 
   const handleGrievanceEditSubmit = async (e: any) => {
     e.preventDefault();
+    //console.log("🔄 Starting edit process...");
+    //console.log("📝 Selected Grievance:", SelectedGrievance);
+    //console.log("✏️ Edit Data:", grievanceEdit);
+    //console.log("🆔 Using ID:", SelectedGrievance?.id);
+    
+    if (!SelectedGrievance?.id) {
+      //console.error("❌ No id found for selected grievance");
+      return;
+    }
+    
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `${BASE_URL}grievances/${SelectedGrievance.slug}/`,
+        `${BASE_URL}grievances/${SelectedGrievance.id}/`,
         {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(grievanceEdit),
+          body: JSON.stringify({
+            user: grievanceEdit.user,
+            category: grievanceEdit.category,
+            priority: grievanceEdit.priority,
+            title: grievanceEdit.title,
+            description: grievanceEdit.description,
+            property_id: grievanceEdit.property_id,
+            transaction_id: grievanceEdit.transaction_id,
+          }),
         }
       );
       if (response.ok) {
         const grievanceUpdate = await response.json();
-        // console.log(grievanceUpdate);
+        // //console.log(grievanceUpdate);
         setSelectedGrievance(grievanceUpdate);
         setGrievanceDataEditMode(false);
         // optionatly refresh the customer data list
         setGrievanceData((prev) =>
           prev.map((grievance) =>
-            grievance.slug === grievanceUpdate.slug
+            grievance.id === grievanceUpdate.id
               ? grievanceUpdate
               : grievance
           )
         );
         // toast.success("grievances data updated successfully");
       } else {
-        // console.log("Failed to update grievances data");
+        // //console.log("Failed to update grievances data");
       }
     } catch (error) {
-      // console.log(error);
+      // //console.log(error);
     }
   };
 
   // Grievance Delete
 
-  const handleGrievanceDelete = async (slug: string) => {
+  const handleGrievanceDelete = async (id: string) => {
+    // //console.log("🗑️ Starting delete process...");
+    // //console.log("🆔 Deleting ID:", id);
+    
+    if (!id) {
+      //console.error("❌ No id provided for delete");
+      return;
+    }
+    if (!id) {
+      //console.error("No id provided for delete");
+      return;
+    }
+    
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `${BASE_URL}grievances/${slug}/`,
+        `${BASE_URL}grievances/${id}/`,
         {
           method: "DELETE",
           headers: {
@@ -194,7 +232,7 @@ const OwnerDashboard = () => {
       );
       if (response.ok) {
         setGrievanceData((prev) =>
-          prev.filter((grievances) => grievances.slug !== slug)
+          prev.filter((grievances) => grievances.id !== id)
         );
         setGrievanceOpen(false);
         // toast.success("grievances data deleted successfully");
@@ -202,7 +240,7 @@ const OwnerDashboard = () => {
        // toast.error("Failed to delete grievances data");
       }
     } catch (error) {
-      // console.log(error);
+      // //console.log(error);
       // toast.error(
       //   "Failed to delete grievances data because of method is wrong"
       // );
@@ -223,6 +261,7 @@ const OwnerDashboard = () => {
       property_status: string;
       rera_approved: boolean;
       listed_on: string;
+      images?: Array<{ image: string; }>;
     }
 
     const fetchProperties = async () => {
@@ -238,11 +277,11 @@ const OwnerDashboard = () => {
           const data = await response.json();
           setProperties(data.results || data || []);
         } else {
-          console.error("Failed to fetch properties:", response.status);
+          //console.error("Failed to fetch properties:", response.status);
           //toast.error("Failed to fetch properties.");
         }
       } catch (error) {
-        console.error("Error fetching properties:", error);
+        //console.error("Error fetching properties:", error);
        // toast.error("An error occurred while fetching properties.");
       } finally {
         setPropertiesLoading(false);
@@ -310,18 +349,18 @@ const OwnerDashboard = () => {
             </div>
           ) : properties.length > 0 ? (
             <div className="space-y-3 sm:space-y-4">
-              {properties.map((property: Property) => (
+              {properties.slice(0, 6).map((property: Property) => (
                 <div
                   key={property.id}
                   className="group p-3 sm:p-6 rounded-xl border border-gray-200 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg hover:scale-[1.01] hover:border-blue-200"
                 >
                   {/* Mobile Layout */}
                   <div className="block sm:hidden">
-                    <div className="flex items-start gap-3 mb-3">
+                    <div className="flex items-start justify-between gap-3 mb-3">
                       {/* Image on the left */}
                       <div className="relative flex-shrink-0">
                         <img
-                          src={"/delhi.jpg"}
+                          src={property.images && property.images.length > 0 ? property.images[0].image : '/placeholder.svg'}
                           alt={property.title}
                           className="w-16 h-16 object-cover rounded-lg border-2 border-gray-200 group-hover:border-blue-300 transition-colors duration-300 shadow-sm"
                         />
@@ -389,10 +428,10 @@ const OwnerDashboard = () => {
                     </div>
                   </div>
                   {/* Desktop Layout */}
-                  <div className="hidden sm:flex items-start gap-5">
+                  <div className="hidden sm:flex items-start justify-between gap-5">
                     <div className="relative flex-shrink-0">
                       <img
-                        src={"/delhi.jpg"}
+                        src={property.images && property.images.length > 0 ? property.images[0].image : '/placeholder.svg'}
                         alt={property.title}
                         className="w-20 h-20 object-cover rounded-xl border-2 border-gray-200 group-hover:border-blue-300 transition-colors duration-300 shadow-sm"
                       />
@@ -665,6 +704,10 @@ const OwnerDashboard = () => {
                   <div
                     key={index}
                     onClick={() => {
+                      //console.log("🖱️ Clicked grievance:", grievances);
+                      //console.log("🆔 Grievance ID:", grievances.id);
+                      //console.log("📝 Grievance title:", grievances.title);
+                      //console.log("📊 Grievance status:", grievances.status);
                       setSelectedGrievance(grievances);
                       setGrievanceEdit(grievances);
                       setGrievanceOpen(true);
@@ -1033,7 +1076,7 @@ const OwnerDashboard = () => {
                           <Button
                             variant="destructive"
                             onClick={() =>
-                              handleGrievanceDelete(SelectedGrievance.slug)
+                              handleGrievanceDelete(SelectedGrievance.id)
                             }
                             className="w-full sm:w-auto text-sm"
                           >
