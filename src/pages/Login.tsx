@@ -60,7 +60,11 @@ const Login = ({ setisLoggeIn, setisregister }) => {
     delete axios.defaults.headers.common['Authorization'];
 
     try {
-      // console.log("📡 Sending login request...");
+      console.log("📡 Sending login request...");
+      
+      // Get CSRF token if available
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+      
       const response = await axios.post(
         `${BASE_URL}login/`,
         {
@@ -68,13 +72,17 @@ const Login = ({ setisLoggeIn, setisregister }) => {
           password: loginData.password,
         },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            ...(csrfToken && { "X-CSRFToken": csrfToken })
+          },
           withCredentials: false,
         }
       );
 
-      // console.log("✅ Login response status:", response.status);
-      // console.log("📄 Login response data:", response.data);
+      console.log("✅ Login response status:", response.status);
+      console.log("📄 Login response data:", response.data);
 
       ////console.log("API Response:", response.data);
 

@@ -67,7 +67,11 @@ const Register = ({ setisLoggeIn, setisregister }) => {
       showSuccessToast(
         "Registration successful! Please check your email to verify your account."
       );
-      navigate("/check-email"); // Navigate to a page instructing user to check email
+      
+      // Reduce delay from 2-4 seconds to 1 second
+      setTimeout(() => {
+        navigate("/check-email");
+      }, 1000);
 
     } catch (error: any) {
       console.error("Registration error:", error);
@@ -87,7 +91,11 @@ const Register = ({ setisLoggeIn, setisregister }) => {
   const handleOtpSuccess = () => {
     setOtpModal(false);
     showSuccessToast("Account verified successfully! Please log in.");
-    navigate("/login");
+    
+    // Reduce delay to 1 second
+    setTimeout(() => {
+      navigate("/login");
+    }, 1000);
   };
 
   return (
