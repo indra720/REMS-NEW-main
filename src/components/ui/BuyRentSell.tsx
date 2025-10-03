@@ -336,7 +336,7 @@ const BuyRentSell = () => {
             <Button
               onClick={handlelink}
               size="lg"
-              className="bg-gradient-hero  hover:bg-purple-600 bg-purple-600 text-white border-0 shadow-glow hover:shadow-elegant transition-all duration-300 px-8 sm:px-12 py-6 text-lg"
+              className="  group-hover:bg-purple-600 bg-purple-400  border-0 shadow-glow hover:shadow-elegant transition-all duration-300 px-8 sm:px-12 py-6 text-lg"
             >
               View All{" "}
               {activeTab === "buy"

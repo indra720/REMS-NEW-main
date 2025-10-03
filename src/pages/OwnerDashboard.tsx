@@ -952,7 +952,7 @@ const OwnerDashboard = () => {
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 gap-3 sm:gap-4">
                         {/* User ID */}
-                        <div className="p-2 sm:p-3 border rounded-lg">
+                        {/* <div className="p-2 sm:p-3 border rounded-lg">
                           <div className="flex items-start gap-2">
                             <User className="h-4 w-4 text-purple-600 flex-shrink-0 mt-1" />
                             <div className="flex flex-col w-full">
@@ -964,7 +964,7 @@ const OwnerDashboard = () => {
                               </p>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
 
                         {/* Category */}
                         <div className="p-2 sm:p-3 border rounded-lg">

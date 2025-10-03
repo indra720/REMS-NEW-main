@@ -753,7 +753,7 @@ const Dashboard = () => {
                                       key={prop.id}
                                       value={prop.id.toString()}
                                     >
-                                      {prop.title} (#{prop.id})
+                                      {prop.title} ({prop.id})
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -796,7 +796,7 @@ const Dashboard = () => {
                                     Visit ID
                                   </label>
                                   <p className="font-semibold text-lg">
-                                    #{visit.id}
+                                    {visit.id}
                                   </p>
                                 </div>
                                 <div className="p-2 border rounded-lg">

@@ -202,7 +202,7 @@ const VideoTours = () => {
           </div>
         ) : featuredProperty && (
           <div className="mb-16">
-            <Card className="overflow-hidden bg-gradient-to-br from-background to-secondary/20 border border-border/50 shadow-elegant">
+            <Card className="overflow-hidden  bg-gradient-to-br from-background to-secondary/20 border border-border/50 shadow-elegant">
               <div className="grid lg:grid-cols-2 gap-8 p-2 sm:p-8">
                 <div
                   className="relative group cursor-pointer"
@@ -214,7 +214,7 @@ const VideoTours = () => {
                       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500"
                     }
                     alt={featuredProperty.title}
-                    className="w-full h-57 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-57 object-cover rounded-2xl group-hover:scale-100 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-black/30 rounded-2xl flex items-center justify-center group-hover:bg-black/20 transition-colors duration-300">
                     <Button

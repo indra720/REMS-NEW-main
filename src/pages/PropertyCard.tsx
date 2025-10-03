@@ -22,6 +22,7 @@ import { useState } from "react";
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import Brochure from '../components/Brochure';
 import { useNavigate } from "react-router-dom";
+import ContactUsPopup from '../components/ContactUsPopup';
 // import { toast } from 'react-toastify';
 
 interface PropertyCardProps {
@@ -105,6 +106,7 @@ export function PropertyCard(props: PropertyCardProps) {
 
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isContactPopupOpen, setIsContactPopupOpen] = useState(false);
 
   // Get images array, prioritizing API images over single image
   const displayImages = images.length > 0 
@@ -134,7 +136,8 @@ export function PropertyCard(props: PropertyCardProps) {
   };
 
   return (
-    <Card className="first-card  group overflow-hidden bg-gradient-card shadow-soft hover:shadow-medium transition-all duration-300 border-border/50 h-full sm:m-0">
+    <>
+      <Card className="first-card  group overflow-hidden bg-gradient-card shadow-soft hover:shadow-medium transition-all duration-300 border-border/50 h-full sm:m-0">
       <div className={`flex ${layout === 'grid' || isProfileView ? 'flex-col' : 'flex-col md:flex-row'} h-full`}>
         {/* Image Section with Carousel */}
         <div
@@ -425,7 +428,7 @@ export function PropertyCard(props: PropertyCardProps) {
                 </Button>
                 <Button
                   className="text-[#7f23cf] bg-transparent border hover:bg-purple-600 hover:text-white font-medium text-xs"
-                  onClick={() => navigate('/contact')}
+                  onClick={() => setIsContactPopupOpen(true)}
                 >
                   Contact
                 </Button>
@@ -445,5 +448,11 @@ export function PropertyCard(props: PropertyCardProps) {
         </CardContent>
       </div>
     </Card>
+    
+    <ContactUsPopup 
+      isOpen={isContactPopupOpen} 
+      onClose={() => setIsContactPopupOpen(false)} 
+    />
+  </>
   );
 }
