@@ -60,7 +60,7 @@ const Login = ({ setisLoggeIn, setisregister }) => {
     delete axios.defaults.headers.common['Authorization'];
 
     try {
-      console.log("📡 Sending login request...");
+      // console.log("📡 Sending login request...");
       
       // Get CSRF token if available
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;

@@ -425,9 +425,9 @@ export function PropertyCard(props: PropertyCardProps) {
                 </Button>
                 <Button
                   className="text-[#7f23cf] bg-transparent border hover:bg-purple-600 hover:text-white font-medium text-xs"
-                  onClick={() => navigate(`/book-visit/${id}`)}
+                  onClick={() => navigate('/contact')}
                 >
-                  Book Visit
+                  Contact
                 </Button>
                 <PDFDownloadLink document={<Brochure property={property} />} fileName={`${property.slug}-brochure.pdf`}>
                   {({ blob, url, loading, error }) =>
