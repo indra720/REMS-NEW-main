@@ -45,13 +45,24 @@ const PropertySearch = ({ onFilterChange }) => {
   useEffect(() => {
     const fetchProperties = async () => {
       const token = localStorage.getItem("access_token");
-      const url = new URL(`${BASE_URL}properties/`);
+      const url = new URL(`${BASE_URL}properties/search/`);
 
+      // Get URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const typeParam = urlParams.get('type');
+      const locationParam = urlParams.get('location');
+
+      if (typeParam) {
+        url.searchParams.append("type", typeParam);
+      }
+      if (locationParam) {
+        url.searchParams.append("location", locationParam);
+      }
       if (searchParams.keyword) {
-        url.searchParams.append("search", searchParams.keyword);
+        url.searchParams.append("q", searchParams.keyword);
       }
       if (searchParams.propertyType && searchParams.propertyType !== "all") {
-        url.searchParams.append("property_type", searchParams.propertyType);
+        url.searchParams.append("type", searchParams.propertyType);
       }
 
       try {

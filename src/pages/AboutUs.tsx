@@ -10,14 +10,19 @@ const AboutUs = () => {
   
 
   const handleBrowseProperties = () => {
-    toast({ title: "Browse Properties", description: "Redirecting to property listings..." });
+    // toast({ title: "Browse Properties", description: "Redirecting to property listings..." });
     window.location.href = '/search';
   };
 
   const handleContactUs = () => {
-    toast({ title: "Contact Us", description: "Redirecting to contact page..." });
+    // toast({ title: "Contact Us", description: "Redirecting to contact page..." });
     window.location.href = '/contact';
   };
+
+
+
+
+// static data
 
   const stats = [
     { number: "10M+", label: "Happy Customers", icon: Users },

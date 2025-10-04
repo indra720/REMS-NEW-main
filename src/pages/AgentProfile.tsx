@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { Star, Phone, Mail, MapPin, Building, Users, Award, Calendar, MessageCircle, Heart, Eye } from "lucide-react";
+import { Star, Phone, Mail, MapPin, Building, Users, Award, Calendar, MessageCircle, Heart, Eye, Camera } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
@@ -299,12 +299,30 @@ const AgentProfile = () => {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {propertydata.map((property) => (
                 <Card key={property.id} className="hover:shadow-lg transition-all duration-300">
-                  <div className="relative h-48">
-                    <img 
-                      src={property.image} 
-                      alt={property.title}
-                      className="w-full h-full object-cover rounded-t-lg"
-                    />
+                  <div className="relative h-30">
+                     {property.images && property.images.length > 0 ? (
+                      <>
+                        <img
+                          src={property.images[0].image}
+                          alt={property.title}
+                          className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                        <Badge
+                          className={`absolute z-50 top-3 left-3 ${
+                            property.category?.toLowerCase().trim() === "rent"
+                              ? "bg-green-500 text-white"
+                              : "bg-yellow-500 text-black"
+                          }`}
+                        >
+                          {property.category}
+                        </Badge>
+                       
+                      </>
+                    ) : (
+                      <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
+                        <Camera className="w-12 h-12 text-gray-400" />
+                      </div>
+                    )}
                     <Badge className="absolute top-3 left-3 bg-purple-600">{property.category}</Badge>
                     <Button 
                       variant="ghost" 

@@ -52,7 +52,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import PropertyCard2 from "@/components/ui/PropertyCard2";
 import SearchInterface from "@/components/ui/SearchInterface";
-import { SearchProvider } from "../context/SearchContext";
+import { SearchProvider, useSearch } from "../context/SearchContext";
 import PropertyCategories from "@/components/ui/PropertyCategories";
 import BuyRentSell from "@/components/ui/BuyRentSell";
 import VideoTours from "@/components/ui/VideoTours";
@@ -66,6 +66,7 @@ import Header from "@/components/Header";
 import { fetchProperties as fetchPropertiesAPI, fetchAIProperties } from "@/lib/api";
 import { BASE_URL } from "@/lib/constants";
 import videoApartment from "@/Video/apartment.mp4";
+import backgroundVideo from "@/assets/backgroundVideo.mp4";
 
 import sharmaPriyaImg from '../assets/images/sharma_priya.jpg';
 import amitkumarImg from "../assets/images/amitkumar.webp";
@@ -120,6 +121,7 @@ interface PropertyService {
 
 const Index = () => {
   const navigate = useNavigate();
+  const { setSearchParams } = useSearch(); // Get setSearchParams from context
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -505,7 +507,7 @@ const Index = () => {
   };
 
   const handleCategorySelect = (category: string) => {
-    navigate(`/search?category=${category}`);
+    navigate(`/search?type=${encodeURIComponent(category)}`);
   };
 
   const [propertydata, setpropertydata] = useState<any[]>([]);
@@ -547,8 +549,15 @@ const Index = () => {
             muted
             playsInline
             className="w-full h-full object-cover"
+            onError={(e) => {
+              console.log('Video failed to load, using fallback');
+              const video = e.target as HTMLVideoElement;
+              video.src = 'https://cdn.pixabay.com/video/2025/08/12/296958_large.mp4';
+            }}
           >
+            <source src={backgroundVideo} type="video/mp4" />
             <source src={videoApartment} type="video/mp4" />
+            <source src="https://cdn.pixabay.com/video/2025/08/12/296958_large.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>

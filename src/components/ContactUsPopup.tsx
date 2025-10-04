@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
 import { BASE_URL } from "../lib/constants";
+import axiosInstance from "../utils/axios"; // Import axiosInstance
+import { useToast } from "../hooks/use-toast"; // Import useToast
 
 interface ContactUsPopupProps {
   isOpen: boolean;
@@ -19,10 +21,16 @@ const ContactUsPopup: React.FC<ContactUsPopupProps> = ({ isOpen, onClose }) => {
     subject: '',
     message: ''
   });
+  const { toast } = useToast(); // Initialize toast
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email) {
+      toast({
+        title: "Required Fields Missing",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
       return;
     }
     
@@ -31,20 +39,18 @@ const ContactUsPopup: React.FC<ContactUsPopupProps> = ({ isOpen, onClose }) => {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
+        subject: formData.subject, // Include subject
+        message: formData.message, // Include message
         status: 'New'
       };
 
-      const token = localStorage.getItem("access_token");
-      const response = await fetch(`${BASE_URL}leads/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(contactData)
-      });
+      const response = await axiosInstance.post(`${BASE_URL}leads/`, contactData);
 
-      if (response.ok) {
+      if (response.status === 201 || response.status === 200) {
+        toast({
+          title: "Message Sent Successfully",
+          description: "We'll get back to you within 24 hours.",
+        });
         setFormData({
           name: '',
           email: '',
@@ -53,9 +59,16 @@ const ContactUsPopup: React.FC<ContactUsPopupProps> = ({ isOpen, onClose }) => {
           message: ''
         });
         onClose();
+      } else {
+        throw new Error(response.data.message || 'Failed to send message');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to send message. Please try again.",
+        variant: "destructive"
+      });
     }
   };
 

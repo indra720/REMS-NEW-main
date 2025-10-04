@@ -54,17 +54,17 @@ Generated on: ${new Date().toLocaleDateString()}
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    toast({
-      title: "Report Downloaded",
-      description: "EMI calculation report has been downloaded successfully",
-    });
+    // toast({
+    //   title: "Report Downloaded",
+    //   description: "EMI calculation report has been downloaded successfully",
+    // });
   };
 
   const handleViewChart = () => {
-    toast({
-      title: "Chart View",
-      description: "Interactive EMI breakdown chart will be displayed here",
-    });
+    // toast({
+    //   title: "Chart View",
+    //   description: "Interactive EMI breakdown chart will be displayed here",
+    // });
   };
 
   return (

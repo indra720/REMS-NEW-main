@@ -76,7 +76,7 @@ const propertyTypeLabelToApiIdMap: { [key: string]: number | undefined } = {
 export const Index2 = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { searchResults, setSearchParams } = useSearch(); // Use searchResults and setSearchParams from context
+  const { searchResults, setSearchParams, searchParams } = useSearch(); // Use searchResults, setSearchParams, and searchParams from context
   // console.log("Index2: searchResults from context:", searchResults);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -88,7 +88,8 @@ export const Index2 = () => {
   const initialSearchTerm = urlSearchParams.get('q') || '';
   const initialPropertyType = urlSearchParams.get('type') || 'all';
   const initialSelectedCity = urlSearchParams.get('location') || '';
-  const initialSelectedCategory = urlSearchParams.get('category') || '';
+  // Derive selectedCategory directly from searchParams
+  const selectedCategory = searchParams.category; // Use searchParams.category from context
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [propertyType, setPropertyType] = useState(initialPropertyType);
@@ -96,7 +97,6 @@ export const Index2 = () => {
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [selectedCity, setSelectedCity] = useState(initialSelectedCity);
-  const [selectedCategory, setSelectedCategory] = useState(initialSelectedCategory);
   const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null); // New state for selected property ID
 
   // Property states
@@ -208,6 +208,19 @@ export const Index2 = () => {
       useEffect(() => {
         let filtered = [...searchResults]; // Start with searchResults from context
     
+        // Property type mapping (based on your backend data)
+        const propertyTypeMap: { [key: number]: string } = {
+          1: "Apartment",
+          2: "Villa", 
+          3: "PentHouse",
+          4: "Commercial",
+          5: "Retail",
+          6: "Houses",
+          7: "Plots",
+          8: "Vacation",
+          9: "Industrial"
+        };
+    
         // Get search parameters from URL for filtering
         const searchParams = new URLSearchParams(location.search);
         const urlSearchQuery = searchParams.get("q");
@@ -239,7 +252,11 @@ export const Index2 = () => {
           }
     
           if (urlSearchType && urlSearchType !== "all-residential") {
-            // ... (filtering logic from before)
+            // Filter by property type from URL parameter
+            filtered = filtered.filter((p) => {
+              const propertyTypeName = propertyTypeMap[p.property_type] || "";
+              return propertyTypeName.toLowerCase() === urlSearchType.toLowerCase();
+            });
           }
     
           if (selectedCity) {

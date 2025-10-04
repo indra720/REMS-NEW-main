@@ -58,7 +58,7 @@ const VideoTours = () => {
     const fetchProperties = async () => {
       try {
         // For now, use static data since backend requires authentication
-        console.log("📄 Using static data (backend requires auth)");
+        //console.log("📄 Using static data (backend requires auth)");
         setProperties(staticVideoData);
         setLoading(false);
         return;
@@ -73,7 +73,7 @@ const VideoTours = () => {
         //   setProperties(staticVideoData);
         // }
       } catch (error) {
-        console.error("❌ Error fetching properties:", error);
+        //console.error("❌ Error fetching properties:", error);
         setProperties(staticVideoData);
       } finally {
         setLoading(false);
@@ -259,7 +259,7 @@ const VideoTours = () => {
                     <Button
                       onClick={() => setSelectedVideo(videos[0])}
                       size="lg"
-                      className="bg-gradient-hero w-full mb-2 hover:bg-purple-600 bg-purple-600 text-white border-0 shadow-glow hover:shadow-elegant transition-all duration-300"
+                      className="bg-gradient-hero w-full mb-2 hover:bg-purple-600 bg-purple-400 text-white border-0 shadow-glow hover:shadow-elegant transition-all duration-300"
                     >
                       <Play className="w-5 h-5 mr-2" />
                       Watch Tour

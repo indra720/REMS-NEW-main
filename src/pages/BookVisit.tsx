@@ -57,9 +57,9 @@ const BookVisit = () => {
       return false;
     }
 
-    console.log("=== SENDING DATA ===");
-    console.log("Visit Data:", visitData);
-    console.log("===================");
+    //console.log("=== SENDING DATA ===");
+    //console.log("Visit Data:", visitData);
+    //console.log("===================");
 
     try {
       const response = await fetch(`${BASE_URL}visits/`, {
@@ -74,14 +74,14 @@ const BookVisit = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Visit booked successfully:", result);
+        //console.log("Visit booked successfully:", result);
         return true;
       } else {
         const errorData = await response.json();
-        console.error("=== API ERROR ===");
-        console.error("Status:", response.status);
-        console.error("Error Data:", errorData);
-        console.error("================");
+        //console.error("=== API ERROR ===");
+        //console.error("Status:", response.status);
+        //console.error("Error Data:", errorData);
+        //console.error("================");
         
         // Show specific error message
         let errorMessage = "Failed to book visit. Please try again.";
@@ -99,7 +99,7 @@ const BookVisit = () => {
         return false;
       }
     } catch (error) {
-      console.error("Network Error:", error);
+      //console.error("Network Error:", error);
       showErrorToast("Unable to connect to server. Please try again.");
       return false;
     }
@@ -117,13 +117,13 @@ const BookVisit = () => {
       
       if (response.ok) {
         const userData = await response.json();
-        console.log("User data from API:", userData);
+        //console.log("User data from API:", userData);
         return userData.pk || userData.id || userData.user_id;
       } else {
-        console.error("Failed to fetch user data:", response.status);
+        //console.error("Failed to fetch user data:", response.status);
       }
     } catch (error) {
-      console.error("Error fetching user ID:", error);
+      //console.error("Error fetching user ID:", error);
     }
     return null;
   };
@@ -168,7 +168,7 @@ const BookVisit = () => {
     if (timeDiff <= 0) {
       // If time is in past or too close, add 30 minutes buffer
       appointmentDateTime.setMinutes(appointmentDateTime.getMinutes() + 30);
-      //console.log("Added buffer time - new appointment time:", appointmentDateTime.toISOString());
+      ////console.log("Added buffer time - new appointment time:", appointmentDateTime.toISOString());
     }
 
     return appointmentDateTime;
@@ -191,11 +191,11 @@ const BookVisit = () => {
         
         if (Array.isArray(properties) && properties.length > 0) {
           finalPropertyId = properties[0].id;
-          console.log("Found property ID:", finalPropertyId);
+          //console.log("Found property ID:", finalPropertyId);
         }
       }
     } catch (error) {
-      console.error("Error fetching properties:", error);
+      //console.error("Error fetching properties:", error);
     }
 
     if (!finalPropertyId) {
@@ -237,7 +237,7 @@ const BookVisit = () => {
         preferred_time: appointmentDateTime.toISOString(),
       };
 
-      console.log("Final visit data:", visitData);
+      //console.log("Final visit data:", visitData);
       const success = await bookVisit(visitData);
       
       if (success) {

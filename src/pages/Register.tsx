@@ -74,7 +74,7 @@ const Register = ({ setisLoggeIn, setisregister }) => {
       }, 1000);
 
     } catch (error: any) {
-      console.error("Registration error:", error);
+      //console.error("Registration error:", error);
       let errorMessage = "An unexpected error occurred during registration.";
       if (error.response && error.response.data) {
         // Display the specific validation error from the Django backend

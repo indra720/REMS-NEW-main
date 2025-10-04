@@ -177,7 +177,7 @@ const SearchInterface = () => {
                 "text-xs sm:text-sm px-3 py-1 sm:py-2 rounded-none",
                 activeSearchTab === tab
                   ? "text-purple-600 border-b-2 border-purple-600 bg-transparent hover:bg-transparent"
-                  : "text-gray-600 hover:text-purple-600"
+                  : "text-gray-600 hover:text-purple-600 hover:bg-transparent"
               )}
               onClick={() => {
                 setActiveSearchTab(tab);
@@ -254,8 +254,8 @@ const SearchInterface = () => {
             {popularSearches.map((search, index) => (
               <Button
                 key={index}
-                variant="outline"
-                className="text-gray-600 border-gray-200 hover:border-primary hover:text-primary rounded-full text-xs sm:text-sm px-3 py-1.5"
+                
+                className="text-gray-600 border-gray-200 hover:border-primary bg-transparent hover:bg-transparent hover:text-purple-600 rounded-full text-xs sm:text-sm px-3 py-1.5"
                 onClick={() => handlePopularSearch(search)}
               >
                 {search}

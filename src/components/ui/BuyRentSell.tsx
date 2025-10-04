@@ -256,7 +256,7 @@ const BuyRentSell = () => {
 
         {/* Tab Navigation */}
         <div className="flex justify-center mb-12">
-          <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-2 border border-border/50 shadow-card">
+          <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-2 border border-border/50 shadow-lg">
             {[
               { id: "buy", label: "Buy Properties", icon: Home },
               { id: "rent", label: "Rent Properties", icon: Key },
@@ -332,7 +332,7 @@ const BuyRentSell = () => {
 
         {/* View More Button */}
         {(activeTab === "buy" || activeTab === "rent") && (
-          <div className="text-center mt-16">
+          <div className="text-center mt-16 ">
             <Button
               onClick={handlelink}
               size="lg"
