@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { formatPrice } from "../utils/priceFormatter";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { PDFDownloadLink } from '@react-pdf/renderer';
@@ -285,7 +286,7 @@ export function PropertyCard(props: PropertyCardProps) {
               {/* Price & Builder */}
               <div className="flex items-baseline justify-between gap-4">
                 {price && (
-                  <div className="text-2xl font-bold text-primary text-[#7f23cf]">{price}</div>
+                  <div className="text-2xl font-bold text-primary text-[#7f23cf]">{formatPrice(price)}</div>
                 )}
                 {builder && (
                   <p className="text-sm text-muted-foreground">by {builder}</p>
@@ -346,7 +347,7 @@ export function PropertyCard(props: PropertyCardProps) {
                       </span>
                     </div>
                     <span className="font-semibold text-sm text-purple-600">
-                      ₹{option.price}
+                      {formatPrice(option.price)}
                     </span>
                   </div>
                 ))}
@@ -432,7 +433,7 @@ export function PropertyCard(props: PropertyCardProps) {
                 >
                   Contact
                 </Button>
-                <PDFDownloadLink document={<Brochure property={property} />} fileName={`${property.slug}-brochure.pdf`}>
+                                <PDFDownloadLink document={<Brochure property={property} />} fileName={`${property.slug}-brochure.pdf`}>
                   {({ blob, url, loading, error }) =>
                     loading ? 'Loading document...' : <Button
                       variant="secondary"

@@ -14,7 +14,7 @@ const Testimonials = () => {
       role: "Software Engineer",
       location: "Mumbai",
       rating: 5,
-      comment: "Amazing experience! Found my dream home in just 2 weeks. The virtual tour feature helped me narrow down my choices before visiting. Highly recommended!",
+      comment: "Amazing experience! Found my dream home in just 2 weeks. The virtual tour feature helped me narrow down my choices before visiting.",
       property: "2BHK Apartment in Bandra",
       image:sharmaPriyaImg,
     },

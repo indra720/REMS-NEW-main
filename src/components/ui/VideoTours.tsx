@@ -1,3 +1,4 @@
+import { formatPrice } from "../../utils/priceFormatter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -57,23 +58,17 @@ const VideoTours = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        // For now, use static data since backend requires authentication
-        //console.log("📄 Using static data (backend requires auth)");
-        setProperties(staticVideoData);
-        setLoading(false);
-        return;
-        
-        // Uncomment below when backend is made public
-        // const response = await fetch(`${BASE_URL}properties/`);
-        // if (response.ok) {
-        //   const data = await response.json();
-        //   console.log("✅ Properties fetched:", data);
-        //   setProperties(data.slice(0, 4));
-        // } else {
-        //   setProperties(staticVideoData);
-        // }
+        const response = await fetch(`${BASE_URL}properties/top-video-properties/`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("✅ Video Properties fetched:", data);
+          setProperties(data);
+        } else {
+          console.log("📄 Using static data (API error)");
+          setProperties(staticVideoData);
+        }
       } catch (error) {
-        //console.error("❌ Error fetching properties:", error);
+        console.error("❌ Error fetching properties:", error);
         setProperties(staticVideoData);
       } finally {
         setLoading(false);
@@ -163,6 +158,10 @@ const VideoTours = () => {
     }
   };
 
+
+  const [propertyData,setpropertydata]=useState([])
+  
+
   return (
     <section className="py-24 bg-gradient-to-br from-background via-primary/5 to-background relative overflow-hidden">
       <VideoPlayerModal
@@ -206,7 +205,7 @@ const VideoTours = () => {
               <div className="grid lg:grid-cols-2 gap-8 p-2 sm:p-8">
                 <div
                   className="relative group cursor-pointer"
-                  onClick={() => setSelectedVideo(videos[0])}
+                  onClick={() => setSelectedVideo(featuredProperty.videos?.[0]?.video || videos[0])}
                 >
                   <img
                     src={
@@ -246,8 +245,7 @@ const VideoTours = () => {
                       </span>
                     </div>
                     <div className="flex items-center text-purple-600 text-2xl font-bold mb-4">
-                     <IndianRupee/>
-                      {featuredProperty.price}
+                      {formatPrice(featuredProperty.price)}
                     </div>
                     <p className="text-lg text-muted-foreground leading-relaxed">
                       {featuredProperty.description ||
@@ -257,7 +255,7 @@ const VideoTours = () => {
 
                   <div className=" sm:flex sm:gap-4 ">
                     <Button
-                      onClick={() => setSelectedVideo(videos[0])}
+                      onClick={() => setSelectedVideo(featuredProperty.videos?.[0]?.video || videos[0])}
                       size="lg"
                       className="bg-gradient-hero w-full mb-2 hover:bg-purple-600 bg-purple-400 text-white border-0 shadow-glow hover:shadow-elegant transition-all duration-300"
                     >
@@ -265,7 +263,7 @@ const VideoTours = () => {
                       Watch Tour
                     </Button>
                     <Button
-                      onClick={() => handleDetailsNavigation(featuredProperty.slug, videos[0], featuredProperty)}
+                      onClick={() => handleDetailsNavigation(featuredProperty.slug, featuredProperty.videos?.[0]?.video || videos[0], featuredProperty)}
                       variant="outline"
                       size="lg"
                       className="border-border/50 w-full hover:bg-purple-600 hover:text-white"
@@ -304,7 +302,7 @@ const VideoTours = () => {
                   <Button
                     size="lg"
                     className="bg-white/90 text-purple-600 hover:bg-white rounded-full w-16 h-16 p-0 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
-                    onClick={() => setSelectedVideo(videos[(index + 1) % videos.length])}
+                    onClick={() => setSelectedVideo(video.videos?.[0]?.video || videos[(index + 1) % videos.length])}
                   >
                     <Play className="w-6 h-6" />
                   </Button>
@@ -366,14 +364,13 @@ const VideoTours = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center text-purple-600 text-xl font-bold">
                     <span className="flex justify-center items-center">
-                      <IndianRupee/>
-                      {video.price}
+                      {formatPrice(video.price)}
                     </span>
                   </div>
 
                   <Button
                     onClick={() =>
-                      setSelectedVideo(videos[(index + 1) % videos.length])
+                      setSelectedVideo(video.videos?.[0]?.video || videos[(index + 1) % videos.length])
                     }
                     size="sm"
                     variant="ghost"
@@ -388,7 +385,7 @@ const VideoTours = () => {
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDetailsNavigation(video.slug, videos[(index + 1) % videos.length], video);
+                      handleDetailsNavigation(video.slug, video.videos?.[0]?.video || videos[(index + 1) % videos.length], video);
                     }}
                   >
                     View Details

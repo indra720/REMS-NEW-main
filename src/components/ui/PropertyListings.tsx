@@ -1,3 +1,4 @@
+import { formatPrice } from "../../lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -125,8 +126,7 @@ const PropertyListings = () => {
                 </div>
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-3xl flex justify-center items-center font-bold bg-gradient-hero bg-clip-text text-purple-700">
-                    <IndianRupee />
-                    {property.price}
+                    {formatPrice(parseFloat(property.price), "₹")}
                   </span>
                   <span>{property.property_status}</span>
                   {property.type === "rent" && (

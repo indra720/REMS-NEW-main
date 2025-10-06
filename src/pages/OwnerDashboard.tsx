@@ -163,7 +163,7 @@ const OwnerDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `${BASE_URL}grievances/${SelectedGrievance.id}/`,
+        `${BASE_URL}grievances/${SelectedGrievance.slug}/`,
         {
           method: "PUT",
           headers: {
@@ -205,15 +205,15 @@ const OwnerDashboard = () => {
 
   // Grievance Delete
 
-  const handleGrievanceDelete = async (id: string) => {
+  const handleGrievanceDelete = async (slug: string) => {
     // //console.log("🗑️ Starting delete process...");
     // //console.log("🆔 Deleting ID:", id);
     
-    if (!id) {
+    if (!slug) {
       //console.error("❌ No id provided for delete");
       return;
     }
-    if (!id) {
+    if (!slug) {
       //console.error("No id provided for delete");
       return;
     }
@@ -221,7 +221,7 @@ const OwnerDashboard = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `${BASE_URL}grievances/${id}/`,
+        `${BASE_URL}grievances/${slug}/`,
         {
           method: "DELETE",
           headers: {
@@ -232,7 +232,7 @@ const OwnerDashboard = () => {
       );
       if (response.ok) {
         setGrievanceData((prev) =>
-          prev.filter((grievances) => grievances.id !== id)
+          prev.filter((grievances) => grievances.slug !== slug)
         );
         setGrievanceOpen(false);
         // toast.success("grievances data deleted successfully");
@@ -1076,7 +1076,7 @@ const OwnerDashboard = () => {
                           <Button
                             variant="destructive"
                             onClick={() =>
-                              handleGrievanceDelete(SelectedGrievance.id)
+                              handleGrievanceDelete(SelectedGrievance.slug)
                             }
                             className="w-full sm:w-auto text-sm"
                           >

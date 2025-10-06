@@ -1,3 +1,4 @@
+import { formatPrice } from "../utils/priceFormatter";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,12 +64,15 @@ import Browse_exp from "@/components/ui/browse_exp";
 import { FeaturesGrid } from "@/components/ui/features-grid";
 import { createPortal } from "react-dom";
 import Header from "@/components/Header";
-import { fetchProperties as fetchPropertiesAPI, fetchAIProperties } from "@/lib/api";
+import {
+  fetchProperties as fetchPropertiesAPI,
+  fetchAIProperties,
+} from "@/lib/api";
 import { BASE_URL } from "@/lib/constants";
 import videoApartment from "@/Video/apartment.mp4";
 import backgroundVideo from "@/assets/backgroundVideo.mp4";
 
-import sharmaPriyaImg from '../assets/images/sharma_priya.jpg';
+import sharmaPriyaImg from "../assets/images/sharma_priya.jpg";
 import amitkumarImg from "../assets/images/amitkumar.webp";
 import anitapatelImg from "../assets/images/anita paterl.jpg";
 import rajeshkumarImg from "../assets/images/rajesh.jpg";
@@ -293,7 +297,7 @@ const Index = () => {
       id: 1,
       title: "Luxury 3BHK Apartment",
       location: "Bandra West, Mumbai",
-      price: "₹2,50,00,000",
+      price: "25000000",
       rent: "₹85,000/month",
       images: [
         {
@@ -312,7 +316,7 @@ const Index = () => {
       id: 2,
       title: "Modern Villa",
       location: "Whitefield, Bangalore",
-      price: "₹1,80,00,000",
+      price: "18000000",
       rent: "₹45,000/month",
       images: [
         {
@@ -331,7 +335,7 @@ const Index = () => {
       id: 3,
       title: "Cozy 2BHK Flat",
       location: "Koregaon Park, Pune",
-      price: "₹95,00,000",
+      price: "9500000",
       rent: "₹32,000/month",
       images: [
         {
@@ -350,7 +354,7 @@ const Index = () => {
       id: 4,
       title: "Studio Apartment",
       location: "Gachibowli, Hyderabad",
-      price: "₹45,00,000",
+      price: "4500000",
       rent: "₹18,000/month",
       images: [
         {
@@ -369,7 +373,7 @@ const Index = () => {
       id: 5,
       title: "Penthouse Suite",
       location: "Cyber City, Gurgaon",
-      price: "₹4,50,00,000",
+      price: "45000000",
       rent: "₹1,20,000/month",
       images: [
         {
@@ -388,7 +392,7 @@ const Index = () => {
       id: 6,
       title: "Service Apartment",
       location: "Indiranagar, Bangalore",
-      price: "₹75,00,000",
+      price: "7500000",
       rent: "₹28,000/month",
       images: [
         {
@@ -550,14 +554,18 @@ const Index = () => {
             playsInline
             className="w-full h-full object-cover"
             onError={(e) => {
-              console.log('Video failed to load, using fallback');
+              console.log("Video failed to load, using fallback");
               const video = e.target as HTMLVideoElement;
-              video.src = 'https://cdn.pixabay.com/video/2025/08/12/296958_large.mp4';
+              video.src =
+                "https://cdn.pixabay.com/video/2025/08/12/296958_large.mp4";
             }}
           >
             <source src={backgroundVideo} type="video/mp4" />
             <source src={videoApartment} type="video/mp4" />
-            <source src="https://cdn.pixabay.com/video/2025/08/12/296958_large.mp4" type="video/mp4" />
+            <source
+              src="https://cdn.pixabay.com/video/2025/08/12/296958_large.mp4"
+              type="video/mp4"
+            />
             Your browser does not support the video tag.
           </video>
         </div>
@@ -589,7 +597,7 @@ const Index = () => {
       <PropertyCategories onCategorySelect={handleCategorySelect} />
 
       {/* Video Tour Section */}
-      <VideoTours  />
+      <VideoTours />
       <Browse_exp />
 
       {/* Featured Properties with Enhanced Design */}
@@ -604,7 +612,11 @@ const Index = () => {
             </p>
 
             <div className="flex justify-center mt-8">
-              <Tabs defaultValue="all" className="w-auto" onValueChange={(value) => setActivePremiumTab(value)}>
+              <Tabs
+                defaultValue="all"
+                className="w-auto"
+                onValueChange={(value) => setActivePremiumTab(value)}
+              >
                 <TabsList>
                   <TabsTrigger value="all">All Properties</TabsTrigger>
                   <TabsTrigger value="sale">For Sale</TabsTrigger>
@@ -615,7 +627,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPremiumProperties.slice(0,3).map((property, index) => (
+            {filteredPremiumProperties.slice(0, 3).map((property, index) => (
               <Card
                 key={property.id}
                 className="group hover:shadow-elegant transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-gradient-to-br from-background to-secondary/20 border border-border/50 animate-fade-in"
@@ -664,11 +676,13 @@ const Index = () => {
 
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-3xl font-bold bg-gradient-hero bg-clip-text text-purple-700">
-                      ₹{parseFloat(property.price).toLocaleString('en-IN')}
+                      {formatPrice(property.price)}
                     </span>
                     <span>{property.property_status}</span>
                     {activePremiumTab === "rent" && (
-                      <span className="text-sm text-muted-foreground">/month</span>
+                      <span className="text-sm text-muted-foreground">
+                        /month
+                      </span>
                     )}
                   </div>
 
@@ -703,7 +717,8 @@ const Index = () => {
                     </Button>
                     <Button
                       size="sm"
-                      className="bg-gradient-hero bg-purple-400 hover:bg-purple-600 text-white border-0" onClick={() => navigate("/contact")}
+                      className="bg-gradient-hero bg-purple-400 hover:bg-purple-600 text-white border-0"
+                      onClick={() => navigate("/contact")}
                     >
                       Contact
                     </Button>
@@ -788,13 +803,13 @@ const Index = () => {
       </section>
 
       {/* Expert Agents Section */}
-      <section className="py-20 bg-purple">
+      <section className="py-20 bg-gradient-to-b from-purple-50 to-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold mb-4">
-              Meet Our <span className="text-purple-600">Expert Agents</span>{" "}
+            <h2 className="text-5xl font-bold mb-4 text-gray-900">
+              Meet Our <span className="text-purple-600">Expert Agents</span>
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Trusted professionals to guide your property journey
             </p>
           </div>
@@ -803,62 +818,98 @@ const Index = () => {
             {agents.map((agent) => (
               <Card
                 key={agent.id}
-                className="card-hover text-center overflow-hidden"
+                className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 bg-white"
               >
-                <CardContent className="p-8 bg-gray-50">
-                  <div className="relative mb-6">
-                    <img
-                      src={agent.image}
-                      alt={agent.name}
-                      className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-primary/20"
-                    />
-                    <Badge className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Verified
-                    </Badge>
-                  </div>
-
-                  <h3 className="text-xl font-semibold mb-2">{agent.name}</h3>
-                  <p className="text-primary font-medium mb-2">
-                    {agent.specialization}
-                  </p>
-
-                  <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-                    <div>
-                      <div className="text-muted-foreground">Experience</div>
-                      <div className="font-semibold">{agent.experience}</div>
-                    </div>
-                    <div>
-                      <div className="text-muted-foreground">Deals Closed</div>
-                      <div className="font-semibold">{agent.deals}</div>
+                <CardContent className="p-0">
+                  {/* Header Section with Gradient Background */}
+                  <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 pt-8 pb-16 px-6">
+                    <div className="relative inline-block">
+                      <img
+                        src={agent.image}
+                        alt={agent.name}
+                        className="w-28 h-28 rounded-full mx-auto object-cover border-4 border-white shadow-xl"
+                      />
+                      <Badge className="absolute -bottom-2 right-0 bg-green-500 text-white border-2 border-white shadow-md px-2 py-1">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Verified
+                      </Badge>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center mb-6">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                    <span className="font-semibold">{agent.rating}</span>
-                    <span className="text-muted-foreground ml-1">
-                      (150+ reviews)
-                    </span>
-                  </div>
+                  {/* Content Section */}
+                  <div className="px-6 pb-6 -mt-8 relative">
+                    {/* Name and Title Card */}
+                    <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+                      <h3 className="text-xl font-bold mb-1 text-gray-900">
+                        {agent.name}
+                      </h3>
+                      <p className="text-purple-600 font-medium text-sm">
+                        {agent.specialization}
+                      </p>
+                    </div>
 
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      className="flex-1 bg-purple-600 text-white hover:bg-purple-700"
-                      onClick={() => handleCall(agent.phone)}
-                    >
-                      <Phone className="h-4 w-4 mr-1" />
-                      Call
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="flex-1 bg-purple-500 text-white hover:bg-purple-600"
-                      onClick={() => navigate(`/agent/${agent.id}`)}
-                    >
-                      <MessageSquare className="h-4 w-4 mr-1" />
-                      View Profile
-                    </Button>
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-gray-50 rounded-lg p-3 text-center border border-gray-100">
+                        <div className="text-2xl font-bold text-gray-900 mb-1">
+                          {agent.experience}
+                        </div>
+                        <div className="text-xs text-gray-600 font-medium">
+                          Experience
+                        </div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3 text-center border border-gray-100">
+                        <div className="text-2xl font-bold text-gray-900 mb-1">
+                          {agent.deals}
+                        </div>
+                        <div className="text-xs text-gray-600 font-medium">
+                          Deals Closed
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Rating Section */}
+                    <div className="flex items-center justify-center mb-5 bg-yellow-50 rounded-lg py-2 px-3 border border-yellow-100">
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${
+                              i < Math.floor(agent.rating)
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "fill-gray-200 text-gray-200"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="font-bold text-gray-900 ml-2">
+                        {agent.rating}
+                      </span>
+                      <span className="text-gray-600 text-sm ml-1">
+                        (150+ reviews)
+                      </span>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-medium shadow-md hover:shadow-lg transition-all duration-200 h-11"
+                        onClick={() => handleCall(agent.phone)}
+                      >
+                        <Phone className="h-4 w-4 mr-2" />
+                        Call Now
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1 border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-medium h-11 transition-all duration-200"
+                        onClick={() => navigate(`/agent/${agent.id}`)}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Profile
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -870,285 +921,130 @@ const Index = () => {
       <PropertyListings />
       <FeaturesGrid />
 
-      {/* Enquiry Form Section */}
-      {/* <section className="py-20 bg-gradient-to-r from-primary/10 to-accent/10">
+      <AIFeatures />
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold mb-6">
-                Get Expert Consultation
-              </h2>
-              <p className="text-xl text-muted-foreground mb-8">
-                Connect with our property experts for personalized advice and
-                assistance
+          {/* Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">
+              What Our Customers Say
+            </h2>
+            <p className="text-lg text-gray-600">
+              Real experiences from real people who found their dream homes
+            </p>
+          </div>
+
+          {/* Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1 */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow">
+              {/* Stars */}
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                  />
+                ))}
+              </div>
+
+              {/* Review */}
+              <p className="text-gray-700 mb-6 leading-relaxed">
+                "Amazing experience! Found my dream home in just 2 weeks. The
+                virtual tour feature helped me narrow down my choices before
+                visiting."
               </p>
 
-              <div className="space-y-6">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-purple-600 p-3 rounded-full">
-                    <CheckCircle className="h-6 w-6 text-white" />
+              {/* User */}
+              <div className="flex items-center gap-3 pt-4 border-t">
+                <img
+                  src={sharmaPriyaImg}
+                  alt="Priya Sharma"
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div>
+                  <div className="font-semibold text-gray-900">
+                    Priya Sharma
                   </div>
-                  <div>
-                    <h3 className="font-semibold">
-                      Free Property Consultation
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Get expert advice on buying, selling, or renting
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <div className="bg-purple-600 p-3 rounded-full">
-                    <Clock className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">24/7 Support</h3>
-                    <p className="text-muted-foreground">
-                      Round-the-clock assistance for all your queries
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <div className="bg-purple-600 p-3 rounded-full">
-                    <Award className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Trusted Professionals</h3>
-                    <p className="text-muted-foreground">
-                      Verified agents with proven track records
-                    </p>
+                  <div className="text-sm text-gray-500">
+                    Mumbai, Maharashtra
                   </div>
                 </div>
               </div>
             </div>
 
-            <Card className="p-8">
-              <CardHeader className="text-center pb-6">
-                <CardTitle className="text-2xl">Request a Callback</CardTitle>
-                <p className="text-muted-foreground">
-                  Fill in your details and we'll get back to you
-                </p>
-              </CardHeader>
+            {/* Card 2 */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                  />
+                ))}
+              </div>
 
-              <form onSubmit={handleFormSubmit}>
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName">First Name</Label>
-                      <Input
-                        id="firstName"
-                        placeholder="Enter your first name"
-                        value={formData.firstName}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            firstName: e.target.value,
-                          })
-                        }
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="lastName">Last Name</Label>
-                      <Input
-                        id="lastName"
-                        placeholder="Enter your last name"
-                        value={formData.lastName}
-                        onChange={(e) =>
-                          setFormData({ ...formData, lastName: e.target.value })
-                        }
-                      />
-                    </div>
+              <p className="text-gray-700 mb-6 leading-relaxed">
+                "Professional service and transparent pricing. The EMI
+                calculator helped me plan my budget perfectly. Got the keys to
+                my new villa!"
+              </p>
+
+              <div className="flex items-center gap-3 pt-4 border-t">
+                <img
+                  src={rajeshkumarImg}
+                  alt="Rajesh Kumar"
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div>
+                  <div className="font-semibold text-gray-900">
+                    Rajesh Kumar
                   </div>
-
-                  <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      placeholder="+91 98765 43210"
-                      value={formData.phone}
-                      onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
-                      }
-                      required
-                    />
+                  <div className="text-sm text-gray-500">
+                    Bangalore, Karnataka
                   </div>
-
-                  <div>
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="your.email@example.com"
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="propertyType">Property Interest</Label>
-                    <Select
-                      onValueChange={(value) =>
-                        setFormData({ ...formData, propertyType: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select property type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="buy">Looking to Buy</SelectItem>
-                        <SelectItem value="sell">Want to Sell</SelectItem>
-                        <SelectItem value="rent">Looking for Rent</SelectItem>
-                        <SelectItem value="lease">Want to Lease Out</SelectItem>
-                        <SelectItem value="investment">
-                          Investment Opportunity
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full btn-property bg-purple-600 text-white hover:bg-purple-700"
-                  >
-                    <MessageSquare className="mr-2 h-5 w-5" />
-                    Request Callback
-                  </Button>
-
-                  <p className="text-sm text-center text-muted-foreground">
-                    By submitting, you agree to our Terms of Service and Privacy
-                    Policy
-                  </p>
                 </div>
-              </form>
-            </Card>
-          </div>
-        </div>
-      </section> */}
+              </div>
+            </div>
 
-      <AIFeatures />
+            {/* Card 3 */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex gap-1 mb-4">
+                {[...Array(4)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                  />
+                ))}
+                <Star className="w-5 h-5 fill-gray-300 text-gray-300" />
+              </div>
 
-      {/* Testimonials Section */}
-      <section className="pb-10 py-10 bg-purple">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">What Our Customers Say</h2>
-            <p className="text-lg text-muted-foreground">
-              Real experiences from real people who found their dream homes
-            </p>
+              <p className="text-gray-700 mb-6 leading-relaxed">
+                "Great platform with genuine listings. The legal verification
+                service gave me peace of mind. Smooth property registration
+                process."
+              </p>
+
+              <div className="flex items-center gap-3 pt-4 border-t">
+                <img
+                  src={anitapatelImg}
+                  alt="Anita Patel"
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div>
+                  <div className="font-semibold text-gray-900">Anita Patel</div>
+                  <div className="text-sm text-gray-500">Pune, Maharashtra</div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 bg-gray-50">
-                <div className="flex items-center mb-4">
-                  <div className="flex text-yellow-500 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                  </div>
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    5.0
-                  </span>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "Amazing experience! Found my dream home in just 2 weeks. The
-                  virtual tour feature helped me narrow down my choices before
-                  visiting. Highly recommended!"
-                </p>
-                <div className="flex items-center">
-                  <img
-                    src={sharmaPriyaImg}
-                    alt="Customer"
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <div className="font-medium">Priya Sharma</div>
-                    <div className="text-sm text-muted-foreground">
-                      Mumbai, Maharashtra
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-all duration-300 bg-gray-50">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="flex text-yellow-500 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                  </div>
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    5.0
-                  </span>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "Professional service and transparent pricing. The EMI
-                  calculator helped me plan my budget perfectly. Got the keys to
-                  my new villa last month!"
-                </p>
-                <div className="flex items-center">
-                  <img
-                    src={rajeshkumarImg}
-                    alt="Customer"
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <div className="font-medium">Rajesh Kumar</div>
-                    <div className="text-sm text-muted-foreground">
-                      Bangalore, Karnataka
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-all duration-300 bg-gray-50">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="flex text-yellow-500 mb-2">
-                    {[...Array(4)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                    <Star className="w-4 h-4 text-gray-300" />
-                  </div>
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    4.8
-                  </span>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "Great platform with genuine listings. The legal verification
-                  service gave me peace of mind. Smooth property registration
-                  process."
-                </p>
-                <div className="flex items-center">
-                  <img
-                    src={anitapatelImg}
-                    alt="Customer"
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <div className="font-medium">Anita Patel</div>
-                    <div className="text-sm text-muted-foreground">
-                      Pune, Maharashtra
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
+          {/* Button */}
           <div className="text-center mt-12">
             <Link to="/testimonials">
-              <Button className="bg-purple-600 hover:bg-purple-500" size="lg">
-                <Star className="mr-2 h-5 w-5" />
+              <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
                 View All Reviews
               </Button>
             </Link>

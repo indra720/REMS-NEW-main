@@ -121,6 +121,7 @@ const AddProperty = () => {
   };
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [videoFiles, setVideoFiles] = useState<File[]>([]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -140,6 +141,14 @@ const AddProperty = () => {
     }
   };
 
+  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      setVideoFiles((prev) => [...prev, ...fileArray]);
+    }
+  };
+
   const handleAmenityChange = (amenity: string) => {
     setFormData((prev) => {
       const newAmenities = prev.amenities.includes(amenity)
@@ -152,37 +161,95 @@ const AddProperty = () => {
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
 
+    // Check if property types are loaded
+    if (propertyTypes.length === 0) {
+      // toast.error("Property types are still loading. Please wait.");
+      return;
+    }
+
+    // Validate that the selected property type exists
+    const selectedPropertyType = propertyTypes.find(pt => pt.id.toString() === formData.property_type);
+    if (!selectedPropertyType) {
+      // toast.error("Please select a valid property type");
+      return;
+    }
+
+    // Validation
+    const requiredFields = {
+      title: 'Property title',
+      description: 'Property description', 
+      property_type: 'Property type',
+      category: 'Category (Sale/Rent/Lease)',
+      location: 'Location',
+      latitude: 'Latitude',
+      longitude: 'Longitude',
+      area_sqft: 'Area in sq ft',
+      price: 'Price',
+      bedrooms: 'Number of bedrooms',
+      bathrooms: 'Number of bathrooms',
+      balconies: 'Number of balconies',
+      furnishing: 'Furnishing status',
+      floor_no: 'Floor number',
+      total_floors: 'Total floors',
+      availability_status: 'Availability status',
+      possession_date: 'Possession date',
+      age_of_property: 'Age of property',
+      ownership_type: 'Ownership type'
+    };
+
+    for (const [field, label] of Object.entries(requiredFields)) {
+      if (!formData[field] || formData[field].toString().trim() === '') {
+        // toast.error(`${label} is required`);
+        return;
+      }
+    }
+
+    // Validate numeric fields
+    const numericFields = ['area_sqft', 'price', 'bedrooms', 'bathrooms', 'balconies', 'floor_no', 'total_floors'];
+    for (const field of numericFields) {
+      const value = formData[field];
+      if (value && isNaN(Number(value))) {
+        // toast.error(`${requiredFields[field]} must be a valid number`);
+        return;
+      }
+    }
+
+    // Validate decimal fields
+    const decimalFields = ['latitude', 'longitude'];
+    for (const field of decimalFields) {
+      const value = formData[field];
+      if (value && isNaN(Number(value))) {
+        // toast.error(`${requiredFields[field]} must be a valid decimal number`);
+        return;
+      }
+    }
+
+    // Validate date field
+    if (formData.possession_date) {
+      const date = new Date(formData.possession_date);
+      if (isNaN(date.getTime())) {
+        // toast.error('Possession date must be a valid date');
+        return;
+      }
+    }
+
     if (imageFiles.length === 0) {
       // toast.error("Please upload at least one image");
       return;
     }
 
-    if (!formData.ownership_type) {
-      // toast.error("Please select an ownership type.");
-      return;
-    }
-
     setIsSubmitting(true);
     setSubmissionProgress(0);
+    setSubmissionMessage("Publishing your listing...");
 
     try {
       const token = localStorage.getItem("access_token");
       if (!token) {
-        // toast.error("Authentication Error");
+        // toast.error("Authentication Error - Please login first");
         setIsSubmitting(false);
+        navigate('/login');
         return;
       }
-
-      const totalSteps =
-        1 +
-        (imageFiles.length > 0 ? 1 : 0) +
-        (formData.amenities.length > 0 ? 1 : 0) +
-        (documentFiles.length > 0 ? 1 : 0);
-      let completedSteps = 0;
-
-      // Step 1: Create Property
-      setSubmissionMessage("Creating property listing...");
-      setSubmissionProgress(++completedSteps / totalSteps * 100);
 
       const pricePerSqft =
         formData.price_per_sqft ||
@@ -193,72 +260,72 @@ const AddProperty = () => {
           : "0");
 
       const formDataToSend = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (key !== "amenities" && formData[key]) {
-            const value = key === 'rera_approved' ? (formData[key] ? 'true' : 'false') : formData[key];
-            formDataToSend.append(key, value as string);
+      
+      // Required fields - always append even if empty
+      const requiredFields = [
+        'title', 'description', 'property_type', 'category', 'location',
+        'latitude', 'longitude', 'area_sqft', 'price', 'bedrooms', 
+        'bathrooms', 'balconies', 'furnishing', 'floor_no', 'total_floors',
+        'availability_status', 'possession_date', 'age_of_property', 'ownership_type'
+      ];
+      
+      requiredFields.forEach(key => {
+        let value = formData[key] || '';
+        
+        // Ensure numeric fields are properly formatted
+        if (['area_sqft', 'price', 'bedrooms', 'bathrooms', 'balconies', 'floor_no', 'total_floors'].includes(key)) {
+          value = value.toString();
         }
+        
+        // Ensure decimal fields are properly formatted
+        if (['latitude', 'longitude'].includes(key)) {
+          value = value.toString();
+        }
+        
+        formDataToSend.append(key, value as string);
       });
+      
+      // Handle boolean field
+      formDataToSend.append('rera_approved', formData.rera_approved ? 'true' : 'false');
+      
+      // Handle optional maintenance cost
+      const maintenanceCost = formData.maintenance_cost || '0';
+      formDataToSend.append('maintenance_cost', maintenanceCost);
+      
       formDataToSend.set("price_per_sqft", pricePerSqft);
-      if (!formData.maintenance_cost) {
-        formDataToSend.set("maintenance_cost", "0");
+
+      for (const image of imageFiles) {
+        formDataToSend.append("uploaded_images", image);
       }
 
-      const propertyResponse = await axios.post(
+      for (const doc of documentFiles) {
+        formDataToSend.append("uploaded_documents", doc);
+      }
+
+      for (const video of videoFiles) {
+        formDataToSend.append("uploaded_videos", video);
+      }
+
+      for (const amenity of formData.amenities) {
+        formDataToSend.append("amenities_list", amenity);
+      }
+
+      // Debug: Log the form data being sent
+      // console.log("Form data being sent:");
+      // for (let [key, value] of formDataToSend.entries()) {
+      //   console.log(key, value);
+      // }
+
+      await axios.post(
         "/properties/",
         formDataToSend,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          timeout: 30000, // 30 second timeout
         }
       );
-      const propertySlug = propertyResponse.data.slug;
-
-      // Step 2: Upload Images
-      if (imageFiles.length > 0) {
-        setSubmissionMessage(`Uploading ${imageFiles.length} images...`);
-        setSubmissionProgress(++completedSteps / totalSteps * 100);
-        for (let i = 0; i < imageFiles.length; i++) {
-          const imageFormData = new FormData();
-          imageFormData.append("property_slug", propertySlug);
-          imageFormData.append("image", imageFiles[i]);
-          imageFormData.append("is_primary", i === 0 ? "true" : "false");
-          imageFormData.append("caption", `Image ${i + 1}`);
-          await axios.post(
-            "/property-images/",
-            imageFormData,
-          );
-        }
-      }
-
-      // Step 3: Upload Amenities
-      if (formData.amenities.length > 0) {
-        setSubmissionMessage(`Adding ${formData.amenities.length} amenities...`);
-        setSubmissionProgress(++completedSteps / totalSteps * 100);
-        for (const amenity of formData.amenities) {
-          await axios.post(
-            "/property-amenities/",
-            { property_slug: propertySlug, amenity: amenity },
-          );
-        }
-      }
-
-      // Step 4: Upload Documents
-      if (documentFiles.length > 0) {
-        setSubmissionMessage(`Uploading ${documentFiles.length} documents...`);
-        setSubmissionProgress(++completedSteps / totalSteps * 100);
-        for (let i = 0; i < documentFiles.length; i++) {
-          const docFormData = new FormData();
-          docFormData.append("property_slug", propertySlug);
-          docFormData.append("document_file", documentFiles[i]);
-          docFormData.append("document_type", `Document ${i + 1}`);
-          await axios.post(
-            "/property-documents/",
-            docFormData,
-          );
-        }
-      }
 
       setSubmissionMessage("Property published successfully!");
       setSubmissionProgress(100);
@@ -269,12 +336,12 @@ const AddProperty = () => {
       }, 1500);
 
     } catch (error: any) {
-      //console.error("Error creating property:", error);
+      // console.error("Error creating property:", error);
       if (error.response) {
         // console.error("Error response:", error.response.data);
         // toast.error(
         //   `Failed to create property: ${
-        //     error.response.data.message || "Unknown error"
+        //     JSON.stringify(error.response.data) || "Unknown error"
         //   }`
         // );
       } else {
@@ -306,6 +373,9 @@ const AddProperty = () => {
       } else {
         // toast.error("Failed to load property types.");
       }
+      
+      // Use fallback property types if API fails
+      setPropertyTypes(fallbackPropertyTypes);
     }
   };
 
@@ -938,13 +1008,14 @@ const AddProperty = () => {
                     </div>
 
                     <Tabs defaultValue="images" className="w-full">
-                      <TabsList className="grid w-full grid-cols-2">
+                      <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="images">
                           Property Images
                         </TabsTrigger>
                         <TabsTrigger value="documents">
                           Legal Documents
                         </TabsTrigger>
+                        <TabsTrigger value="videos">Property Videos</TabsTrigger>
                       </TabsList>
 
                       <TabsContent value="images" className="space-y-6">
@@ -1107,6 +1178,72 @@ const AddProperty = () => {
                             </div>
                           </div>
                         </div>
+                      </TabsContent>
+
+                      <TabsContent value="videos" className="space-y-6">
+                        <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
+                          <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                          <h3 className="text-lg font-medium mb-2">
+                            Upload Property Videos
+                          </h3>
+                          <p className="text-muted-foreground mb-4">
+                            Add a video tour of your property.
+                          </p>
+                          <input
+                            type="file"
+                            multiple
+                            accept="video/*"
+                            onChange={handleVideoUpload}
+                            className="hidden"
+                            id="video-upload"
+                          />
+                          <Button
+                            variant="outline"
+                            className="cursor-pointer"
+                            onClick={() =>
+                              document.getElementById("video-upload")?.click()
+                            }
+                          >
+                            <Upload className="mr-2 h-4 w-4" />
+                            Choose Videos
+                          </Button>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Supported formats: MP4, MOV, AVI (Max 2 videos, 50MB each)
+                          </p>
+                        </div>
+
+                        {videoFiles.length > 0 && (
+                          <div>
+                            <h4 className="font-medium mb-4">
+                              Uploaded Videos ({videoFiles.length})
+                            </h4>
+                            <div className="space-y-2">
+                              {videoFiles.map((video, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center justify-between p-2 border rounded-lg"
+                                >
+                                  <div className="flex items-center space-x-2">
+                                    <FileText className="h-4 w-4" />
+                                    <span className="text-sm">{video.name}</span>
+                                  </div>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    className="h-6 w-6 p-0"
+                                    onClick={() => {
+                                      setVideoFiles((prev) =>
+                                        prev.filter((_, i) => i !== index)
+                                      );
+                                    }}
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </TabsContent>
                     </Tabs>
                   </div>

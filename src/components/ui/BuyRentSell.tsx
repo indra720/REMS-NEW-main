@@ -1,3 +1,4 @@
+import { formatPrice } from "../../lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,8 +31,15 @@ const BuyRentSell = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
+        let categoryParam = "";
+        if (activeTab === "buy") {
+          categoryParam = "Sale";
+        } else if (activeTab === "rent") {
+          categoryParam = "Rent";
+        }
+
         const response = await fetch(
-          `${BASE_URL}properties/ai-properties/`
+          `${BASE_URL}properties/ai-properties/?limit=8&category=${categoryParam}`
         );
         const data = await response.json();
         setProperties(data);
@@ -41,16 +49,16 @@ const BuyRentSell = () => {
       }
     };
 
-    fetchProperties();
-  }, []);
+    if (activeTab === "buy" || activeTab === "rent") {
+      fetchProperties();
+    }
+  }, [activeTab]);
 
   const buyProperties = properties.filter(
     (property: any) => property.category === "Sale"
   );
 
-  if (buyProperties.length === 2) {
-    buyProperties.push(buyProperties[0]);
-  }
+
   const rentProperties = properties.filter(
     (property: any) => property.category === "Rent"
   );
@@ -166,7 +174,7 @@ const BuyRentSell = () => {
 
             <div className="flex justify-between items-center mb-4">
               <span className="text-3xl font-bold flex justify-center items-center bg-gradient-hero bg-clip-text text-purple-700">
-                <IndianRupee/>{property.price}
+                {formatPrice(parseFloat(property.price), "₹")}
               </span>
               <span>{property.property_status}</span>
               {activeTab === "rent" && (
@@ -265,7 +273,20 @@ const BuyRentSell = () => {
               <Button
                 key={tab.id}
                 variant={activeTab === tab.id ? "default" : "ghost"}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  if (tab.id === "sell") {
+                    navigate('/'); // Navigate to base URL for 'sell' tab
+                  } else {
+                    let categoryParam = "";
+                    if (tab.id === "buy") {
+                      categoryParam = "Sale";
+                    } else if (tab.id === "rent") {
+                      categoryParam = "Rent";
+                    }
+                    navigate(`/?limit=8&category=${categoryParam}`);
+                  }
+                }}
                 className={`px-8 py-4 text-lg rounded-xl hover:bg-purple-600 transition-all duration-300  ${
                   activeTab === tab.id
                     ? "bg-gradient-hero text-purple-700 hover:text-white shadow-glow"

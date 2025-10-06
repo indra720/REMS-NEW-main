@@ -1,3 +1,4 @@
+import { formatPrice } from "@/lib/utils";
 import { BASE_URL } from "@/lib/constants";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -773,7 +774,7 @@ const BookVisit = () => {
                       <MapPin className="h-3 w-3 mr-1" />
                       {property.location}
                     </p>
-                    <p className="text-lg font-bold text-purple-600 mt-2">{property.price}</p>
+                    <p className="text-lg font-bold text-purple-600 mt-2">{formatPrice(parseFloat(property.price.replace(/[^0-9]/g, '')), "₹")}</p>
                   </div>
                   <Separator />
                   <div className="text-xs text-muted-foreground space-y-1">

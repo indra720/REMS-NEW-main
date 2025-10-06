@@ -1,3 +1,4 @@
+import { formatPrice } from "@/lib/utils";
 import { BASE_URL } from "@/lib/constants";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -313,7 +314,7 @@ const PropertySearch = ({ onFilterChange }) => {
                   <CardContent className="p-4 space-y-3">
                     <div className="flex justify-between items-center">
                       <p className="text-2xl font-extrabold text-purple-600">
-                        ₹{parseFloat(property.price).toLocaleString("en-IN")}
+                        {formatPrice(parseFloat(property.price), "₹")}
                       </p>
                       <div className="flex items-center gap-1 text-sm font-semibold">
                         <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />

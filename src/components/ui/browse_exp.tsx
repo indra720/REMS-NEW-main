@@ -1,3 +1,4 @@
+import { formatPrice } from "../../lib/utils";
 import React, { useState, useEffect } from "react";
 import { IndianRupee } from "lucide-react";
 import axios from "../../lib/axios";
@@ -57,19 +58,7 @@ const Browse_exp = () => {
 
   const propertydata = activeTab === 'Domestic' ? domesticProperties : internationalProperties;
 
-  const formatPrice = (price, currency = "₹") => {
-    const num = parseFloat(price);
-    if (isNaN(num)) {
-      return price;
-    }
-    if (num >= 10000000) {
-      return `${currency} ${(num / 10000000).toFixed(2)} Cr`;
-    }
-    if (num >= 100000) {
-      return `${currency} ${(num / 100000).toFixed(2)} Lac`;
-    }
-    return `${currency} ${num.toLocaleString("en-IN")}`;
-  };
+
 
   return (
     <div className="  flex justify-center items-center min-h-screen bg-white py-8">

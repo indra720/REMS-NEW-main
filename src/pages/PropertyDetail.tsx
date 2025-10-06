@@ -1,3 +1,4 @@
+import { formatPrice } from "../utils/priceFormatter";
 import { BASE_URL } from "@/lib/constants";
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
@@ -1323,7 +1324,7 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
                 </div>
                 <div className="text-left md:text-right mt-4 md:mt-0">
                   <div className="text-2xl md:text-4xl font-bold text-purple-600">
-                  ₹{property?.price ? parseFloat(property.price).toLocaleString('en-IN') : 'N/A'}
+                  {property?.price ? formatPrice(property.price) : 'N/A'}
                   </div>
                   <div className="text-base md:text-lg text-muted-foreground">
                   ₹{property?.price_per_sqft ? parseFloat(property.price_per_sqft).toLocaleString('en-IN') : 'N/A'}/sq ft
@@ -2732,7 +2733,7 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
                                 </p>
                                 <div className="flex justify-between items-center mb-2">
                                   <span className="text-lg font-bold text-purple-600">
-                                    {property.price}
+                                    {formatPrice(property.price)}
                                   </span>
                                   <div className="flex items-center gap-1">
                                     <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
@@ -3077,7 +3078,7 @@ const handleDocumentSubmit = async (e: React.FormEvent) => {
                                 </p>
                                 <div className="flex justify-between items-center mb-2">
                                   <span className="text-lg font-bold text-purple-600">
-                                    {property.price}
+                                    {formatPrice(property.price)}
                                   </span>
                                   <div className="flex items-center gap-1">
                                     <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />

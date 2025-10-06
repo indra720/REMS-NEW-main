@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Property API</title>
+</head>
+<body>
+    <h1>Test Property Creation</h1>
+    <button onclick="testAPI()">Test API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const formData = new FormData();
+            
+            // Add all required fields
+            formData.append('title', 'Test Property');
+            formData.append('description', 'Test description for property');
+            formData.append('property_type', '1'); // Assuming ID 1 exists
+            formData.append('category', 'Sale');
+            formData.append('location', 'Test Location, City, State, Country');
+            formData.append('latitude', '12.971600');
+            formData.append('longitude', '77.594600');
+            formData.append('area_sqft', '1000');
+            formData.append('price', '1000000');
+            formData.append('price_per_sqft', '1000');
+            formData.append('bedrooms', '2');
+            formData.append('bathrooms', '2');
+            formData.append('balconies', '1');
+            formData.append('furnishing', 'Furnished');
+            formData.append('floor_no', '1');
+            formData.append('total_floors', '5');
+            formData.append('availability_status', 'Ready to Move');
+            formData.append('possession_date', '2025-12-01');
+            formData.append('age_of_property', '5 years');
+            formData.append('ownership_type', 'Freehold');
+            formData.append('rera_approved', 'false');
+            formData.append('maintenance_cost', '5000');
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/properties/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+                    }
+                });
+                
+                const result = await response.text();
+                document.getElementById('result').innerHTML = 
+                    `<h3>Status: ${response.status}</h3><pre>${result}</pre>`;
+                    
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<h3>Error:</h3><pre>${error.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>

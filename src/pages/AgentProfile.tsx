@@ -1,3 +1,4 @@
+import { formatPrice } from "../lib/utils";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -335,7 +336,7 @@ const AgentProfile = () => {
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-semibold text-lg">{property.title}</h3>
-                      <div className="text-xl font-bold text-purple-600">{property.price}</div>
+                      <div className="text-xl font-bold text-purple-600">{formatPrice(parseFloat(property.price), "₹")}</div>
                     </div>
                     <div className="flex items-center text-muted-foreground mb-3">
                       <MapPin className="h-4 w-4 mr-1" />

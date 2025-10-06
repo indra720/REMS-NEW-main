@@ -1,3 +1,4 @@
+import { formatPrice } from '@/lib/utils';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -37,7 +38,7 @@ const PropertyCard: React.FC<{ property: Property }> = ({ property }) => {
           <CardDescription className="text-gray-600 mb-4 line-clamp-2">{property.description}</CardDescription>
           <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
             <p><FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-blue-500" />{property.location}</p>
-            <p><FontAwesomeIcon icon={faRupeeSign} className="mr-2 text-green-500" />{parseFloat(property.price).toLocaleString('en-IN')}</p>
+            <p>{formatPrice(parseFloat(property.price), "₹")}</p>
             <p><FontAwesomeIcon icon={faSquare} className="mr-2 text-purple-500" />{property.area_sqft} sqft</p>
             <p><FontAwesomeIcon icon={faBed} className="mr-2 text-red-500" />{property.bedrooms} Beds</p>
             <p><FontAwesomeIcon icon={faBath} className="mr-2 text-teal-500" />{property.bathrooms} Baths</p>
