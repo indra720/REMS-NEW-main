@@ -1,44 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Play, X, Clock, MapPin, DollarSign, IndianRupee } from "lucide-react";
+import { Play, X, Clock, MapPin, IndianRupee, Heart, Share2, Eye, Bed, Bath, Maximize2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../lib/constants";
-import { useToast } from "../../hooks/use-toast";
-
-import videoCabin from "@/Video/cabin.mp4";
-import videoEstate from "@/Video/estate.mp4";
-import videoApartment from "@/Video/apartment.mp4";
-import videoPenthouse from "@/Video/Penthouse.mp4";
-import videoVilla from "@/Video/villa.mp4";
-
-const videos = [videoCabin, videoEstate, videoApartment, videoPenthouse, videoVilla];
 
 const VideoPlayerModal = ({ videoUrl, onClose }) => {
   if (!videoUrl) return null;
-  // console.log("Video URL in modal:", videoUrl);
 
-  // Create an absolute URL from the relative path
   const absoluteVideoUrl = new URL(videoUrl, window.location.origin).href;
-  // console.log("Absolute Video URL:", absoluteVideoUrl);
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
-        className="relative w-[calc(100%-40px)] lg:w-full  max-w-4xl"
+        className="relative w-full max-w-5xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute -top-8 right-0 text-white"
+          className="absolute -top-12 right-0 text-white hover:text-purple-400 transition-colors"
         >
           <X size={32} />
         </button>
-        <video controls autoPlay className="w-full h-full rounded-lg">
+        <video controls autoPlay className="w-full rounded-2xl shadow-2xl">
           <source src={absoluteVideoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -53,27 +41,20 @@ const VideoTours = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Fetch properties from API
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        // For now, use static data since backend requires authentication
-        //console.log("📄 Using static data (backend requires auth)");
         setProperties(staticVideoData);
         setLoading(false);
         return;
-        
-        // Uncomment below when backend is made public
+
+        // Uncomment when backend is ready
         // const response = await fetch(`${BASE_URL}properties/`);
         // if (response.ok) {
         //   const data = await response.json();
-        //   console.log("✅ Properties fetched:", data);
         //   setProperties(data.slice(0, 4));
-        // } else {
-        //   setProperties(staticVideoData);
         // }
       } catch (error) {
-        //console.error("❌ Error fetching properties:", error);
         setProperties(staticVideoData);
       } finally {
         setLoading(false);
@@ -129,7 +110,7 @@ const VideoTours = () => {
       listed_on: "2025-09-22",
       duration: "3:05",
     },
-      {
+    {
       id: 4,
       title: "Spacious Penthouse with Rooftop Pool",
       slug: "spacious-penthouse-with-rooftop-pool",
@@ -146,7 +127,6 @@ const VideoTours = () => {
     },
   ];
 
-  // Get featured property (first property from fetched data or static fallback)
   const featuredProperty = properties.length > 0 ? properties[0] : null;
 
   const handleDetailsNavigation = (slug, videoUrl, propertyData) => {
@@ -155,258 +135,342 @@ const VideoTours = () => {
       navigate("/login");
     } else {
       navigate(`/property/${slug}`, {
-        state: { 
-          videoUrl,
-          propertyData // Pass static property data
-        },
+        state: { videoUrl, propertyData },
       });
     }
   };
 
   return (
-    <section className="py-24 bg-gradient-to-br from-background via-primary/5 to-background relative overflow-hidden">
+    <section className="relative min-h-screen bg-gradient-to-b from-slate-50 via-white to-purple-50/30 py-20 overflow-hidden">
       <VideoPlayerModal
         videoUrl={selectedVideo}
         onClose={() => setSelectedVideo(null)}
       />
-      {/* Background Effects */}
-      <div className="absolute top-32 left-16 w-32 h-32 bg-accent/10 rounded-full blur-3xl animate-pulse"></div>
-      <div
-        className="absolute bottom-32 right-16 w-40 h-40 bg-purple-600/10 rounded-full blur-3xl animate-pulse"
-        style={{ animationDelay: "1.5s" }}
-      ></div>
+
+      {/* Animated Background Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 -left-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 -right-20 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-pink-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16">
-          <div className="inline-block mb-6">
-            <span className="bg-gradient-hero bg-clip-text text-purple-500 text-lg font-bold tracking-wider uppercase">
+        {/* Header Section */}
+        <div className="text-center mb-16 space-y-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-full border border-purple-200/50 backdrop-blur-sm">
+            <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></span>
+            <span className="text-purple-600 font-semibold text-sm uppercase tracking-wide">
               Immersive Experience
             </span>
           </div>
-          <h2 className="text-5xl md:text-5xl font-bold mb-6 text-foreground leading-tight">
-            Virtual Property
-            <span className="ml-3 bg-gradient-hero bg-clip-text text-purple-700 mt-3">
+          
+          <h2 className="text-5xl md:text-7xl font-bold">
+            <span className="bg-gradient-to-r from-gray-900 via-purple-800 to-gray-900 bg-clip-text text-transparent">
+              Virtual Property
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-clip-text text-transparent">
               Tours & Videos
             </span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Experience properties like never before with our immersive virtual
-            tours, 360° walkthroughs, and professional video showcases
+          
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Experience properties like never before with our immersive virtual tours, 
+            360° walkthroughs, and professional video showcases
           </p>
         </div>
 
-        {/* Featured Video - Now using fetched data */}
+        {/* Featured Property - Hero Card */}
         {loading ? (
-          <div className="mb-16 text-center">
-            <div className="animate-pulse">Loading properties...</div>
+          <div className="mb-20 flex items-center justify-center h-96">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+              <p className="text-gray-600 text-lg">Loading amazing properties...</p>
+            </div>
           </div>
-        ) : featuredProperty && (
-          <div className="mb-16">
-            <Card className="overflow-hidden  bg-gradient-to-br from-background to-secondary/20 border border-border/50 shadow-elegant">
-              <div className="grid lg:grid-cols-2 gap-8 p-2 sm:p-8">
-                <div
-                  className="relative group cursor-pointer"
-                  onClick={() => setSelectedVideo(videos[0])}
-                >
-                  <img
-                    src={
-                      featuredProperty.images?.[0]?.image ||
-                      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500"
-                    }
-                    alt={featuredProperty.title}
-                    className="w-full h-57 object-cover rounded-2xl group-hover:scale-100 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-black/30 rounded-2xl flex items-center justify-center group-hover:bg-black/20 transition-colors duration-300">
-                    <Button
-                      size="sm"
-                      className="bg-white/90 text-purple-600 hover:bg-white rounded-full px-6 py-8 sm:px-8 sm:py-10 shadow-glow hover:scale-110 transition-all duration-300"
-                    >
-                      <Play className="w-4 h-4 sm:w-8 sm:h-8" />
-                    </Button>
+        ) : (
+          featuredProperty && (
+            <div className="mb-20">
+              <Card className="overflow-hidden border-0 shadow-2xl bg-white/80 backdrop-blur-lg hover:shadow-purple-200/50 transition-all duration-700 group">
+                <div className="grid lg:grid-cols-5 gap-0">
+                  {/* Image Section - 3 columns */}
+                  <div className="lg:col-span-3 relative h-[400px] lg:h-auto overflow-hidden">
+                    <img
+                      src={featuredProperty.images?.[0]?.image || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"}
+                      alt={featuredProperty.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                    />
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    
+                    {/* Play Button */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Button
+                        size="lg"
+                        className="w-20 h-20 rounded-full bg-white/95 hover:bg-white text-purple-600 shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-300 group/btn"
+                        onClick={() => setSelectedVideo(featuredProperty.video_url)}
+                      >
+                        <Play className="w-8 h-8 fill-current group-hover/btn:scale-110 transition-transform" />
+                      </Button>
+                    </div>
+
+                    {/* Badges */}
+                    <div className="absolute top-6 left-6 flex gap-2">
+                      <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 px-4 py-1.5 text-sm font-semibold shadow-lg">
+                        🔥 Featured
+                      </Badge>
+                      <Badge className="bg-white/95 text-gray-800 border-0 px-4 py-1.5 text-sm font-semibold backdrop-blur-sm">
+                        {featuredProperty.property_status}
+                      </Badge>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="absolute top-6 right-6 flex gap-2">
+                      <Button size="sm" variant="ghost" className="w-10 h-10 rounded-full bg-white/90 hover:bg-white backdrop-blur-sm">
+                        <Heart className="w-4 h-4 text-gray-700" />
+                      </Button>
+                      <Button size="sm" variant="ghost" className="w-10 h-10 rounded-full bg-white/90 hover:bg-white backdrop-blur-sm">
+                        <Share2 className="w-4 h-4 text-gray-700" />
+                      </Button>
+                    </div>
+
+                    {/* Views Counter */}
+                    <div className="absolute bottom-6 right-6">
+                      <div className="flex items-center gap-2 px-3 py-2 bg-black/60 backdrop-blur-md rounded-full text-white text-sm">
+                        <Eye className="w-4 h-4" />
+                        <span>12.5K views</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <Badge className="bg-gradient-hero text-white border-0 shadow-lg">
-                      Featured
-                    </Badge>
-                    <Badge className="bg-background/90 text-foreground border-0 shadow-md">
-                      {featuredProperty.property_status}
-                    </Badge>
+
+                  {/* Content Section - 2 columns */}
+                  <div className="lg:col-span-2 p-8 lg:p-10 flex flex-col justify-between">
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                          {featuredProperty.title}
+                        </h3>
+                        
+                        <div className="flex items-center text-gray-600 mb-6">
+                          <MapPin className="w-5 h-5 mr-2 text-purple-600" />
+                          <span className="text-lg">{featuredProperty.location}</span>
+                        </div>
+
+                        <div className="flex items-baseline gap-2 mb-6">
+                          <span className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            ₹{featuredProperty.price}
+                          </span>
+                          <span className="text-gray-500 text-sm">/ month</span>
+                        </div>
+
+                        <p className="text-gray-600 leading-relaxed line-clamp-3">
+                          {featuredProperty.description}
+                        </p>
+                      </div>
+
+                      {/* Property Stats */}
+                      <div className="grid grid-cols-3 gap-4 py-6 border-y border-gray-200">
+                        <div className="text-center">
+                          <div className="flex items-center justify-center mb-2">
+                            <Bed className="w-5 h-5 text-purple-600" />
+                          </div>
+                          <div className="text-2xl font-bold text-gray-900">{featuredProperty.bedrooms}</div>
+                          <div className="text-sm text-gray-500">Bedrooms</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="flex items-center justify-center mb-2">
+                            <Bath className="w-5 h-5 text-purple-600" />
+                          </div>
+                          <div className="text-2xl font-bold text-gray-900">{featuredProperty.bathrooms}</div>
+                          <div className="text-sm text-gray-500">Bathrooms</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="flex items-center justify-center mb-2">
+                            <Maximize2 className="w-5 h-5 text-purple-600" />
+                          </div>
+                          <div className="text-2xl font-bold text-gray-900">{featuredProperty.area_sqft}</div>
+                          <div className="text-sm text-gray-500">Sq Ft</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button
+                        size="lg"
+                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 group/cta"
+                        onClick={() => setSelectedVideo(featuredProperty.video_url)}
+                      >
+                        <Play className="w-5 h-5 mr-2 group-hover/cta:scale-110 transition-transform" />
+                        Watch Virtual Tour
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="flex-1 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300"
+                        onClick={() => handleDetailsNavigation(featuredProperty.slug, featuredProperty.video_url, featuredProperty)}
+                      >
+                        View Details
+                      </Button>
+                    </div>
                   </div>
                 </div>
-
-                <div className="flex flex-col justify-center space-y-6">
-                  <div>
-                    <h3 className="text-3xl font-bold text-foreground mb-4">
-                      {featuredProperty.title}
-                    </h3>
-                    <div className="flex items-center text-muted-foreground mb-6">
-                      <MapPin className="w-5 h-5 mr-2 text-accent" />
-                      <span className="text-lg">
-                        {featuredProperty.location}
-                      </span>
-                    </div>
-                    <div className="flex items-center text-purple-600 text-2xl font-bold mb-4">
-                     <IndianRupee/>
-                      {featuredProperty.price}
-                    </div>
-                    <p className="text-lg text-muted-foreground leading-relaxed">
-                      {featuredProperty.description ||
-                        "Step inside this magnificent property with our exclusive virtual tour. Experience luxury living with premium finishes and world-class amenities."}
-                    </p>
-                  </div>
-
-                  <div className=" sm:flex sm:gap-4 ">
-                    <Button
-                      onClick={() => setSelectedVideo(videos[0])}
-                      size="lg"
-                      className="bg-gradient-hero w-full mb-2 hover:bg-purple-600 bg-purple-400 text-white border-0 shadow-glow hover:shadow-elegant transition-all duration-300"
-                    >
-                      <Play className="w-5 h-5 mr-2" />
-                      Watch Tour
-                    </Button>
-                    <Button
-                      onClick={() => handleDetailsNavigation(featuredProperty.slug, videos[0], featuredProperty)}
-                      variant="outline"
-                      size="lg"
-                      className="border-border/50 w-full hover:bg-purple-600 hover:text-white"
-                    >
-                      Property Details
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
+              </Card>
+            </div>
+          )
         )}
 
-        {/* Video Grid - Using remaining properties (excluding the featured one) */}
+        {/* Property Grid */}
         {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {properties.slice(1, 4).map((video, index) => (
-            <Card
-              key={video.id}
-              className="group hover:shadow-elegant transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-gradient-to-br from-background to-secondary/20 border border-border/50 cursor-pointer animate-fade-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="relative">
-                <img
-                  src={
-                    video.images?.[0]?.image ||
-                    video.image ||
-                    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500"
-                  }
-                  alt={video.title}
-                  className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
-                />
+          <div>
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-3xl font-bold text-gray-900">More Properties</h3>
+              <Button variant="ghost" className="text-purple-600 hover:text-purple-700 hover:bg-purple-50">
+                View All →
+              </Button>
+            </div>
 
-                {/* Play Overlay */}
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-colors duration-300">
-                  <Button
-                    size="lg"
-                    className="bg-white/90 text-purple-600 hover:bg-white rounded-full w-16 h-16 p-0 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
-                    onClick={() => setSelectedVideo(videos[(index + 1) % videos.length])}
-                  >
-                    <Play className="w-6 h-6" />
-                  </Button>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {properties.slice(1, 4).map((video, index) => (
+                <Card
+                  key={video.id}
+                  className="group overflow-hidden border-0 bg-white shadow-lg hover:shadow-2xl hover:shadow-purple-200/50 transition-all duration-500 hover:-translate-y-2 cursor-pointer"
+                  style={{ 
+                    animation: `fadeInUp 0.6s ease-out forwards`,
+                    animationDelay: `${index * 0.1}s`,
+                    opacity: 0
+                  }}
+                >
+                  {/* Image Container */}
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={video.images?.[0]?.image || video.image}
+                      alt={video.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
 
-                {/* Badges */}
-                <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  <Badge className="bg-background/90 text-foreground border-0 shadow-md text-xs group-hover:bg-purple-600 group-hover:text-white">
-                    {video.property_status}
-                  </Badge>
-                </div>
-
-                {/* Duration and Views */}
-                <div className="absolute bottom-4 right-4 flex gap-2">
-                  <Badge className="bg-black/70 text-white border-0 text-xs group-hover:bg-purple-600">
-                    <Clock className="w-3 h-3 mr-1" />
-                    {video.duration || "3:45"}
-                  </Badge>
-                </div>
-              </div>
-
-              <CardContent className="p-6">
-                <h3 className="text-lg sm:font-bold text-foreground mb-2  transition-colors line-clamp-2 group-hover:text-purple-600">
-                  {video.title}
-                </h3>
-
-                <div className="flex items-center justify-between text-muted-foreground mb-4">
-                  <span className="text-sm truncate flex items-center">
-                    <MapPin className="w-4 h-4 mr-2 text-purple-500 flex-shrink-0" />
-                    {video.location || video.address}
-                  </span>
-                  <span>
-                    {video.listed_on || video.created_at
-                      ? new Date(video.listed_on || video.created_at).toLocaleDateString()
-                      : "N/A"}
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-4 mb-4 text-center text-sm">
-                  <div>
-                    <div className="font-bold text-foreground group-hover:text-purple-600">
-                      {video.bedrooms || video.bedroom_count || "N/A"}
+                    {/* Play Button */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Button
+                        size="lg"
+                        className="w-16 h-16 rounded-full bg-white/95 hover:bg-white text-purple-600 shadow-2xl hover:scale-110 transition-all duration-300"
+                        onClick={() => setSelectedVideo(video.video_url)}
+                      >
+                        <Play className="w-6 h-6 fill-current" />
+                      </Button>
                     </div>
-                    <div className="text-muted-foreground">Beds</div>
-                  </div>
-                  <div>
-                    <div className="font-bold text-foreground group-hover:text-purple-600">
-                      {video.bathrooms || video.bathroom_count || "N/A"}
-                    </div>
-                    <div className="text-muted-foreground">Baths</div>
-                  </div>
-                  <div>
-                    <div className="font-bold text-foreground group-hover:text-purple-600">
-                      {video.area_sqft || video.area || "N/A"}
-                    </div>
-                    <div className="text-muted-foreground">Area</div>
-                  </div>
-                </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center text-purple-600 text-xl font-bold">
-                    <span className="flex justify-center items-center">
-                      <IndianRupee/>
-                      {video.price}
-                    </span>
+                    {/* Badges */}
+                    <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+                      <Badge className="bg-purple-600/90 backdrop-blur-sm text-white border-0 px-3 py-1">
+                        {video.property_status}
+                      </Badge>
+                      <Button size="sm" variant="ghost" className="w-8 h-8 rounded-full bg-white/90 hover:bg-white p-0">
+                        <Heart className="w-4 h-4 text-gray-700" />
+                      </Button>
+                    </div>
+
+                    {/* Duration */}
+                    <div className="absolute bottom-4 right-4">
+                      <Badge className="bg-black/70 backdrop-blur-sm text-white border-0 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {video.duration}
+                      </Badge>
+                    </div>
                   </div>
 
-                  <Button
-                    onClick={() =>
-                      setSelectedVideo(videos[(index + 1) % videos.length])
-                    }
-                    size="sm"
-                    variant="ghost"
-                    className="text-purple-500 hover:bg-purple-600 hover:text-white "
-                  >
-                    Watch Now →
-                  </Button>
-                </div>
-                <div className="flex gap-3 my-3">
-                  <Button
-                    className="flex-1 bg-transparent text-black font-semibold text-md hover:text-white border-2 hover:bg-purple-600"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDetailsNavigation(video.slug, videos[(index + 1) % videos.length], video);
-                    }}
-                  >
-                    View Details
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="flex-1 bg-gradient-hero bg-purple-400 hover:bg-purple-600 text-white border-0"
-                    onClick={() => navigate("/contact")}
-                  >
-                    Contact
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  {/* Content */}
+                  <CardContent className="p-6 space-y-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors">
+                        {video.title}
+                      </h3>
+                      
+                      <div className="flex items-center text-gray-600 text-sm mb-4">
+                        <MapPin className="w-4 h-4 mr-1 text-purple-500 flex-shrink-0" />
+                        <span className="truncate">{video.location}</span>
+                      </div>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-3 py-4 border-y border-gray-100">
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
+                          {video.bedrooms}
+                        </div>
+                        <div className="text-xs text-gray-500">Beds</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
+                          {video.bathrooms}
+                        </div>
+                        <div className="text-xs text-gray-500">Baths</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
+                          {video.area_sqft}
+                        </div>
+                        <div className="text-xs text-gray-500">Sq Ft</div>
+                      </div>
+                    </div>
+
+                    {/* Price and CTA */}
+                    <div className="flex items-center justify-between pt-2">
+                      <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        ₹{video.price}
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 font-semibold"
+                        onClick={() => setSelectedVideo(video.video_url)}
+                      >
+                        View →
+                      </Button>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        className="flex-1 border-2 border-purple-600 bg-transparent text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDetailsNavigation(video.slug, video.video_url, video);
+                        }}
+                      >
+                        Details
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                        onClick={() => navigate("/contact")}
+                      >
+                        Contact
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </section>
   );
 };

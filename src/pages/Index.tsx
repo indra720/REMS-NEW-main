@@ -63,12 +63,15 @@ import Browse_exp from "@/components/ui/browse_exp";
 import { FeaturesGrid } from "@/components/ui/features-grid";
 import { createPortal } from "react-dom";
 import Header from "@/components/Header";
-import { fetchProperties as fetchPropertiesAPI, fetchAIProperties } from "@/lib/api";
+import {
+  fetchProperties as fetchPropertiesAPI,
+  fetchAIProperties,
+} from "@/lib/api";
 import { BASE_URL } from "@/lib/constants";
-import videoApartment from "@/Video/apartment.mp4";
+// import videoApartment from "@/Video/apartment.mp4";
 import backgroundVideo from "@/assets/backgroundVideo.mp4";
 
-import sharmaPriyaImg from '../assets/images/sharma_priya.jpg';
+import sharmaPriyaImg from "../assets/images/sharma_priya.jpg";
 import amitkumarImg from "../assets/images/amitkumar.webp";
 import anitapatelImg from "../assets/images/anita paterl.jpg";
 import rajeshkumarImg from "../assets/images/rajesh.jpg";
@@ -470,19 +473,30 @@ const Index = () => {
 
   const headings: JSX.Element[] = [
     <>
-      Find <span className="text-purple-400">exclusive homes</span> that
+      Find{" "}
+      <span className="text-purple-600 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500">
+        Exclusive Homes
+      </span>{" "}
+      That
       <br className="hidden sm:block" />
-      <span className="block sm:inline">fit your life style</span>
+      <span className="block sm:inline">Fit Your Life Style</span>
     </>,
     <>
-      Discover <span className="text-purple-400">dream apartments</span> for
-      your comfort
+      Discover{" "}
+      <span className="text-purple-600 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500">
+        Dream Apartments
+      </span>{" "}
+      For Your Comfort
       <br className="hidden sm:block" />
     </>,
     <>
-      Explore <span className="text-purple-400">modern villas</span> near
+      Explore{" "}
+      <span className="text-purple-600 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500">
+        Modern Villas
+      </span>{" "}
+      Near
       <br className="hidden sm:block" />
-      <span className="block sm:inline">the cityscape</span>
+      <span className="block sm:inline">The Cityscape</span>
     </>,
   ];
 
@@ -538,48 +552,47 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="bg-white">
+    <div className="bg-[white]">
       {/* Hero Section */}
-      <section className="relative w-full min-h-screen h-screen overflow-hidden p-0 m-0">
-        {/* Video Background */}
-        <div className="absolute inset-0 w-full h-[91%] z-0 pointer-events-none">
+      <section className="relative w-full min-h-screen overflow-hidden flex items-center justify-center">
+        {/* Background Image or Video */}
+        <div className="absolute inset-0 w-full h-full">
           <video
+            className="absolute top-0 left-0 w-full h-full object-cover z-0"
+            src={backgroundVideo}
             autoPlay
             loop
             muted
-            playsInline
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              console.log('Video failed to load, using fallback');
-              const video = e.target as HTMLVideoElement;
-              video.src = 'https://cdn.pixabay.com/video/2025/08/12/296958_large.mp4';
-            }}
-          >
-            <source src={backgroundVideo} type="video/mp4" />
-            <source src={videoApartment} type="video/mp4" />
-            <source src="https://cdn.pixabay.com/video/2025/08/12/296958_large.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
 
         {/* Content */}
-        <div className="relative z-50 flex flex-col items-center justify-center h-full px-4 pt-20 pb-20 pointer-events-auto">
-          {/* Main Heading */}
-          <div className="text-center mb-8 max-w-4xl mx-auto h-48 hidden sm:flex items-center justify-center">
-            <div
-              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl max-w-6xl font-bold text-white leading-tight px-4 mb-6 transition-all duration-700 ease-out ${
-                animate ? "animate-slideIn opacity-100" : "opacity-0"
-              }`}
-            >
-              {headings[currentIndex]}
-            </div>
-          </div>
+        <div className="relative z-10 text-center px-6 md:px-10 flex flex-col items-center">
+          {/* Heading */}
+          <h1
+            className={`text-white font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl max-w-5xl leading-tight tracking-tight transition-all duration-700 ${
+              animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+          >
+            {headings[currentIndex]}
+          </h1>
 
-          {/* Search Interface */}
-          <div className="w-full max-w-4xl mx-auto pt-8 sm:pt-0 mb-20 px-4">
+          <p className="text-gray-200 mt-5 text-base sm:text-lg md:text-xl max-w-2xl">
+            Explore luxury apartments, modern villas, and premium properties
+            near you.
+          </p>
+
+          {/* Search */}
+          <div className="mt-10 w-full ">
             <SearchProvider>
               <SearchInterface />
             </SearchProvider>
+          </div>
+
+          {/* Scroll Hint */}
+          <div className="mt-16 animate-bounce text-white/60 text-sm">
+            ↓ Scroll to explore
           </div>
         </div>
       </section>
@@ -589,45 +602,75 @@ const Index = () => {
       <PropertyCategories onCategorySelect={handleCategorySelect} />
 
       {/* Video Tour Section */}
-      <VideoTours  />
+      <VideoTours />
       <Browse_exp />
 
       {/* Featured Properties with Enhanced Design */}
-      <section className="py-10 bg-purple">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="relative py-24 bg-gray-50 overflow-hidden">
+        {/* Background Gradient Blobs */}
+        <div className="absolute -top-20 -left-20 w-80 h-80 bg-gradient-to-br from-purple-400 to-pink-400 opacity-20 rounded-full blur-3xl animate-blob"></div>
+        <div className="absolute -bottom-32 -right-24 w-96 h-96 bg-gradient-to-r from-indigo-400 to-teal-400 opacity-20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          {/* Header */}
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold mb-4">
-              Premium <span className="text-purple-600">Properties</span>
+            <h2 className="text-5xl font-extrabold mb-4 text-gray-900">
+              Premium{" "}
+              <span className="text-purple-600 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500">
+                Properties
+              </span>
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg text-gray-500">
               Handpicked properties for sale and rent
             </p>
 
+            {/* Tabs */}
             <div className="flex justify-center mt-8">
-              <Tabs defaultValue="all" className="w-auto" onValueChange={(value) => setActivePremiumTab(value)}>
-                <TabsList>
-                  <TabsTrigger value="all">All Properties</TabsTrigger>
-                  <TabsTrigger value="sale">For Sale</TabsTrigger>
-                  <TabsTrigger value="rent">For Rent</TabsTrigger>
+              <Tabs
+                defaultValue="all"
+                className="w-auto"
+                onValueChange={(value) => setActivePremiumTab(value)}
+              >
+                <TabsList className="bg-white/30 backdrop-blur-md rounded-full p-1 shadow-md">
+                  <TabsTrigger
+                    value="all"
+                    className="rounded-full px-6 py-2 text-gray-800 hover:text-white hover:bg-purple-600 transition-all duration-300"
+                  >
+                    All Properties
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="sale"
+                    className="rounded-full px-6 py-2 text-gray-800 hover:text-white hover:bg-purple-600 transition-all duration-300"
+                  >
+                    For Sale
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="rent"
+                    className="rounded-full px-6 py-2 text-gray-800 hover:text-white hover:bg-purple-600 transition-all duration-300"
+                  >
+                    For Rent
+                  </TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPremiumProperties.slice(0,3).map((property, index) => (
+          {/* Property Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {filteredPremiumProperties.slice(0, 3).map((property, index) => (
               <Card
                 key={property.id}
-                className="group hover:shadow-elegant transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-gradient-to-br from-background to-secondary/20 border border-border/50 animate-fade-in"
+                className="group relative flex flex-col overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 bg-white/20 backdrop-blur-lg border border-white/20 transform hover:-translate-y-2 hover:scale-[1.02]"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="relative overflow-hidden">
-                  <Heart className="top-3 right-3 text-white absolute z-50" />
+                {/* Image Section */}
+                <div className="relative overflow-hidden rounded-t-3xl">
+                  <Heart className="top-3 right-3 text-white absolute z-50 w-6 h-6 cursor-pointer" />
                   <span
-                    className={`top-3 left-3 text-white absolute z-50 ${
-                      property.category == "Rent"
-                        ? "bg-green-500 text-white text-[12px] font-semibold group-hover:bg-purple-600 py-1 px-3 rounded-2xl"
-                        : "bg-yellow-600 text-black text-[12px] font-semibold group-hover:bg-purple-600 py-1 px-3 rounded-2xl"
+                    className={`top-3 left-3 absolute z-50 text-[12px] font-semibold py-1 px-3 rounded-2xl ${
+                      property.category === "Rent"
+                        ? "bg-green-500 text-white group-hover:bg-purple-600"
+                        : "bg-yellow-600 text-black group-hover:bg-purple-600"
                     }`}
                   >
                     {property.category}
@@ -645,14 +688,15 @@ const Index = () => {
                   )}
                 </div>
 
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-purple-600 transition-colors">
+                {/* Card Content */}
+                <CardContent className="p-6 flex flex-col flex-grow">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
                     {property.title}
                   </h3>
 
-                  <div className="flex items-center justify-between text-muted-foreground mb-4">
-                    <span className="text-sm flex justify-center items-center">
-                      <MapPin className="w-4 h-4 mr-2  text-purple-500" />
+                  <div className="flex justify-between items-center text-gray-500 mb-4 text-sm">
+                    <span className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4 text-purple-500" />
                       {property.location}
                     </span>
                     <span>
@@ -663,47 +707,50 @@ const Index = () => {
                   </div>
 
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-3xl font-bold bg-gradient-hero bg-clip-text text-purple-700">
-                      ₹{parseFloat(property.price).toLocaleString('en-IN')}
+                    <span className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500 flex items-center gap-1">
+                      ₹{parseFloat(property.price).toLocaleString("en-IN")}
                     </span>
-                    <span>{property.property_status}</span>
+                    <span className="text-gray-700 font-semibold">
+                      {property.property_status}
+                    </span>
                     {activePremiumTab === "rent" && (
-                      <span className="text-sm text-muted-foreground">/month</span>
+                      <span className="text-sm text-gray-500">/month</span>
                     )}
                   </div>
 
                   <div className="grid grid-cols-3 gap-4 mb-4 text-center text-sm">
                     <div>
-                      <div className="font-bold text-foreground group-hover:text-purple-600">
+                      <div className="font-semibold text-gray-900 group-hover:text-purple-600">
                         {property.bedrooms}
                       </div>
-                      <div className="text-muted-foreground">Beds</div>
+                      <div className="text-gray-500">Beds</div>
                     </div>
                     <div>
-                      <div className="font-bold text-foreground group-hover:text-purple-600">
+                      <div className="font-semibold text-gray-900 group-hover:text-purple-600">
                         {property.bathrooms}
                       </div>
-                      <div className="text-muted-foreground">Baths</div>
+                      <div className="text-gray-500">Baths</div>
                     </div>
                     <div>
-                      <div className="font-bold text-foreground group-hover:text-purple-600">
+                      <div className="font-semibold text-gray-900 group-hover:text-purple-600">
                         {property.area_sqft}
                       </div>
-                      <div className="text-muted-foreground">Area</div>
+                      <div className="text-gray-500">Area</div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-3 mt-auto">
                     <Button
-                      className=" bg-transparent  text-black font-semibold text-md hover:text-white border-2  hover:bg-purple-600  "
+                      className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-500 text-white rounded-xl hover:from-purple-700 hover:to-indigo-600 transition-all duration-300"
                       size="sm"
                       onClick={() => navigate(`/property/${property.slug}`)}
                     >
                       View Details
                     </Button>
                     <Button
+                      className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-500 text-white rounded-xl hover:from-purple-700 hover:to-indigo-600 transition-all duration-300"
                       size="sm"
-                      className="bg-gradient-hero bg-purple-400 hover:bg-purple-600 text-white border-0" onClick={() => navigate("/contact")}
+                      onClick={() => navigate("/contact")}
                     >
                       Contact
                     </Button>
@@ -713,14 +760,14 @@ const Index = () => {
             ))}
           </div>
 
-          <div className="text-center  mt-12">
+          {/* View All Button */}
+          <div className="text-center mt-12">
             <Link to="/property-search">
               <Button
                 size="lg"
-                className="btn-property bg-purple-500 text-white hover:bg-purple-600"
+                className="px-12 py-5 bg-gradient-to-r from-purple-600 to-indigo-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 View All Properties
-                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>
@@ -728,56 +775,65 @@ const Index = () => {
       </section>
 
       {/* Property Services Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-100">
         <div className="max-w-7xl mx-auto px-6">
+          {/* Section Header */}
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold mb-4">
-              Property <span className="text-purple-600">Services</span>{" "}
+            <h2 className="text-5xl font-extrabold mb-4 text-gray-900">
+              Property{" "}
+              <span className="text-purple-600 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500">
+                Services
+              </span>
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
               Complete real estate solutions at your fingertips
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Services Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {propertyServices.map((service, index) => (
               <Card
                 key={index}
-                className="card-hover text-center p-8 hover:shadow-xl transition-all bg-gray-50 duration-300"
+                onClick={() => {
+                  if (service.title === "EMI Calculator")
+                    navigate("/emi-calculator");
+                  else if (service.title === "Property Valuation")
+                    navigate("/property-valuation");
+                  else if (service.title === "Market Trends")
+                    navigate("/price-trends");
+                  else if (service.title === "Legal Verification")
+                    navigate("/our-services");
+                }}
+                className="group relative p-8 bg-white dark:bg-gray-900/60 border border-gray-200/20 rounded-3xl shadow-lg hover:shadow-2xl transition-transform duration-500 transform hover:-translate-y-3 hover:rotate-1 cursor-pointer"
               >
-                <div className="mb-6">
-                  <div
-                    className={`inline-flex p-4 rounded-full bg-gradient-to-r ${
-                      index === 0
-                        ? "from-purple-100 to-purple-50"
-                        : index === 1
-                        ? "from-green-100 to-green-50"
-                        : index === 2
-                        ? "from-purple-100 to-purple-50"
-                        : "from-orange-100 to-orange-50"
-                    }`}
-                  >
-                    <service.icon className={`h-8 w-8 ${service.color}`} />
-                  </div>
+                {/* Floating Icon */}
+                <div
+                  className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 
+              ${
+                index % 2 === 0
+                  ? "bg-gradient-to-tr from-purple-500 to-pink-500"
+                  : "bg-gradient-to-tr from-indigo-500 to-purple-500"
+              } 
+              shadow-lg group-hover:scale-110 transition-transform duration-500`}
+                >
+                  <service.icon className="text-white text-4xl" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-                <p className="text-muted-foreground mb-6">
+
+                {/* Title */}
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center group-hover:text-purple-600 transition-colors duration-300">
+                  {service.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-gray-600 dark:text-gray-300 text-center mb-6 leading-relaxed">
                   {service.description}
                 </p>
+
+                {/* Button */}
                 <Button
-                  className="bg-purple-500 text-white hover:bg-purple-600 hover:text-white"
-                  variant="outline"
+                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-indigo-500 hover:to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
                   size="sm"
-                  onClick={() => {
-                    if (service.title === "EMI Calculator")
-                      navigate("/emi-calculator");
-                    else if (service.title === "Property Valuation")
-                      navigate("/property-valuation");
-                    else if (service.title === "Market Trends")
-                      navigate("/price-trends");
-                    else if (service.title === "Legal Verification")
-                      navigate("/our-services");
-                  }}
                 >
                   Try Now
                 </Button>
@@ -788,80 +844,98 @@ const Index = () => {
       </section>
 
       {/* Expert Agents Section */}
-      <section className="py-20 bg-purple">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-20 bg-gray-900 relative overflow-hidden">
+        {/* Background Decorative Blobs */}
+        <div className="absolute top-0 left-1/4 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div
+          className="absolute bottom-0 right-1/4 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        ></div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          {/* Section Header */}
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold mb-4">
-              Meet Our <span className="text-purple-600">Expert Agents</span>{" "}
+            <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 text-white">
+              Meet Our{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">
+                Expert Agents
+              </span>
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
               Trusted professionals to guide your property journey
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {/* Agents Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             {agents.map((agent) => (
-              <Card
+              <div
                 key={agent.id}
-                className="card-hover text-center overflow-hidden"
+                className="relative bg-gradient-to-tr from-gray-800/80 to-gray-900/80 rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 flex flex-col items-center group"
               >
-                <CardContent className="p-8 bg-gray-50">
-                  <div className="relative mb-6">
-                    <img
-                      src={agent.image}
-                      alt={agent.name}
-                      className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-primary/20"
-                    />
-                    <Badge className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Verified
-                    </Badge>
-                  </div>
+                {/* Profile Picture */}
+                <div className="relative w-28 h-28 mb-4">
+                  <img
+                    src={agent.image}
+                    alt={agent.name}
+                    className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <span className="absolute bottom-0 right-0 bg-green-400 text-white px-2 py-1 text-xs rounded-full flex items-center shadow-lg">
+                    <CheckCircle className="w-3 h-3 mr-1" /> Verified
+                  </span>
+                </div>
 
-                  <h3 className="text-xl font-semibold mb-2">{agent.name}</h3>
-                  <p className="text-primary font-medium mb-2">
-                    {agent.specialization}
-                  </p>
+                {/* Name & Specialization */}
+                <h3 className="text-xl font-bold mb-1 text-white">
+                  {agent.name}
+                </h3>
+                <p className="text-gradient font-medium mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">
+                  {agent.specialization}
+                </p>
+                <p className="text-gray-300 mb-2">description here</p>
 
-                  <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-                    <div>
-                      <div className="text-muted-foreground">Experience</div>
-                      <div className="font-semibold">{agent.experience}</div>
+                {/* Stats */}
+                <div className="flex justify-between w-full text-center text-gray-300 text-sm mb-4">
+                  <div>
+                    <div className="font-semibold text-white">
+                      {agent.experience}
                     </div>
-                    <div>
-                      <div className="text-muted-foreground">Deals Closed</div>
-                      <div className="font-semibold">{agent.deals}</div>
+                    Years Exp.
+                  </div>
+                  <div>
+                    <div className="font-semibold text-white">
+                      {agent.deals}
                     </div>
+                    Deals Closed
                   </div>
+                  <div>
+                    <div className="font-semibold text-white">
+                      {agent.rating}
+                    </div>
+                    Rating
+                  </div>
+                </div>
 
-                  <div className="flex items-center justify-center mb-6">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                    <span className="font-semibold">{agent.rating}</span>
-                    <span className="text-muted-foreground ml-1">
-                      (150+ reviews)
-                    </span>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      className="flex-1 bg-purple-600 text-white hover:bg-purple-700"
-                      onClick={() => handleCall(agent.phone)}
-                    >
-                      <Phone className="h-4 w-4 mr-1" />
-                      Call
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="flex-1 bg-purple-500 text-white hover:bg-purple-600"
-                      onClick={() => navigate(`/agent/${agent.id}`)}
-                    >
-                      <MessageSquare className="h-4 w-4 mr-1" />
-                      View Profile
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                {/* Action Buttons */}
+                <div className="flex gap-3 w-full">
+                  <Button
+                    size="sm"
+                    className="flex-1 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 text-white font-semibold rounded-lg shadow hover:from-indigo-500 hover:via-pink-400 hover:to-purple-500 transition-all duration-300"
+                    onClick={() => handleCall(agent.phone)}
+                  >
+                    <Phone className="w-4 h-4 mr-1" />
+                    Call
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="flex-1 bg-gray-800 border border-purple-500 text-purple-400 font-semibold rounded-lg shadow hover:bg-purple-500 hover:text-white transition-all duration-300"
+                    onClick={() => navigate(`/agent/${agent.id}`)}
+                  >
+                    <MessageSquare className="w-4 h-4 mr-1" />
+                    View Profile
+                  </Button>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -1034,121 +1108,102 @@ const Index = () => {
       <AIFeatures />
 
       {/* Testimonials Section */}
-      <section className="pb-10 py-10 bg-purple">
-        <div className="max-w-6xl mx-auto px-6">
+      <section className="relative py-20 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 overflow-hidden text-white">
+        {/* Floating decorative circles */}
+        <div className="absolute -top-32 -left-32 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
+          {/* Heading */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">What Our Customers Say</h2>
-            <p className="text-lg text-muted-foreground">
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 drop-shadow-md text-white">
+              What Our Customers Say
+            </h2>
+            <p className="text-lg sm:text-xl text-white/70">
               Real experiences from real people who found their dream homes
             </p>
           </div>
 
+          {/* Testimonial Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 bg-gray-50">
-                <div className="flex items-center mb-4">
-                  <div className="flex text-yellow-500 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                  </div>
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    5.0
-                  </span>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "Amazing experience! Found my dream home in just 2 weeks. The
-                  virtual tour feature helped me narrow down my choices before
-                  visiting. Highly recommended!"
-                </p>
-                <div className="flex items-center">
+            {[
+              {
+                name: "Priya Sharma",
+                location: "Mumbai, Maharashtra",
+                rating: 5,
+                text: "Amazing experience! Found my dream home in just 2 weeks. The virtual tour feature helped me narrow down my choices before visiting. Highly recommended!",
+                img: sharmaPriyaImg,
+              },
+              {
+                name: "Rajesh Kumar",
+                location: "Bangalore, Karnataka",
+                rating: 5,
+                text: "Professional service and transparent pricing. The EMI calculator helped me plan my budget perfectly. Got the keys to my new villa last month!",
+                img: rajeshkumarImg,
+              },
+              {
+                name: "Anita Patel",
+                location: "Pune, Maharashtra",
+                rating: 4.8,
+                text: "Great platform with genuine listings. The legal verification service gave me peace of mind. Smooth property registration process.",
+                img: anitapatelImg,
+              },
+            ].map((customer, idx) => (
+              <Card
+                key={idx}
+                className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 flex flex-col items-center text-center hover:scale-105 hover:shadow-2xl transition-all duration-300"
+              >
+                {/* Customer avatar */}
+                <div className="absolute -top-10 w-20 h-20 rounded-full overflow-hidden border-4 border-white/20 shadow-lg">
                   <img
-                    src={sharmaPriyaImg}
-                    alt="Customer"
-                    className="w-10 h-10 rounded-full mr-3"
+                    src={customer.img}
+                    alt={customer.name}
+                    className="w-full h-full object-cover"
                   />
-                  <div>
-                    <div className="font-medium">Priya Sharma</div>
-                    <div className="text-sm text-muted-foreground">
-                      Mumbai, Maharashtra
-                    </div>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
 
-            <Card className="hover:shadow-lg transition-all duration-300 bg-gray-50">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="flex text-yellow-500 mb-2">
+                <div className="mt-12 flex flex-col items-center">
+                  {/* Rating stars */}
+                  <div className="flex items-center mb-3">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
+                      <Star
+                        key={i}
+                        className={`w-5 h-5 ${
+                          i < Math.floor(customer.rating)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-white/30"
+                        }`}
+                      />
                     ))}
+                    <span className="ml-2 text-sm text-white/70">
+                      {customer.rating}
+                    </span>
                   </div>
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    5.0
-                  </span>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "Professional service and transparent pricing. The EMI
-                  calculator helped me plan my budget perfectly. Got the keys to
-                  my new villa last month!"
-                </p>
-                <div className="flex items-center">
-                  <img
-                    src={rajeshkumarImg}
-                    alt="Customer"
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <div className="font-medium">Rajesh Kumar</div>
-                    <div className="text-sm text-muted-foreground">
-                      Bangalore, Karnataka
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            <Card className="hover:shadow-lg transition-all duration-300 bg-gray-50">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="flex text-yellow-500 mb-2">
-                    {[...Array(4)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                    <Star className="w-4 h-4 text-gray-300" />
-                  </div>
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    4.8
-                  </span>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  "Great platform with genuine listings. The legal verification
-                  service gave me peace of mind. Smooth property registration
-                  process."
-                </p>
-                <div className="flex items-center">
-                  <img
-                    src={anitapatelImg}
-                    alt="Customer"
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
+                  {/* Review text */}
+                  <p className="text-white/80 mb-6 leading-relaxed">
+                    {customer.text}
+                  </p>
+
+                  {/* Customer info */}
                   <div>
-                    <div className="font-medium">Anita Patel</div>
-                    <div className="text-sm text-muted-foreground">
-                      Pune, Maharashtra
+                    <div className="font-semibold text-white">
+                      {customer.name}
+                    </div>
+                    <div className="text-sm text-white/60">
+                      {customer.location}
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </Card>
+            ))}
           </div>
 
+          {/* CTA Button */}
           <div className="text-center mt-12">
             <Link to="/testimonials">
-              <Button className="bg-purple-600 hover:bg-purple-500" size="lg">
-                <Star className="mr-2 h-5 w-5" />
+              <Button className="bg-teal-500 hover:bg-teal-400 text-white font-semibold px-8 py-4 rounded-full shadow-md transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2">
+                {/* <Star className="h-5 w-5" /> */}
                 View All Reviews
               </Button>
             </Link>
@@ -1157,31 +1212,44 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 hero-gradient text-white">
-        <div className="hero-overlay absolute inset-0" />
+      <section className="relative py-24 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 overflow-hidden">
+        {/* Subtle overlay for elegance */}
+        <div className="absolute inset-0 bg-black/20 -z-10 rounded-3xl"></div>
+
+        {/* Floating decorative circles */}
+        <div className="absolute -top-32 -left-32 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">
+          {/* Heading */}
+          <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 text-white drop-shadow-md">
             Ready to Find Your Dream Home?
           </h2>
-          <p className="text-xl mb-8 opacity-90">
+
+          {/* Subheading */}
+          <p className="text-lg sm:text-xl mb-10 text-white/90 leading-relaxed">
             Join thousands of satisfied customers who found their perfect
             property with us
           </p>
+
+          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Primary CTA */}
             <Link to="/login">
               <Button
                 size="lg"
-                className="bg-purple-600 text-white hover:bg-purple-500"
+                className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white text-purple-600 hover:text-white font-semibold shadow-md hover:shadow-lg hover:-translate-y-1 transform transition-all duration-300"
               >
-                <Users className="mr-2 h-5 w-5" />
+                <Users className="h-5 w-5" />
                 Get Started
               </Button>
             </Link>
+
+            {/* Secondary CTA */}
             <Link to="/book-visit">
               <Button
                 size="lg"
-                variant="outline"
-                className="bg-purple-400 border-white/20 text-white hover:bg-purple-600 hover:text-white"
+                className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white text-purple-600 hover:text-white font-semibold shadow-md hover:shadow-lg hover:-translate-y-1 transform transition-all duration-300"
               >
                 Schedule a Visit
               </Button>

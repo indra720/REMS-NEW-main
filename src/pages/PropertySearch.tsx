@@ -49,8 +49,8 @@ const PropertySearch = ({ onFilterChange }) => {
 
       // Get URL parameters
       const urlParams = new URLSearchParams(window.location.search);
-      const typeParam = urlParams.get('type');
-      const locationParam = urlParams.get('location');
+      const typeParam = urlParams.get("type");
+      const locationParam = urlParams.get("location");
 
       if (typeParam) {
         url.searchParams.append("type", typeParam);
@@ -136,7 +136,6 @@ const PropertySearch = ({ onFilterChange }) => {
           <p className="text-muted-foreground mb-4">
             Search across thousands of listings with advanced filters.
           </p>
-
         </div>
       </div>
 
@@ -247,49 +246,49 @@ const PropertySearch = ({ onFilterChange }) => {
 
           {filteredProperties.length > 0 ? (
             <div
-              className={`grid gap-6 ${
+              className={`grid gap-8 ${
                 viewMode === "grid"
                   ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
                   : "grid-cols-1"
               }`}
             >
-              {filteredProperties.slice(0,3).map((property) => (
-                <Card
+              {filteredProperties.slice(0, 3).map((property) => (
+                <div
                   key={property.slug}
-                  className="cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-border/50 hover:border-purple-600/20 group"
+                  className="relative group cursor-pointer rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500 bg-white"
                 >
-                  <div className="relative h-56">
+                  {/* Image Banner */}
+                  <div className="relative h-64 w-full overflow-hidden rounded-t-3xl">
                     {property.images && property.images.length > 0 ? (
-                      <>
-                        <img
-                          src={property.images[0].image}
-                          alt={property.title}
-                          className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                        <Badge
-                          className={`absolute z-50 top-3 left-3 ${
-                            property.category?.toLowerCase().trim() === "rent"
-                              ? "bg-green-500 text-white"
-                              : "bg-yellow-500 text-black"
-                          }`}
-                        >
-                          {property.category}
-                        </Badge>
-                       
-                      </>
+                      <img
+                        src={property.images[0].image}
+                        alt={property.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
                     ) : (
-                      <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                         <Camera className="w-12 h-12 text-gray-400" />
                       </div>
                     )}
-                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <Badge className="absolute top-3 left-3 bg-purple-600 text-white">
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+
+                    {/* Floating Category Badge */}
+                    <Badge
+                      className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm ${
+                        property.category?.toLowerCase() === "rent"
+                          ? "bg-green-500 text-white"
+                          : "bg-yellow-400 text-black"
+                      }`}
+                    >
                       {property.category}
                     </Badge>
+
+                    {/* Favorite Icon */}
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="absolute top-3 right-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white"
+                      className="absolute top-4 right-4 bg-white/30 backdrop-blur-sm rounded-full hover:bg-white/40 transition"
                       onClick={(e) => toggleFavorite(e, property.slug)}
                     >
                       <Heart
@@ -300,17 +299,22 @@ const PropertySearch = ({ onFilterChange }) => {
                         }`}
                       />
                     </Button>
-                    <div className="absolute bottom-0 left-0 p-4 text-white">
-                      <h3 className="text-xl font-bold truncate">
+                  </div>
+
+                  {/* Info Panel */}
+                  <div className="p-5 space-y-3">
+                    {/* Title & Location */}
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 truncate">
                         {property.title}
                       </h3>
-                      <p className="text-sm flex items-center">
-                        <MapPin className="h-4 w-4 mr-1.5" />{" "}
+                      <p className="text-sm text-gray-500 flex gap-1 mt-1 h-[2rem]">
+                        <MapPin className="h-4 w-4 text-gray-400" />
                         {property.location}
                       </p>
                     </div>
-                  </div>
-                  <CardContent className="p-4 space-y-3">
+
+                    {/* Price & Rating */}
                     <div className="flex justify-between items-center">
                       <p className="text-2xl font-extrabold text-purple-600">
                         ₹{parseFloat(property.price).toLocaleString("en-IN")}
@@ -324,45 +328,54 @@ const PropertySearch = ({ onFilterChange }) => {
                         </span>
                       </div>
                     </div>
-                    <div className="flex justify-around items-center text-center border-t border-b py-2 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <Bed className="h-5 w-5 text-purple-500" />
-                        <span>{property.bedrooms} Beds</span>
+
+                    {/* Property Stats */}
+                    <div className="flex justify-between items-center text-gray-500 border-t border-b py-3 text-sm">
+                      <div className="flex items-center gap-1">
+                        <Bed className="h-5 w-5 text-purple-500" />{" "}
+                        {property.bedrooms} Beds
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Bath className="h-5 w-5 text-purple-500" />
-                        <span>{property.bathrooms} Baths</span>
+                      <div className="flex items-center gap-1">
+                        <Bath className="h-5 w-5 text-purple-500" />{" "}
+                        {property.bathrooms} Baths
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Square className="h-5 w-5 text-purple-500" />
-                        <span>{property.area_sqft} sqft</span>
+                      <div className="flex items-center gap-1">
+                        <Square className="h-5 w-5 text-purple-500" />{" "}
+                        {property.area_sqft} sqft
                       </div>
                     </div>
+
+                    {/* Tags */}
                     <div className="flex flex-wrap gap-2">
                       {(property.tags || []).slice(0, 4).map((tag) => (
-                        <Badge key={tag} variant="secondary">
+                        <Badge
+                          key={tag}
+                          className="bg-purple-100 text-purple-700 text-xs rounded-full px-2 py-1"
+                        >
                           {tag}
                         </Badge>
                       ))}
                     </div>
-                    <div className="flex justify-center gap-4 items-center">
-                      <button
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-3 mt-3 ">
+                      <Button
                         onClick={() => navigate(`/property/${property.slug}`)}
-                        className="border py-3 px-4 flex-1 bg-white hover:bg-purple-600 hover:text-white font-semibold rounded-md whitespace-nowrap"
+                        className="flex-1 bg-white hover:bg-purple-600 text-purple-600 hover:text-white font-semibold rounded-lg transition"
                       >
                         View Details
-                      </button>
-                      <button className="border py-3 px-4 flex-1 bg-purple-400 hover:bg-purple-600 text-white font-semibold rounded-md whitespace-nowrap">
+                      </Button>
+                      <Button className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-lg transition">
                         Contact
-                      </button>
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-16">
-              <p className="text-muted-foreground">
+              <p className="text-gray-500">
                 No properties found. Try adjusting your search.
               </p>
             </div>

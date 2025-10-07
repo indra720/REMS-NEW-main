@@ -165,106 +165,94 @@ const SearchInterface = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto  ">
-      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-search">
-        {/* Tabs */}
-        <div className="flex flex-wrap sm:gap-2 mb-2 sm:mb-6 border-b pb-4 justify-center">
-          {searchTabs.map((tab) => (
-            <Button
-              key={tab}
-              variant={activeSearchTab === tab ? "default" : "ghost"}
-              className={cn(
-                "text-xs sm:text-sm px-3 py-1 sm:py-2 rounded-none",
-                activeSearchTab === tab
-                  ? "text-purple-600 border-b-2 border-purple-600 bg-transparent hover:bg-transparent"
-                  : "text-gray-600 hover:text-purple-600 hover:bg-transparent"
-              )}
-              onClick={() => {
-                setActiveSearchTab(tab);
-                setDropdownValue(getDropdownValue(tab));
-              }}
-            >
-              {tab}
-              {tab === "New Launch" && (
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              )}
-              {tab === "Post Property" && (
-                <span className="ml-1 px-1 sm:px-2 py-0.5 bg-green-500 text-white text-xs rounded-full">
-                  FREE
-                </span>
-              )}
-            </Button>
-          ))}
+   <div className="w-full max-w-6xl mx-auto px-4">
+  <div className="bg-white/70 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-100 relative overflow-hidden">
+    
+    {/* Decorative Gradient Shapes */}
+    <div className="absolute -top-16 -z-10 -left-16 w-64 h-64 bg-gradient-to-tr from-purple-300 to-cyan-300 rounded-full opacity-30 animate-pulse"></div>
+    <div className="absolute -bottom-16 -z-10 -right-16 w-72 h-72 bg-gradient-to-br from-purple-400 to-cyan-400 rounded-full opacity-30 animate-pulse"></div>
+
+    {/* Tabs */}
+    <div className="flex flex-wrap justify-center gap-4 mb-8">
+      {searchTabs.map((tab) => (
+        <Button
+          key={tab}
+          variant={activeSearchTab === tab ? "default" : "ghost"}
+          className={cn(
+            "px-6 py-2 sm:py-3 rounded-full font-bold transition-all duration-300 text-sm sm:text-base shadow-md hover:shadow-lg",
+            activeSearchTab === tab
+              ? "bg-gradient-to-r from-purple-600 to-cyan-500 text-white shadow-lg hover:scale-105"
+              : "bg-white text-gray-700 border border-gray-200 hover:bg-purple-50 hover:text-purple-600"
+          )}
+          onClick={() => {
+            setActiveSearchTab(tab);
+            setDropdownValue(getDropdownValue(tab));
+          }}
+        >
+          {tab}
+          {tab === "New Launch" && (
+            <span className="absolute -top-2 -right-2 w-3 h-3 bg-red-500 rounded-full animate-ping"></span>
+          )}
+          {tab === "Post Property" && (
+            <span className="ml-2 px-2 py-1 bg-green-500 text-white text-xs rounded-full font-bold shadow-sm">
+              FREE
+            </span>
+          )}
+        </Button>
+      ))}
+    </div>
+
+    {/* Search Fields */}
+    <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex-1 relative">
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
+          <Search className="h-5 w-5 text-purple-400" />
         </div>
-
-        {/* Search Fields */}
-        <div className="flex flex-col gap-4 mb-4 sm:mb-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
-                <Search className="h-4 sm:h-5 w-4 sm:w-5 text-gray-400" />
-              </div>
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={getPlaceholderText()}
-                className="pl-10 pr-16 sm:pr-20 h-10 sm:h-12 border-gray-200 focus:border-purple-600 text-sm sm:text-base"
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              />
-              <div className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1 sm:space-x-2">
-                <Button variant="ghost" size="sm" className="p-1 hover:bg-gray-100">
-                  <MapPin className="h-3 sm:h-4 w-3 sm:w-4 text-purple-600" />
-                </Button>
-                <Button variant="ghost" size="sm" className="p-1 hover:bg-gray-100">
-                  <Mic className="h-3 sm:h-4 w-3 sm:w-4 text-gray-400" />
-                </Button>
-              </div>
-            </div>
-
-            <Select
-              value={dropdownValue}
-              onValueChange={(value) => setDropdownValue(value)}
-            >
-              <SelectTrigger className="w-full sm:w-48 h-10 sm:h-12 border-gray-200 focus:border-primary text-sm sm:text-base">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {getDropdownOptions().map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button
-              className="bg-primary hover:bg-primary/90 h-10 sm:h-12 px-6 sm:px-8 w-full sm:w-auto"
-              onClick={handleSearch}
-              disabled={loading}
-            >
-              {loading ? "Searching..." : getButtonText()}
-            </Button>
-          </div>
-        </div>
-
-        {/* Popular Searches */}
-        <div>
-          <h3 className="text-xs sm:text-sm font-medium text-gray-600 mb-2 sm:mb-3">Popular Search</h3>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {popularSearches.map((search, index) => (
-              <Button
-                key={index}
-                
-                className="text-gray-600 border-gray-200 hover:border-primary bg-transparent hover:bg-transparent hover:text-purple-600 rounded-full text-xs sm:text-sm px-3 py-1.5"
-                onClick={() => handlePopularSearch(search)}
-              >
-                {search}
-              </Button>
-            ))}
-          </div>
+        <Input
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder={getPlaceholderText()}
+          className="pl-12 pr-20 sm:pr-24 h-14 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm sm:text-base shadow-md bg-white/80 backdrop-blur-sm transition-all duration-300"
+          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+        />
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+          <Button variant="ghost" size="sm" className="p-2 hover:bg-gray-100 rounded-full">
+            <MapPin className="h-4 w-4 text-cyan-500" />
+          </Button>
+          <Button variant="ghost" size="sm" className="p-2 hover:bg-gray-100 rounded-full">
+            <Mic className="h-4 w-4 text-gray-400" />
+          </Button>
         </div>
       </div>
+
+      <Select
+        value={dropdownValue}
+        onValueChange={(value) => setDropdownValue(value)}
+      >
+        <SelectTrigger className="w-full sm:w-56 h-14 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base shadow-md bg-white/80 backdrop-blur-sm transition-all duration-300">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {getDropdownOptions().map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Button
+        className="bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-bold rounded-2xl h-14 px-8 shadow-xl hover:scale-105 transform transition-transform duration-200 w-full sm:w-auto"
+        onClick={handleSearch}
+        disabled={loading}
+      >
+        {loading ? "Searching..." : getButtonText()}
+      </Button>
     </div>
+
+  </div>
+</div>
+
   );
 };
 
