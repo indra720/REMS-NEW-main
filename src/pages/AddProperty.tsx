@@ -163,14 +163,14 @@ const AddProperty = () => {
 
     // Check if property types are loaded
     if (propertyTypes.length === 0) {
-      // toast.error("Property types are still loading. Please wait.");
+      //console.log("Property types not loaded");
       return;
     }
 
     // Validate that the selected property type exists
     const selectedPropertyType = propertyTypes.find(pt => pt.id.toString() === formData.property_type);
     if (!selectedPropertyType) {
-      // toast.error("Please select a valid property type");
+      //console.log("Invalid property type selected");
       return;
     }
 
@@ -199,7 +199,7 @@ const AddProperty = () => {
 
     for (const [field, label] of Object.entries(requiredFields)) {
       if (!formData[field] || formData[field].toString().trim() === '') {
-        // toast.error(`${label} is required`);
+        //console.log(`Missing field: ${field} - ${label}`);
         return;
       }
     }
@@ -234,7 +234,7 @@ const AddProperty = () => {
     }
 
     if (imageFiles.length === 0) {
-      // toast.error("Please upload at least one image");
+      //console.log("No images uploaded");
       return;
     }
 
@@ -311,10 +311,10 @@ const AddProperty = () => {
       }
 
       // Debug: Log the form data being sent
-      // console.log("Form data being sent:");
-      // for (let [key, value] of formDataToSend.entries()) {
-      //   console.log(key, value);
-      // }
+      //console.log("Form data being sent:");
+      for (let [key, value] of formDataToSend.entries()) {
+        //console.log(key, value);
+      }
 
       await axios.post(
         "/properties/",
@@ -327,25 +327,18 @@ const AddProperty = () => {
         }
       );
 
+      //console.log("Property created successfully!");
       setSubmissionMessage("Property published successfully!");
       setSubmissionProgress(100);
-      // toast.success("Property created successfully with all media!");
       
       setTimeout(() => {
         navigate(`/search`);
       }, 1500);
 
     } catch (error: any) {
-      // console.error("Error creating property:", error);
+      //console.error("Error creating property:", error);
       if (error.response) {
-        // console.error("Error response:", error.response.data);
-        // toast.error(
-        //   `Failed to create property: ${
-        //     JSON.stringify(error.response.data) || "Unknown error"
-        //   }`
-        // );
-      } else {
-        // toast.error("Failed to create property. Please try again.");
+        //console.error("Error response:", error.response.data);
       }
       setIsSubmitting(false);
     }
@@ -358,10 +351,10 @@ const AddProperty = () => {
         { withCredentials: false }
       );
 
-      // console.log("Property Types Response:", response.data);
+      // //console.log("Property Types Response:", response.data);
       setPropertyTypes(response.data);
     } catch (error: any) {
-      // console.error("Failed to fetch property types:", error);
+      // //console.error("Failed to fetch property types:", error);
 
       if (error.response?.status === 401) {
         // toast.error("Session expired. Please login again.");

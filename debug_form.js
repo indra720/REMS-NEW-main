@@ -37,9 +37,9 @@ const testPropertyCreation = async () => {
       }
     });
     
-    console.log('Success:', response.data);
+    //console.log('Success:', response.data);
   } catch (error) {
-    console.error('Error:', error.response?.data || error.message);
+    //console.error('Error:', error.response?.data || error.message);
   }
 };
 

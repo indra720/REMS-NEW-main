@@ -26,11 +26,11 @@ const ContactUsPopup: React.FC<ContactUsPopupProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email) {
-      toast({
-        title: "Required Fields Missing",
-        description: "Please fill in all required fields.",
-        variant: "destructive"
-      });
+      // toast({
+      //   title: "Required Fields Missing",
+      //   description: "Please fill in all required fields.",
+      //   variant: "destructive"
+      // });
       return;
     }
     
@@ -47,10 +47,10 @@ const ContactUsPopup: React.FC<ContactUsPopupProps> = ({ isOpen, onClose }) => {
       const response = await axiosInstance.post(`${BASE_URL}leads/`, contactData);
 
       if (response.status === 201 || response.status === 200) {
-        toast({
-          title: "Message Sent Successfully",
-          description: "We'll get back to you within 24 hours.",
-        });
+        // toast({
+        //   title: "Message Sent Successfully",
+        //   description: "We'll get back to you within 24 hours.",
+        // });
         setFormData({
           name: '',
           email: '',
@@ -63,12 +63,12 @@ const ContactUsPopup: React.FC<ContactUsPopupProps> = ({ isOpen, onClose }) => {
         throw new Error(response.data.message || 'Failed to send message');
       }
     } catch (error: any) {
-      console.error('Error sending message:', error);
-      toast({
-        title: "Error",
-        description: error.response?.data?.message || "Failed to send message. Please try again.",
-        variant: "destructive"
-      });
+      //console.error('Error sending message:', error);
+      // toast({
+      //   title: "Error",
+      //   description: error.response?.data?.message || "Failed to send message. Please try again.",
+      //   variant: "destructive"
+      // });
     }
   };
 

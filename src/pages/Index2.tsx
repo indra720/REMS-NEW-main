@@ -45,7 +45,7 @@ import { FilterSidebar } from "./FilterSidebar";
 import { PropertyCard } from "./PropertyCard";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getWishlist, addToWishlist, removeFromWishlist, WishlistItem } from "@/lib/api";
-import { TopDest, destinations } from "@/components/ui/top_dest";
+import { TopDest } from "@/components/ui/top_dest";
 import { jwtDecode } from "jwt-decode";
 import { useSearch } from '../context/SearchContext';
 
@@ -155,7 +155,11 @@ export const Index2 = () => {
           wishlistData.map((item) => item.property.id.toString())
         );
         setWishlistedPropertyIds(wishlistedIds);
-      } catch (error) {
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          // Token is invalid or expired, just ignore the error
+          return;
+        }
         // console.error("Failed to fetch wishlist:", error);
       }
     };
@@ -184,21 +188,6 @@ export const Index2 = () => {
   const handleSidebarFilterChange = (filters: any) => {
     setSidebarFilters(filters);
   };
-
-  useEffect(() => {
-    if (searchResults.length > 0) { // Use searchResults here
-      const counts: { [key: string]: number } = {};
-      destinations.forEach(dest => {
-        const cityName = dest.name.toUpperCase();
-        const count = searchResults.filter(p => 
-          p.location?.toUpperCase().includes(cityName)
-        ).length;
-        counts[cityName] = count;
-      });
-      setCityCounts(counts);
-      // console.log("Calculated City Counts (Index2.tsx):", counts); // Added //console.log for debugging
-    }
-  }, [searchResults]); // Depend on searchResults
 
   const handleCitySelect = (city: string) => {
     navigate(`/search?city=${city}`);

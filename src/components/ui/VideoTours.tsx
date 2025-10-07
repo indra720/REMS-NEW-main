@@ -18,11 +18,7 @@ const videos = [videoCabin, videoEstate, videoApartment, videoPenthouse, videoVi
 
 const VideoPlayerModal = ({ videoUrl, onClose }) => {
   if (!videoUrl) return null;
-  // console.log("Video URL in modal:", videoUrl);
-
-  // Create an absolute URL from the relative path
-  const absoluteVideoUrl = new URL(videoUrl, window.location.origin).href;
-  // console.log("Absolute Video URL:", absoluteVideoUrl);
+  //console.log("Video URL in modal:", videoUrl);
 
   return (
     <div
@@ -39,8 +35,14 @@ const VideoPlayerModal = ({ videoUrl, onClose }) => {
         >
           <X size={32} />
         </button>
-        <video controls autoPlay className="w-full h-full rounded-lg">
-          <source src={absoluteVideoUrl} type="video/mp4" />
+        <video 
+          controls 
+          className="w-full h-full rounded-lg"
+          onError={(e) => {
+            //console.error("Video failed to load:", videoUrl);
+          }}
+        >
+          <source src={videoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
@@ -58,18 +60,22 @@ const VideoTours = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await fetch(`${BASE_URL}properties/top-video-properties/`);
+        const response = await fetch(`${BASE_URL}properties/top-video-properties/`, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
         if (response.ok) {
           const data = await response.json();
-          console.log("✅ Video Properties fetched:", data);
-          setProperties(data);
+          //console.log("✅ Properties fetched:", data);
+          setProperties(data || []);
         } else {
-          console.log("📄 Using static data (API error)");
-          setProperties(staticVideoData);
+          //console.log("API failed, no properties to show");
+          setProperties([]);
         }
       } catch (error) {
-        console.error("❌ Error fetching properties:", error);
-        setProperties(staticVideoData);
+        //console.error("❌ Error fetching properties:", error);
+        setProperties([]);
       } finally {
         setLoading(false);
       }
@@ -77,72 +83,6 @@ const VideoTours = () => {
 
     fetchProperties();
   }, []);
-
-  const staticVideoData = [
-    {
-      id: 1,
-      title: "Luxurious Cabin in the Woods",
-      slug: "luxurious-cabin-in-the-woods",
-      images: [{ image: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=500" }],
-      location: "Aspen, Colorado",
-      price: "2,500,000",
-      description: "A stunning cabin with modern amenities, nestled in the heart of the mountains.",
-      property_status: "For Sale",
-      bedrooms: 4,
-      bathrooms: 3,
-      area_sqft: "3,200",
-      listed_on: "2025-09-28",
-      duration: "2:30",
-    },
-    {
-      id: 2,
-      title: "Modern Estate with Ocean View",
-      slug: "modern-estate-with-ocean-view",
-      images: [{ image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500" }],
-      location: "Malibu, California",
-      price: "12,500,000",
-      description: "Experience coastal living at its finest in this breathtaking modern estate.",
-      property_status: "For Sale",
-      bedrooms: 6,
-      bathrooms: 8,
-      area_sqft: "10,500",
-      listed_on: "2025-09-25",
-      duration: "4:15",
-    },
-    {
-      id: 3,
-      title: "Downtown Apartment with a View",
-      slug: "downtown-apartment-with-a-view",
-      images: [{ image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500" }],
-      location: "New York, New York",
-      price: "4,800,000",
-      description: "A chic and stylish apartment in the heart of the city, with panoramic views.",
-      property_status: "For Sale",
-      bedrooms: 2,
-      bathrooms: 2,
-      area_sqft: "1,800",
-      listed_on: "2025-09-22",
-      duration: "3:05",
-    },
-      {
-      id: 4,
-      title: "Spacious Penthouse with Rooftop Pool",
-      slug: "spacious-penthouse-with-rooftop-pool",
-      images: [{ image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=500" }],
-      location: "Miami, Florida",
-      price: "8,900,000",
-      description: "The ultimate in luxury living, this penthouse boasts a private rooftop pool and stunning city views.",
-      property_status: "For Sale",
-      bedrooms: 5,
-      bathrooms: 6,
-      area_sqft: "6,000",
-      listed_on: "2025-09-20",
-      duration: "5:20",
-    },
-  ];
-
-  // Get featured property (first property from fetched data or static fallback)
-  const featuredProperty = properties.length > 0 ? properties[0] : null;
 
   const handleDetailsNavigation = (slug, videoUrl, propertyData) => {
     const token = localStorage.getItem("access_token");
@@ -152,7 +92,7 @@ const VideoTours = () => {
       navigate(`/property/${slug}`, {
         state: { 
           videoUrl,
-          propertyData // Pass static property data
+          propertyData
         },
       });
     }
@@ -199,86 +139,98 @@ const VideoTours = () => {
           <div className="mb-16 text-center">
             <div className="animate-pulse">Loading properties...</div>
           </div>
-        ) : featuredProperty && (
+        ) : properties.length > 0 && (
           <div className="mb-16">
             <Card className="overflow-hidden  bg-gradient-to-br from-background to-secondary/20 border border-border/50 shadow-elegant">
               <div className="grid lg:grid-cols-2 gap-8 p-2 sm:p-8">
-                <div
-                  className="relative group cursor-pointer"
-                  onClick={() => setSelectedVideo(featuredProperty.videos?.[0]?.video || videos[0])}
-                >
-                  <img
-                    src={
-                      featuredProperty.images?.[0]?.image ||
-                      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500"
-                    }
-                    alt={featuredProperty.title}
-                    className="w-full h-57 object-cover rounded-2xl group-hover:scale-100 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-black/30 rounded-2xl flex items-center justify-center group-hover:bg-black/20 transition-colors duration-300">
-                    <Button
-                      size="sm"
-                      className="bg-white/90 text-purple-600 hover:bg-white rounded-full px-6 py-8 sm:px-8 sm:py-10 shadow-glow hover:scale-110 transition-all duration-300"
-                    >
-                      <Play className="w-4 h-4 sm:w-8 sm:h-8" />
-                    </Button>
-                  </div>
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <Badge className="bg-gradient-hero text-white border-0 shadow-lg">
-                      Featured
-                    </Badge>
-                    <Badge className="bg-background/90 text-foreground border-0 shadow-md">
-                      {featuredProperty.property_status}
-                    </Badge>
-                  </div>
-                </div>
-
-                <div className="flex flex-col justify-center space-y-6">
-                  <div>
-                    <h3 className="text-3xl font-bold text-foreground mb-4">
-                      {featuredProperty.title}
-                    </h3>
-                    <div className="flex items-center text-muted-foreground mb-6">
-                      <MapPin className="w-5 h-5 mr-2 text-accent" />
-                      <span className="text-lg">
-                        {featuredProperty.location}
-                      </span>
-                    </div>
-                    <div className="flex items-center text-purple-600 text-2xl font-bold mb-4">
-                      {formatPrice(featuredProperty.price)}
-                    </div>
-                    <p className="text-lg text-muted-foreground leading-relaxed">
-                      {featuredProperty.description ||
-                        "Step inside this magnificent property with our exclusive virtual tour. Experience luxury living with premium finishes and world-class amenities."}
-                    </p>
-                  </div>
-
-                  <div className=" sm:flex sm:gap-4 ">
-                    <Button
-                      onClick={() => setSelectedVideo(featuredProperty.videos?.[0]?.video || videos[0])}
-                      size="lg"
-                      className="bg-gradient-hero w-full mb-2 hover:bg-purple-600 bg-purple-400 text-white border-0 shadow-glow hover:shadow-elegant transition-all duration-300"
-                    >
-                      <Play className="w-5 h-5 mr-2" />
-                      Watch Tour
-                    </Button>
-                    <Button
-                      onClick={() => handleDetailsNavigation(featuredProperty.slug, featuredProperty.videos?.[0]?.video || videos[0], featuredProperty)}
-                      variant="outline"
-                      size="lg"
-                      className="border-border/50 w-full hover:bg-purple-600 hover:text-white"
-                    >
-                      Property Details
-                    </Button>
-                  </div>
-                </div>
+                                  <div
+                                    className="relative group cursor-pointer"
+                                    onClick={() => {
+                                      if (properties[0].videos && properties[0].videos.length > 0) {
+                                        const videoUrl = properties[0].videos[0].video;
+                                        //console.log("Featured video clicked, URL:", videoUrl);
+                                        setSelectedVideo(videoUrl);
+                                      }
+                                    }}
+                                  >
+                                    <img
+                                      src={
+                                        properties[0].images?.[0]?.image ||
+                                        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500"
+                                      }
+                                      alt={properties[0].title}
+                                      className="w-full h-57 object-cover rounded-2xl group-hover:scale-100 transition-transform duration-500"
+                                    />
+                                    {properties[0].videos && properties[0].videos.length > 0 && (
+                                      <div className="absolute inset-0 bg-black/30 rounded-2xl flex items-center justify-center group-hover:bg-black/20 transition-colors duration-300">
+                                        <Button
+                                          size="sm"
+                                          className="bg-white/90 text-purple-600 hover:bg-white rounded-full px-6 py-8 sm:px-8 sm:py-10 shadow-glow hover:scale-110 transition-all duration-300"
+                                        >
+                                          <Play className="w-4 h-4 sm:w-8 sm:h-8" />
+                                        </Button>
+                                      </div>
+                                    )}
+                                    <div className="absolute top-4 left-4 flex gap-2">
+                                      <Badge className="bg-gradient-hero text-white border-0 shadow-lg">
+                                        Featured
+                                      </Badge>
+                                      <Badge className="bg-background/90 text-foreground border-0 shadow-md">
+                                        {properties[0].property_status || 'Active'}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                
+                                  <div className="flex flex-col justify-center space-y-6">
+                                    <div>
+                                      <h3 className="text-3xl font-bold text-foreground mb-4">
+                                        {properties[0].title}
+                                      </h3>
+                                      <div className="flex items-center text-muted-foreground mb-6">
+                                        <MapPin className="w-5 h-5 mr-2 text-accent" />
+                                        <span className="text-lg">
+                                          {properties[0].location}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center text-purple-600 text-2xl font-bold mb-4">
+                                        {formatPrice(properties[0].price)}
+                                      </div>
+                                      <p className="text-lg text-muted-foreground leading-relaxed">
+                                        {properties[0].description}
+                                      </p>
+                                    </div>
+                
+                                    <div className=" sm:flex sm:gap-4 ">
+                                      {properties[0].videos && properties[0].videos.length > 0 && (
+                                        <Button
+                                          onClick={() => {
+                                            const videoUrl = properties[0].videos[0].video;
+                                            //console.log("Watch Tour button clicked, URL:", videoUrl);
+                                            setSelectedVideo(videoUrl);
+                                          }}
+                                          size="lg"
+                                          className="bg-gradient-hero w-full mb-2 hover:bg-purple-600 bg-purple-400 text-white border-0 shadow-glow hover:shadow-elegant transition-all duration-300"
+                                        >
+                                          <Play className="w-5 h-5 mr-2" />
+                                          Watch Tour
+                                        </Button>
+                                      )}
+                                      <Button
+                                        onClick={() => handleDetailsNavigation(properties[0].slug, properties[0].videos?.[0]?.video || videos[0], properties[0])}
+                                        variant="outline"
+                                        size="lg"
+                                        className="border-border/50 w-full hover:bg-purple-600 hover:text-white"
+                                      >
+                                        Property Details
+                                      </Button>
+                                    </div>                </div>
               </div>
             </Card>
           </div>
         )}
 
-        {/* Video Grid - Using remaining properties (excluding the featured one) */}
-        {!loading && (
+        {/* Video Grid - Using remaining properties */}
+        {!loading && properties.length > 1 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {properties.slice(1, 4).map((video, index) => (
             <Card
@@ -290,7 +242,6 @@ const VideoTours = () => {
                 <img
                   src={
                     video.images?.[0]?.image ||
-                    video.image ||
                     "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500"
                   }
                   alt={video.title}
@@ -298,15 +249,21 @@ const VideoTours = () => {
                 />
 
                 {/* Play Overlay */}
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-colors duration-300">
-                  <Button
-                    size="lg"
-                    className="bg-white/90 text-purple-600 hover:bg-white rounded-full w-16 h-16 p-0 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
-                    onClick={() => setSelectedVideo(video.videos?.[0]?.video || videos[(index + 1) % videos.length])}
-                  >
-                    <Play className="w-6 h-6" />
-                  </Button>
-                </div>
+                {video.videos && video.videos.length > 0 && (
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-colors duration-300">
+                    <Button
+                      size="lg"
+                      className="bg-white/90 text-purple-600 hover:bg-white rounded-full w-16 h-16 p-0 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
+                      onClick={() => {
+                        const videoUrl = video.videos[0].video;
+                        //console.log("Grid video clicked, URL:", videoUrl);
+                        setSelectedVideo(videoUrl);
+                      }}
+                    >
+                      <Play className="w-6 h-6" />
+                    </Button>
+                  </div>
+                )}
 
                 {/* Badges */}
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
@@ -332,32 +289,32 @@ const VideoTours = () => {
                 <div className="flex items-center justify-between text-muted-foreground mb-4">
                   <span className="text-sm truncate flex items-center">
                     <MapPin className="w-4 h-4 mr-2 text-purple-500 flex-shrink-0" />
-                    {video.location || video.address}
+                    {video.location || 'Location not specified'}
                   </span>
                   <span>
-                    {video.listed_on || video.created_at
-                      ? new Date(video.listed_on || video.created_at).toLocaleDateString()
+                    {video.listed_on 
+                      ? new Date(video.listed_on).toLocaleDateString()
                       : "N/A"}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-4 mb-4 text-center text-sm">
                   <div>
                     <div className="font-bold text-foreground group-hover:text-purple-600">
-                      {video.bedrooms || video.bedroom_count || "N/A"}
+                      {video.bedrooms || "N/A"}
                     </div>
                     <div className="text-muted-foreground">Beds</div>
                   </div>
                   <div>
                     <div className="font-bold text-foreground group-hover:text-purple-600">
-                      {video.bathrooms || video.bathroom_count || "N/A"}
+                      {video.bathrooms || "N/A"}
                     </div>
                     <div className="text-muted-foreground">Baths</div>
                   </div>
                   <div>
                     <div className="font-bold text-foreground group-hover:text-purple-600">
-                      {video.area_sqft || video.area || "N/A"}
+                      {video.area_sqft || "N/A"}
                     </div>
-                    <div className="text-muted-foreground">Area</div>
+                    <div className="text-muted-foreground">Sq Ft</div>
                   </div>
                 </div>
 
@@ -368,16 +325,20 @@ const VideoTours = () => {
                     </span>
                   </div>
 
-                  <Button
-                    onClick={() =>
-                      setSelectedVideo(video.videos?.[0]?.video || videos[(index + 1) % videos.length])
-                    }
-                    size="sm"
-                    variant="ghost"
-                    className="text-purple-500 hover:bg-purple-600 hover:text-white "
-                  >
-                    Watch Now →
-                  </Button>
+                  {video.videos && video.videos.length > 0 && (
+                    <Button
+                      onClick={() => {
+                        const videoUrl = video.videos[0].video;
+                        //console.log("Watch Now clicked, URL:", videoUrl);
+                        setSelectedVideo(videoUrl);
+                      }}
+                      size="sm"
+                      variant="ghost"
+                      className="text-purple-500 hover:bg-purple-600 hover:text-white "
+                    >
+                      Watch Now →
+                    </Button>
+                  )}
                 </div>
                 <div className="flex gap-3 my-3">
                   <Button
@@ -385,7 +346,7 @@ const VideoTours = () => {
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDetailsNavigation(video.slug, video.videos?.[0]?.video || videos[(index + 1) % videos.length], video);
+                      handleDetailsNavigation(video.slug, video.videos?.[0]?.video, video);
                     }}
                   >
                     View Details
